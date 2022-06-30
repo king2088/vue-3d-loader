@@ -4,7 +4,6 @@
   </div>
 </template>
 <script>
-import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 import {
   Object3D,
   Vector2,
@@ -22,6 +21,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 export default {
   props: {
     filePath: { type: [String, Array] }, // supports one or more filePath
@@ -100,7 +100,7 @@ export default {
       default: LinearEncoding,
     },
     webGLRendererOptions: Object,
-    mtlPath: {type: [String, Array]},
+    mtlPath: { type: [String, Array] },
     showFps: { type: Boolean, default: false },
   },
   data() {
@@ -127,7 +127,7 @@ export default {
     Object.assign(this, result);
     // 响应式对象
     return {
-      loaderIndex: 0
+      loaderIndex: 0,
     };
   },
   mounted() {
@@ -167,8 +167,8 @@ export default {
     window.addEventListener("resize", this.onResize, false);
     // stats
     if (this.showFps) {
-      this.stats = new Stats()
-      el.appendChild(this.stats.dom)
+      this.stats = new Stats();
+      el.appendChild(this.stats.dom);
     }
     this.animate();
   },
@@ -448,7 +448,10 @@ export default {
     load() {
       if (!this.filePath) return;
       // if multiple files
-      const _filePath = typeof this.filePath === 'string' ? this.filePath : this.filePath[this.loaderIndex]
+      const _filePath =
+        typeof this.filePath === "string"
+          ? this.filePath
+          : this.filePath[this.loaderIndex];
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
@@ -465,23 +468,23 @@ export default {
       }
       if (this.mtlPath) {
         // load materials
-        const isMultipleMTL = typeof this.mtlPath === 'string'
+        const isMultipleMTL = typeof this.mtlPath === "string";
         if (isMultipleMTL) {
           // single material
           this.loadMtl(_filePath, _getObject);
         } else {
-          console.log('this.loaderIndex', this.loaderIndex);
+          console.log("this.loaderIndex", this.loaderIndex);
           // load materials and model
           if (!this.mtlPath[this.loaderIndex]) {
-            console.log('no mtl');
-            this.loadFilePath(_filePath, _getObject)
-            return
+            console.log("no mtl");
+            this.loadFilePath(_filePath, _getObject);
+            return;
           }
           this.loadMtl(_filePath, _getObject);
         }
       } else {
         // don't load materials
-        this.loadFilePath(_filePath, _getObject)
+        this.loadFilePath(_filePath, _getObject);
       }
     },
     loadFilePath(filePath, getObject) {
@@ -492,7 +495,7 @@ export default {
           this.addObject(object);
         },
         (event) => {
-          this.onProcess(event)
+          this.onProcess(event);
           this.$emit("process", event, this.loaderIndex);
         },
         (event) => {
@@ -508,15 +511,18 @@ export default {
       if (this.requestHeader) {
         mtlLoader.setRequestHeader(this.requestHeader);
       }
-      const _mtl = typeof this.mtlPath === 'string' ? this.mtlPath : this.mtlPath[this.loaderIndex]
-      console.log('_mtl', _mtl);
+      const _mtl =
+        typeof this.mtlPath === "string"
+          ? this.mtlPath
+          : this.mtlPath[this.loaderIndex];
+      console.log("_mtl", _mtl);
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
       mtlLoader.setPath(path).load(file, (materials) => {
         materials.preload();
-        this.loader.setMaterials(materials)
-        this.loadFilePath(filePath, getObject)
+        this.loader.setMaterials(materials);
+        this.loadFilePath(filePath, getObject);
       });
     },
     getObject(object) {
@@ -536,7 +542,7 @@ export default {
     },
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
-      this.updateStats()
+      this.updateStats();
       this.render();
     },
     render() {
@@ -551,13 +557,16 @@ export default {
       let process = Math.floor((xhr.loaded / xhr.total) * 100);
       if (process === 100) {
         // Load completed
-        if (typeof this.filePath === 'object' && (this.filePath.length - 1) - this.loaderIndex != 0) {
+        if (
+          typeof this.filePath === "object" &&
+          this.filePath.length - 1 - this.loaderIndex != 0
+        ) {
           this.$nextTick(() => {
-            this.loaderIndex++
-            this.load()
-          })
-        }else {
-          this.loaderIndex = 0
+            this.loaderIndex++;
+            this.load();
+          });
+        } else {
+          this.loaderIndex = 0;
         }
       }
     },
