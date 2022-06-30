@@ -170,15 +170,11 @@ export default {
   },
   beforeDestroy() {
     cancelAnimationFrame(this.requestAnimationId);
-
     this.renderer.dispose();
-
     if (this.controls) {
       this.controls.dispose();
     }
-
     const el = this.$refs.container;
-
     el.removeEventListener("mousedown", this.onMouseDown, false);
     el.removeEventListener("mousemove", this.onMouseMove, false);
     el.removeEventListener("mouseup", this.onMouseUp, false);
@@ -290,98 +286,83 @@ export default {
       this.updateControls();
     },
     updateModel() {
-      const { object } = this;
-
+      const { object, position, rotation, scale } = this;
       if (!object) return;
-
-      const { position } = this;
-      const { rotation } = this;
-      const { scale } = this;
-
       object.position.set(position.x, position.y, position.z);
       object.rotation.set(rotation.x, rotation.y, rotation.z);
       object.scale.set(scale.x, scale.y, scale.z);
     },
     updateRenderer() {
-      const { renderer } = this;
-
-      renderer.setSize(this.size.width, this.size.height);
+      const { renderer, size, backgroundAlpha, backgroundColor } = this;
+      renderer.setSize(size.width, size.height);
       renderer.setPixelRatio(window.devicePixelRatio || 1);
-      renderer.setClearColor(new Color(this.backgroundColor).getHex());
-      renderer.setClearAlpha(this.backgroundAlpha);
+      renderer.setClearColor(new Color(backgroundColor).getHex());
+      renderer.setClearAlpha(backgroundAlpha);
     },
     updateCamera() {
-      const { camera } = this;
-      const { object } = this;
+      const {
+        size,
+        camera,
+        object,
+        cameraLookAt,
+        cameraUp,
+        cameraPosition,
+        cameraRotation,
+      } = this;
 
-      camera.aspect = this.size.width / this.size.height;
+      camera.aspect = size.width / size.height;
       camera.updateProjectionMatrix();
 
-      if (!this.cameraLookAt || !this.cameraUp) {
+      if (!cameraLookAt || !cameraUp) {
         if (!object) return;
-
         const distance = getSize(object).length();
-
         camera.position.set(
-          this.cameraPosition.x,
-          this.cameraPosition.y,
-          this.cameraPosition.z
+          cameraPosition.x,
+          cameraPosition.y,
+          cameraPosition.z
         );
         camera.rotation.set(
-          this.cameraRotation.x,
-          this.cameraRotation.y,
-          this.cameraRotation.z
+          cameraRotation.x,
+          cameraRotation.y,
+          cameraRotation.z
         );
-
         if (
-          this.cameraPosition.x === 0 &&
-          this.cameraPosition.y === 0 &&
-          this.cameraPosition.z === 0
+          cameraPosition.x === 0 &&
+          cameraPosition.y === 0 &&
+          cameraPosition.z === 0
         ) {
           camera.position.z = distance;
         }
-
         camera.lookAt(new Vector3());
       } else {
         camera.position.set(
-          this.cameraPosition.x,
-          this.cameraPosition.y,
-          this.cameraPosition.z
+          cameraPosition.x,
+          cameraPosition.y,
+          cameraPosition.z
         );
         camera.rotation.set(
-          this.cameraRotation.x,
-          this.cameraRotation.y,
-          this.cameraRotation.z
+          cameraRotation.x,
+          cameraRotation.y,
+          cameraRotation.z
         );
-        camera.up.set(this.cameraUp.x, this.cameraUp.y, this.cameraUp.z);
-
+        camera.up.set(cameraUp.x, cameraUp.y, cameraUp.z);
         camera.lookAt(
-          new Vector3(
-            this.cameraLookAt.x,
-            this.cameraLookAt.y,
-            this.cameraLookAt.z
-          )
+          new Vector3(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z)
         );
       }
     },
     updateLights() {
       this.scene.remove(...this.allLights);
-
       this.allLights = [];
-
       this.lights.forEach((item) => {
         if (!item.type) return;
-
         const type = item.type.toLowerCase();
-
         let light = null;
-
         if (type === "ambient" || type === "ambientlight") {
           const color =
             item.color === 0x000000 ? item.color : item.color || 0x404040;
           const intensity =
             item.intensity === 0 ? item.intensity : item.intensity || 1;
-
           light = new AmbientLight(color, intensity);
         } else if (type === "point" || type === "pointlight") {
           const color =
@@ -390,9 +371,7 @@ export default {
             item.intensity === 0 ? item.intensity : item.intensity || 1;
           const distance = item.distance || 0;
           const decay = item.decay === 0 ? item.decay : item.decay || 1;
-
           light = new PointLight(color, intensity, distance, decay);
-
           if (item.position) {
             light.position.copy(item.position);
           }
@@ -429,7 +408,6 @@ export default {
             light.position.copy(item.position);
           }
         }
-
         if (light) {
           this.allLights.push(light);
           this.scene.add(light);
@@ -526,13 +504,10 @@ export default {
     },
     addObject(object) {
       const center = getCenter(object);
-
       // correction position
       this.wrapper.position.copy(center.negate());
-
       this.object = object;
       this.wrapper.add(object);
-
       this.updateCamera();
       this.updateModel();
     },
