@@ -18,9 +18,6 @@ import {
   OBJLoader
 } from 'three/examples/jsm/loaders/OBJLoader'
 import {
-  MTLLoader
-} from 'three/examples/jsm/loaders/MTLLoader'
-import {
   DDSLoader
 } from 'three/examples/jsm/loaders/DDSLoader'
 import {
@@ -32,6 +29,7 @@ import {
 import {
   STLLoader
 } from 'three/examples/jsm/loaders/STLLoader'
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
 
 const box = new Box3()
 const manager = (new LoadingManager())
@@ -49,14 +47,9 @@ function getCenter(obj) {
   return box.getCenter(new Vector3())
 }
 
-// auto select model loader params: {crossOrigin, requestHeader}
-function getLoader(filePath, params = {}) {
+// auto select model loader
+function getLoader(filePath) {
   // Get file extension
-  const {
-    crossOrigin,
-    requestHeader
-  } = params
-
   let fileExtension = filePath.split('.').filter(i => i)[1]
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
   if (fileExtension === 'glb') {
@@ -64,13 +57,12 @@ function getLoader(filePath, params = {}) {
   }
   let obj = {
     loader: null,
-    getObject: null,
-    mtlLoader: null
-  } // obj {loader, getObject, mtlLoader}
+    getObject: null
+  } // obj {loader, getObject}
   switch (fileExtension) {
     case 'dae':
       obj = {
-        loader: _daeLoader(crossOrigin),
+        loader: new ColladaLoader(),
         getObject: (collada) => {
           return collada.scene
         }
@@ -84,14 +76,13 @@ function getLoader(filePath, params = {}) {
       // gltf
     case 'gltf':
       obj = {
-        loader: _gltfLoader(crossOrigin, requestHeader)
+        loader: new GLTFLoader()
       }
       break
     case 'obj':
       obj = {
-        loader: _objLoader(requestHeader),
-        getObject: null,
-        mtlLoader: _mtlLoader(crossOrigin, requestHeader)
+        loader: new OBJLoader(manager),
+        getObject: null
       }
       break
     case 'ply':
@@ -115,39 +106,14 @@ function getLoader(filePath, params = {}) {
   return obj
 }
 
-function _daeLoader(crossOrigin) {
-  let loader = new ColladaLoader()
-  if (crossOrigin) {
-    loader.setCrossOrigin(crossOrigin)
-  }
-  return loader
-}
-
-function _gltfLoader(crossOrigin, requestHeader) {
-  let loader = new GLTFLoader()
-  if (crossOrigin) {
-    loader.setCrossOrigin(crossOrigin)
-  }
-  if (requestHeader) {
-    loader.setRequestHeader(requestHeader)
-  }
-  return loader
-}
-
-function _objLoader(requestHeader) {
-  const objLoader = new OBJLoader(manager)
-  objLoader.setRequestHeader(requestHeader)
-  return objLoader
-}
-
-function _mtlLoader(crossOrigin, requestHeader) {
+function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager)
-  mtlLoader.setCrossOrigin(crossOrigin)
-  mtlLoader.setRequestHeader(requestHeader)
+  return mtlLoader
 }
 
 export {
   getSize,
   getCenter,
-  getLoader
+  getLoader,
+  getMTLLoader
 }
