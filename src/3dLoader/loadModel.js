@@ -51,7 +51,6 @@ function getLoader(filePath) {
         loader: new FBXLoader()
       };
       break;
-    // gltf
     case "gltf":
       obj = {
         loader: new GLTFLoader()
@@ -59,8 +58,7 @@ function getLoader(filePath) {
       break;
     case "obj":
       obj = {
-        loader: new OBJLoader(manager),
-        getObject: null
+        loader: new OBJLoader(manager)
       };
       break;
     case "ply":
