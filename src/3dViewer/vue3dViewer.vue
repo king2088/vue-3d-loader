@@ -132,12 +132,8 @@ export default {
   },
   mounted() {
     const el = this.$refs.container;
-    if (!this.width || !this.height) {
-      this.size = {
-        width: this.width ? this.width : el.offsetWidth,
-        height: this.height ? this.height : el.offsetHeight,
-      };
-    }
+    // init canvas width and height
+    this.onResize();
     const WEB_GL_OPTIONS = { antialias: true, alpha: true };
     const options = Object.assign(
       {},
