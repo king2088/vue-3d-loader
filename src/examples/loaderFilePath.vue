@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import vue3dViewer from "../3dViewer/vue3dViewer.vue";
+import vue3dViewer from "../3dLoader/vue3dLoader.vue";
 export default {
   name: "HelloWorld",
   props: {
