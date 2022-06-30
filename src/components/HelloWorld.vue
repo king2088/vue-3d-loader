@@ -19,8 +19,8 @@ export default {
   },
   data() {
     return {
-      filePath: '/obj/male02.obj',
-      mtlPath: '/obj/male02.mtl',
+      filePath: ['/obj/male02.obj', '/obj/tree.obj'],
+      mtlPath: ['/obj/male02.mtl',''],
       object: null
     }
   },
