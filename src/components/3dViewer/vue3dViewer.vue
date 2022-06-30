@@ -21,6 +21,7 @@ import {
   LinearEncoding,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Stats from "three/examples/jsm/libs/stats.module";
 export default {
   props: {
     filePath: { type: [String, Array] }, // supports one or more filePath
@@ -100,6 +101,7 @@ export default {
     },
     webGLRendererOptions: Object,
     mtlPath: String,
+    showFps: { type: Boolean, default: false },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -120,6 +122,7 @@ export default {
       clock: null,
       loader: null,
       requestAnimationId: null,
+      stats: null,
     };
     Object.assign(this, result);
     // 响应式对象
@@ -129,14 +132,19 @@ export default {
     const el = this.$refs.container;
     if (!this.width || !this.height) {
       this.size = {
-        width: el.offsetWidth,
-        height: el.offsetHeight,
+        width: this.width ? this.width : el.offsetWidth,
+        height: this.height ? this.height : el.offsetHeight,
       };
     }
     const WEB_GL_OPTIONS = { antialias: true, alpha: true };
-    const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
-      canvas: this.$refs.canvas,
-    });
+    const options = Object.assign(
+      {},
+      WEB_GL_OPTIONS,
+      this.webGLRendererOptions,
+      {
+        canvas: this.$refs.canvas,
+      }
+    );
 
     this.renderer = new WebGLRenderer(options);
     this.renderer.shadowMap.enabled = true;
@@ -155,9 +163,12 @@ export default {
     el.addEventListener("mouseup", this.onMouseUp, false);
     el.addEventListener("click", this.onClick, false);
     el.addEventListener("dblclick", this.onDblclick, false);
-
     window.addEventListener("resize", this.onResize, false);
-
+    // stats
+    if (this.showFps) {
+      this.stats = new Stats()
+      el.appendChild(this.stats.dom)
+    }
     this.animate();
   },
   beforeDestroy() {
@@ -232,11 +243,12 @@ export default {
   },
   methods: {
     onResize() {
-      if (!this.width && !this.height) {
+      if (!this.width || !this.height) {
         this.$nextTick(() => {
+          let el = this.$refs.container;
           this.size = {
-            width: this.$refs.container.offsetWidth,
-            height: this.$refs.container.offsetHeight,
+            width: this.width ? this.width : el.offsetWidth,
+            height: this.height ? this.height : el.offsetHeight,
           };
           this.update();
         });
@@ -436,7 +448,9 @@ export default {
       if (!this.filePath) return;
       let loaderObj = getLoader(this.filePath); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
-      const _getObject = loaderObj.getObject ? loaderObj.getObject : this.getObject
+      const _getObject = loaderObj.getObject
+        ? loaderObj.getObject
+        : this.getObject;
       if (this.object) {
         this.wrapper.remove(this.object);
       }
@@ -474,13 +488,11 @@ export default {
         mtlLoader.setRequestHeader(this.requestHeader);
       }
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(this.mtlPath);
-      const path = returnPathArray[1]
-      const file = returnPathArray[2]
+      const path = returnPathArray[1];
+      const file = returnPathArray[2];
       mtlLoader.setPath(path).load(file, (materials) => {
         materials.preload();
-        this.loader
-        .setMaterials(materials)
-        .load(
+        this.loader.setMaterials(materials).load(
           this.filePath,
           (...args) => {
             const object = getObject(...args);
@@ -512,11 +524,17 @@ export default {
     },
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
+      this.updateStats()
       this.render();
     },
     render() {
       this.renderer.render(this.scene, this.camera);
     },
+    updateStats() {
+      if (this.showFps) {
+        this.stats.update();
+      }
+    }
   },
 };
 </script>
@@ -528,6 +546,11 @@ export default {
   margin: 0;
   border: 0;
   padding: 0;
+}
+.viewer-container div {
+  position: absolute !important;
+  left: 0px !important;
+  opacity: 1 !important;
 }
 .viewer-canvas {
   width: 100%;
