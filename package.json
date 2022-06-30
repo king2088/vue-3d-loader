@@ -1,6 +1,6 @@
 {
-  "name": "vue-3d-viewer",
-  "version": "0.1.0",
+  "name": "vue-3d-loader",
+  "version": "1.0.0",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
