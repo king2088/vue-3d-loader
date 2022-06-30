@@ -1,13 +1,13 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial } from "three"
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
-import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader"
-import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader"
-import { LoadingManager } from "three/src/loaders/LoadingManager"
-import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader"
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader"
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
+import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial } from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader";
+import { LoadingManager } from "three/src/loaders/LoadingManager";
+import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 
 const box = new Box3();
 const manager = (new LoadingManager());

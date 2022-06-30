@@ -1,22 +1,23 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <vExamples />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import vExamples from "./examples/exampleIndex.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    vExamples,
+  },
+};
 </script>
 
 <style>
-html,body{
+html,
+body {
   margin: 0;
   padding: 0;
 }
