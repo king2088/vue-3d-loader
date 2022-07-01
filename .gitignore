@@ -1,6 +1,5 @@
 .DS_Store
 node_modules
-/dist
 /public/fbx
 /public/obj
 

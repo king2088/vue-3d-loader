@@ -2,9 +2,42 @@
 
 vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl，并支持同一个场景导入多个不同3D模型，材质方面，支持mtl材质
 
-# API
+## 安装
 
-## 属性
+```shell
+npm i vue-3d-loader -S
+```
+
+或
+
+```shell
+yarn add vue-3d-loader
+```
+
+## 使用
+
+在入口文件中全局安装，代码如下：
+
+```js
+import vue3dLoader from "vue-3d-loader";
+Vue.use(vue3dLoader)
+```
+
+在组件中使用标签`<vue3dLoader></vue3dLoader>`
+
+```vue
+<vue3dLoader
+  :height="200"
+  :showFps="true"
+  :filePath="['/fbx/1.fbx', '/obj/2.obj', '/gltf/3.gltf']"
+  :mtlPath="[null, '/obj/2.mtl', null]"
+  :backgroundColor="0xff00ff"
+></vue3dLoader>
+```
+
+## API
+
+### 属性
 
 | prop                 | type             | default                          | description                                                                                                                       |
 | -------------------- | ---------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,7 +61,7 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 | webGLRendererOptions | object           | { antialias: true, alpha: true } | WebGLRenderer可选参数[WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)               |
 | showFps              | boolean          | false                            | 显示FPS等信息                                                                                                                     |
 
-## 事件
+### 事件
 
 | event                        | description                                |
 | ---------------------------- | ------------------------------------------ |
@@ -36,5 +69,155 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 | mousemove(event, intersects) | 鼠标移动, intersect:当前相交最近的物体     |
 | mouseup(event, intersects)   | 鼠标放开, intersect:当前相交最近的物体     |
 | click(event, intersects)     | 点击, intersect:当前相交最近的物体         |
+| load                         | 加载模型事件                              |
 | process(event, fileIndex)    | 加载进度, fileIndex:当前正在加载第几个文件 |
 | error(event)                 | 错误事件                                   |
+
+### 使用样例
+
+#### 1. 加载一个3D模型
+
+目前支持dae/fbx/gltf(glb)/obj/ply/stl中任意一种
+
+```vue
+<!-- 加载fbx模型 -->
+<vue3dLoader :filePath="'/fbx/1.fbx'"></vue3dLoader>
+<!-- 加载obj模型 -->
+<vue3dLoader :filePath="'/obj/1.obj'"></vue3dLoader>
+```
+
+#### 2. 同一个场景中加载多个模型
+
+```vue
+<template>
+  <!-- 可加载任意模型 -->
+  <vue3dLoader :filePath="['/fbx/1.fbx', '/obj/1.obj']" @process="onProcess"></vue3dLoader>
+</template>
+<script>
+  export default {
+    methods: {
+      onProcess(xhr, index) {
+        let process = Math.floor((xhr.loaded / xhr.total) * 100);
+        console.log(`加载第${index + 1}个，已加载完成${process}%`)
+      }
+    }
+  }
+</script>
+```
+
+#### 3. 材质及纹理加载
+
+```vue
+<!-- obj加载mtl材质 -->
+<vue3dLoader :filePath="'/obj/1.obj'" :mtlPath="'/obj/1.mtl'" ></vue3dLoader>
+<!-- fbx图片纹理加载 -->
+<vue3dLoader :filePath="'/fbx/1.fbx'" :mtlPath="'/fbx/1.png'" ></vue3dLoader>
+```
+
+#### 4. 背景颜色及透明度
+
+```vue
+<vue3dLoader :filePath="'/fbx/1.fbx'" :backgroundAlpha="0.5" :backgroundColor="'red'"></vue3dLoader>
+```
+
+#### 5. 交互控制controls
+
+```vue
+<template>
+<div>
+  <div class="controls-buttons">
+    <!-- 禁止右键拖动 -->
+    <button @click="enablePan = !enablePan">{{ enablePan ? 'disable' : 'enable' }} translation</button>
+    <!-- 禁止缩放 -->
+    <button @click="enableZoom = !enableZoom">{{ enableZoom ? 'disable' : 'enable' }} zoom</button>
+    <!-- 禁止缩放 -->
+    <button @click="enableRotate = !enableRotate">{{ enableRotate ? 'disable' : 'enable' }} rotation</button>
+  </div>
+  <vue3dLoader :filePath="'/fbx/1.fbx'" :controlsOptions="{
+    enablePan,
+    enableZoom,
+    enableRotate,
+  }"/>
+</div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        enablePan: true,
+        enableZoom: true,
+        enableRotate: true
+      }
+    }
+  }
+</script>
+```
+
+#### 6. 旋转模型
+
+```vue
+<template>
+  <vue3dLoader
+    :rotation="rotation"
+    @load="onLoad()"
+    src="/static/models/collada/elf/elf.dae"
+  />
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        rotation: {
+          x: -Math.PI / 2,
+          y: 0,
+          z: 0,
+        }
+      }
+    },
+    methods: {
+      onLoad() {
+        this.rotate();
+      },
+      rotate() {
+        requestAnimationFrame(rotate);
+        rotation.z += 0.01;
+      }
+    }
+  }
+</script>
+```
+
+#### 7. 事件
+
+```vue
+<template>
+  <vue3dLoader
+    src="/obj/1.obj"
+    @mousemove="onMouseMove"
+  />
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        object: null
+      }
+    },
+    methods: {
+      onMouseMove(event, intersected) {
+        if (this.object) {
+          this.object.material.color.setStyle('#fff');
+        }
+        if (intersected) {
+          this.object = intersected.object;
+          this.object.material.color.setStyle('#13ce66');
+        }
+      }
+    }
+  }
+</script>
+```
+
+### 感谢
+
+本插件参考[vue-3d-model](https://vue-3d-model.netlify.app/)实现
