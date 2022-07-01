@@ -18,6 +18,7 @@ import {
   HemisphereLight,
   DirectionalLight,
   LinearEncoding,
+  TextureLoader
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -102,6 +103,7 @@ export default {
     webGLRendererOptions: Object,
     mtlPath: { type: [String, Array] },
     showFps: { type: Boolean, default: false },
+    textureImage: {type: [String, Array]}
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -467,6 +469,13 @@ export default {
         (...args) => {
           const object = getObject(...args);
           this.addObject(object);
+          // set texture
+          if (this.textureImage) {
+            let _texture = typeof this.textureImage === 'string' ? this.textureImage : this.textureImage[this.loaderIndex]
+            if(_texture) {
+              this.addTexture(object, _texture)
+            }
+          }
         },
         (event) => {
           this.onProcess(event);
@@ -541,6 +550,21 @@ export default {
         }
       }
     },
+    addTexture(object, texture) {
+      const textureLoader = new TextureLoader();
+      object.traverse((child) => {
+        if (child.isMesh) {
+          textureLoader.load(texture, (_texture) => {
+              child.material.map = _texture;
+              child.material.needsUpdate = true;
+              console.log('texture is finished.');
+            },
+            ()=>{},
+            (err)=>{console.log('texture err', err);
+          })
+        }
+      })
+    }
   },
 };
 </script>
