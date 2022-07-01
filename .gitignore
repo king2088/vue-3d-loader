@@ -1,7 +1,5 @@
 .DS_Store
 node_modules
-/public/fbx
-/public/obj
 
 # local env files
 .env.local
