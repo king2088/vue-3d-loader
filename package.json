@@ -2,10 +2,14 @@
   "name": "vue-3d-loader",
   "version": "1.0.0",
   "private": false,
+  "main": "dist/index.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name vue-3d-loader --dest lib src/index.js",
     "lint": "vue-cli-service lint"
+  },
+  "directories": {
+    "dist": "dist"
   },
   "dependencies": {
     "core-js": "^3.8.3",
@@ -36,6 +40,21 @@
     },
     "rules": {}
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/king2088/vue-3d-loader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/king2088/vue-3d-loader/issues"
+  },
+  "homepage": "https://github.com/king2088/vue-3d-loader",
+  "keywords": [
+    "vue",
+    "3d",
+    "threeJS",
+    "3d viewer",
+    "vue 3d"
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
