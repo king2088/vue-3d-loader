@@ -8,10 +8,12 @@ import { LoadingManager } from "three/src/loaders/LoadingManager";
 import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 
 const box = new Box3();
-const manager = (new LoadingManager());
+const manager = new LoadingManager();
 manager.addHandler(/\.dds$/i, new DDSLoader());
+manager.addHandler(/\.tga$/i, new TGALoader());
 
 // get box size
 function getSize(obj) {
@@ -40,7 +42,7 @@ function getLoader(filePath) {
   switch (fileExtension) {
     case "dae":
       obj = {
-        loader: new ColladaLoader(),
+        loader: new ColladaLoader(manager),
         getObject: (collada) => {
           return collada.scene;
         }
@@ -48,12 +50,12 @@ function getLoader(filePath) {
       break;
     case "fbx":
       obj = {
-        loader: new FBXLoader()
+        loader: new FBXLoader(manager)
       };
       break;
     case "gltf":
       obj = {
-        loader: new GLTFLoader()
+        loader: new GLTFLoader(manager)
       };
       break;
     case "obj":
@@ -63,7 +65,7 @@ function getLoader(filePath) {
       break;
     case "ply":
       obj = {
-        loader: new PLYLoader(),
+        loader: new PLYLoader(manager),
         getObject: (geometry) => { // geometry
           geometry.computeVertexNormals();
           return new Mesh(geometry, new MeshStandardMaterial());
@@ -72,7 +74,7 @@ function getLoader(filePath) {
       break;
     case "stl":
       obj = {
-        loader: new STLLoader(),
+        loader: new STLLoader(manager),
         getObject: (geometry) => { // geometry
           return new Mesh(geometry, new MeshPhongMaterial());
         }
@@ -86,6 +88,11 @@ function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager);
   return mtlLoader;
 }
+
+// function getTAGLoader() {
+//   const tagLoader = new TGALoader(manager);
+//   return tagLoader;
+// }
 
 export {
   getSize,
