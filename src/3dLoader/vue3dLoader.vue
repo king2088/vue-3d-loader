@@ -24,6 +24,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 export default {
+  name: 'vue3dLoader',
   props: {
     filePath: { type: [String, Array] }, // supports one or more filePath
     width: Number,
