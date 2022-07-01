@@ -2,26 +2,22 @@
   <div>
     <div v-for="item in loaderList" :key="item.title">
       <h1>{{ item.title }}</h1>
-      <vue3dViewer
+      <vue3dLoader
         :height="item.height"
         :showFps="item.showFps"
         :filePath="item.filePath"
         :mtlPath="item.mtlPath"
         :backgroundColor="item.backgroundColor"
-      ></vue3dViewer>
+      ></vue3dLoader>
     </div>
   </div>
 </template>
 
 <script>
-import vue3dViewer from "../3dLoader/vue3dLoader.vue";
 export default {
   name: "HelloWorld",
   props: {
     msg: String,
-  },
-  components: {
-    vue3dViewer,
   },
   data() {
     return {
