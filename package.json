@@ -2,10 +2,10 @@
   "name": "vue-3d-loader",
   "version": "1.0.0",
   "private": false,
-  "main": "dist/index.js",
+  "main": "dist/vue-3d-loader.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name vue-3d-loader --dest lib src/index.js",
+    "build": "vue-cli-service build --target lib ./src/index.js --name vue-3d-loader --dest dist",
     "lint": "vue-cli-service lint"
   },
   "directories": {

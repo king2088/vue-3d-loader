@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define("vue-3d-loader", [], factory);
-	else if(typeof exports === 'object')
-		exports["vue-3d-loader"] = factory();
-	else
-		root["vue-3d-loader"] = factory();
-})((typeof self !== 'undefined' ? self : this), function() {
-return /******/ (function() { // webpackBootstrap
+/******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 9662:
@@ -2708,7 +2698,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=f49687ee&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=0d88bcfc&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21131,7 +21121,7 @@ function getMTLLoader() {
 
 
 
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-80[0].rules[0].use[1]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-40[0].rules[0].use[1]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -21142,7 +21132,7 @@ function getMTLLoader() {
 
 
 /* harmony default export */ var vue3dLoadervue_type_script_lang_js_ = ({
-  name: 'vue3dLoader',
+  name: "vue3dLoader",
   props: {
     filePath: {
       type: [String, Array]
@@ -21629,12 +21619,14 @@ function getMTLLoader() {
         this.addObject(object); // set texture
 
         if (this.textureImage) {
-          let _texture = typeof this.textureImage === 'string' ? this.textureImage : this.textureImage[this.loaderIndex];
+          let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[this.loaderIndex];
 
           if (_texture) {
             this.addTexture(object, _texture);
           }
         }
+
+        this.$emit("load");
       }, event => {
         this.onProcess(event);
         this.$emit("process", event, this.loaderIndex);
@@ -21720,9 +21712,9 @@ function getMTLLoader() {
           textureLoader.load(texture, _texture => {
             child.material.map = _texture;
             child.material.needsUpdate = true;
-            console.log('texture is finished.');
+            console.log("texture is finished.");
           }, () => {}, err => {
-            console.log('texture err', err);
+            console.log("texture err", err);
           });
         }
       });
@@ -21732,7 +21724,7 @@ function getMTLLoader() {
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-52[0].rules[0].use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-52[0].rules[0].use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-52[0].rules[0].use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12[0].rules[0].use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12[0].rules[0].use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12[0].rules[0].use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&lang=css&
 // extracted by mini-css-extract-plugin
 
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&lang=css&
@@ -21884,8 +21876,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 }();
-/******/ 	return __webpack_exports__;
+module.exports = __webpack_exports__;
 /******/ })()
 ;
-});
-//# sourceMappingURL=vue-3d-loader.umd.js.map
+//# sourceMappingURL=vue-3d-loader.common.js.map
