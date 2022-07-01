@@ -18,13 +18,13 @@ import {
   HemisphereLight,
   DirectionalLight,
   LinearEncoding,
-  TextureLoader
+  TextureLoader,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 export default {
-  name: 'vue3dLoader',
+  name: "vue3dLoader",
   props: {
     filePath: { type: [String, Array] }, // supports one or more filePath
     width: Number,
@@ -104,7 +104,7 @@ export default {
     webGLRendererOptions: Object,
     mtlPath: { type: [String, Array] },
     showFps: { type: Boolean, default: false },
-    textureImage: {type: [String, Array]}
+    textureImage: { type: [String, Array] },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -472,11 +472,15 @@ export default {
           this.addObject(object);
           // set texture
           if (this.textureImage) {
-            let _texture = typeof this.textureImage === 'string' ? this.textureImage : this.textureImage[this.loaderIndex]
-            if(_texture) {
-              this.addTexture(object, _texture)
+            let _texture =
+              typeof this.textureImage === "string"
+                ? this.textureImage
+                : this.textureImage[this.loaderIndex];
+            if (_texture) {
+              this.addTexture(object, _texture);
             }
           }
+          this.$emit("load");
         },
         (event) => {
           this.onProcess(event);
@@ -555,17 +559,21 @@ export default {
       const textureLoader = new TextureLoader();
       object.traverse((child) => {
         if (child.isMesh) {
-          textureLoader.load(texture, (_texture) => {
+          textureLoader.load(
+            texture,
+            (_texture) => {
               child.material.map = _texture;
               child.material.needsUpdate = true;
-              console.log('texture is finished.');
+              console.log("texture is finished.");
             },
-            ()=>{},
-            (err)=>{console.log('texture err', err);
-          })
+            () => {},
+            (err) => {
+              console.log("texture err", err);
+            }
+          );
         }
-      })
-    }
+      });
+    },
   },
 };
 </script>
