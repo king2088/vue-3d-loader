@@ -239,7 +239,7 @@ export default {
 
 [点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 
-### 提前预告
+### 即将到来
 
 - [ ] 支持Vue3
 
