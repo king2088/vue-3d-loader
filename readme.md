@@ -1,8 +1,10 @@
 # vue-3d-loader
 
+vueJS + [threeJS](https://threejs.org/) 3d viewer component, support dae/fbx/gltf(glb)/obj/ply/stl models, and support the same scene to import multiple different 3D models, support mtl materials and texture
+
 [简体中文](./readme_CN.md)
 
-vueJS + [threeJS](https://threejs.org/) 3d viewer component, support dae/fbx/gltf(glb)/obj/ply/stl models, and support the same scene to import multiple different 3D models, support mtl materials and texture
+demo gif
 
 ![demo gif image](./demo.gif)
 
