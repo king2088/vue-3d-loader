@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=0d88bcfc&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=83651a28&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -4954,7 +4954,7 @@ if(this.clampWhenFinished)this.paused=true;else this.enabled=false;time=deltaTim
 if(pending===1){// entering the last round
 const atStart=deltaTime<0;this._setEndings(atStart,!atStart,pingPong);}else{this._setEndings(false,false,pingPong);}this._loopCount=loopCount;this.time=time;this._mixer.dispatchEvent({type:'loop',action:this,loopDelta:loopDelta});}}else{this.time=time;}if(pingPong&&(loopCount&1)===1){// invert time for the "pong round"
 return duration-time;}}return time;}_setEndings(atStart,atEnd,pingPong){const settings=this._interpolantSettings;if(pingPong){settings.endingStart=ZeroSlopeEnding;settings.endingEnd=ZeroSlopeEnding;}else{// assuming for LoopOnce atStart == atEnd == true
-if(atStart){settings.endingStart=this.zeroSlopeAtStart?ZeroSlopeEnding:ZeroCurvatureEnding;}else{settings.endingStart=WrapAroundEnding;}if(atEnd){settings.endingEnd=this.zeroSlopeAtEnd?ZeroSlopeEnding:ZeroCurvatureEnding;}else{settings.endingEnd=WrapAroundEnding;}}}_scheduleFading(duration,weightNow,weightThen){const mixer=this._mixer,now=mixer.time;let interpolant=this._weightInterpolant;if(interpolant===null){interpolant=mixer._lendControlInterpolant();this._weightInterpolant=interpolant;}const times=interpolant.parameterPositions,values=interpolant.sampleValues;times[0]=now;values[0]=weightNow;times[1]=now+duration;values[1]=weightThen;return this;}}const _controlInterpolantsResultBuffer=/*@__PURE__*/new Float32Array(1);class AnimationMixer extends (/* unused pure expression or super */ null && (EventDispatcher)){constructor(root){super();this._root=root;this._initMemoryManager();this._accuIndex=0;this.time=0;this.timeScale=1.0;}_bindAction(action,prototypeAction){const root=action._localRoot||this._root,tracks=action._clip.tracks,nTracks=tracks.length,bindings=action._propertyBindings,interpolants=action._interpolants,rootUuid=root.uuid,bindingsByRoot=this._bindingsByRootAndName;let bindingsByName=bindingsByRoot[rootUuid];if(bindingsByName===undefined){bindingsByName={};bindingsByRoot[rootUuid]=bindingsByName;}for(let i=0;i!==nTracks;++i){const track=tracks[i],trackName=track.name;let binding=bindingsByName[trackName];if(binding!==undefined){++binding.referenceCount;bindings[i]=binding;}else{binding=bindings[i];if(binding!==undefined){// existing binding, make sure the cache knows
+if(atStart){settings.endingStart=this.zeroSlopeAtStart?ZeroSlopeEnding:ZeroCurvatureEnding;}else{settings.endingStart=WrapAroundEnding;}if(atEnd){settings.endingEnd=this.zeroSlopeAtEnd?ZeroSlopeEnding:ZeroCurvatureEnding;}else{settings.endingEnd=WrapAroundEnding;}}}_scheduleFading(duration,weightNow,weightThen){const mixer=this._mixer,now=mixer.time;let interpolant=this._weightInterpolant;if(interpolant===null){interpolant=mixer._lendControlInterpolant();this._weightInterpolant=interpolant;}const times=interpolant.parameterPositions,values=interpolant.sampleValues;times[0]=now;values[0]=weightNow;times[1]=now+duration;values[1]=weightThen;return this;}}const _controlInterpolantsResultBuffer=/*@__PURE__*/new Float32Array(1);class AnimationMixer extends EventDispatcher{constructor(root){super();this._root=root;this._initMemoryManager();this._accuIndex=0;this.time=0;this.timeScale=1.0;}_bindAction(action,prototypeAction){const root=action._localRoot||this._root,tracks=action._clip.tracks,nTracks=tracks.length,bindings=action._propertyBindings,interpolants=action._interpolants,rootUuid=root.uuid,bindingsByRoot=this._bindingsByRootAndName;let bindingsByName=bindingsByRoot[rootUuid];if(bindingsByName===undefined){bindingsByName={};bindingsByRoot[rootUuid]=bindingsByName;}for(let i=0;i!==nTracks;++i){const track=tracks[i],trackName=track.name;let binding=bindingsByName[trackName];if(binding!==undefined){++binding.referenceCount;bindings[i]=binding;}else{binding=bindings[i];if(binding!==undefined){// existing binding, make sure the cache knows
 if(binding._cacheIndex===null){++binding.referenceCount;this._addInactiveBinding(binding,rootUuid,trackName);}continue;}const path=prototypeAction&&prototypeAction._propertyBindings[i].binding.parsedPath;binding=new PropertyMixer(PropertyBinding.create(root,trackName,path),track.ValueTypeName,track.getValueSize());++binding.referenceCount;this._addInactiveBinding(binding,rootUuid,trackName);bindings[i]=binding;}interpolants[i].resultBuffer=binding.buffer;}}_activateAction(action){if(!this._isActiveAction(action)){if(action._cacheIndex===null){// this action has been forgotten by the cache, but the user
 // appears to be still using it -> rebind
 const rootUuid=(action._localRoot||this._root).uuid,clipUuid=action._clip.uuid,actionsForClip=this._actionsByClip[clipUuid];this._bindAction(action,actionsForClip&&actionsForClip.knownActions[0]);this._addInactiveAction(action,clipUuid,rootUuid);}const bindings=action._propertyBindings;// increment reference counts / sort out state
@@ -21086,7 +21086,10 @@ function getLoader(filePath) {
 
     case "gltf":
       obj = {
-        loader: new GLTFLoader(manager)
+        loader: new GLTFLoader(manager),
+        getObject: collada => {
+          return collada.scene;
+        }
       };
       break;
 
@@ -21275,12 +21278,14 @@ function getMTLLoader() {
       clock: null,
       loader: null,
       requestAnimationId: null,
-      stats: null
+      stats: null,
+      mixer: null
     };
     Object.assign(this, result); // 响应式对象
 
     return {
-      loaderIndex: 0
+      loaderIndex: 0,
+      timer: null
     };
   },
 
@@ -21398,8 +21403,16 @@ function getMTLLoader() {
 
     backgroundColor() {
       this.updateRenderer();
-    }
+    },
 
+    cameraRotation: {
+      deep: true,
+
+      handler() {
+        this.updateCamera();
+      }
+
+    }
   },
   methods: {
     onResize() {
@@ -21607,10 +21620,8 @@ function getMTLLoader() {
           // single material
           this.loadMtl(_filePath, _getObject);
         } else {
-          console.log("this.loaderIndex", this.loaderIndex); // load materials and model
-
+          // load materials and model
           if (!this.mtlPath[this.loaderIndex]) {
-            console.log("no mtl");
             this.loadFilePath(_filePath, _getObject);
             return;
           }
@@ -21626,7 +21637,14 @@ function getMTLLoader() {
     loadFilePath(filePath, getObject) {
       this.loader.load(filePath, (...args) => {
         const object = getObject(...args);
-        this.addObject(object); // set texture
+        this.addObject(object);
+        this.mixer = new AnimationMixer(object);
+
+        if (object.animations[0]) {
+          const action = this.mixer.clipAction(object.animations[0]);
+          action.play();
+        } // set texture
+
 
         if (this.textureImage) {
           let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[this.loaderIndex];
@@ -21639,7 +21657,8 @@ function getMTLLoader() {
         this.$emit("load");
       }, event => {
         this.onProcess(event);
-        this.$emit("process", event, this.loaderIndex);
+        let modelIndex = this.loaderIndex + 1;
+        this.$emit("process", event, modelIndex);
       }, event => {
         this.$emit("error", event);
       });
@@ -21658,7 +21677,6 @@ function getMTLLoader() {
 
       const _mtl = typeof this.mtlPath === "string" ? this.mtlPath : this.mtlPath[this.loaderIndex];
 
-      console.log("_mtl", _mtl);
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
@@ -21702,11 +21720,24 @@ function getMTLLoader() {
     onProcess(xhr) {
       let process = Math.floor(xhr.loaded / xhr.total * 100);
 
+      if (process === Infinity) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          process = 100;
+        }, 200);
+      }
+
       if (process === 100) {
-        // Load completed
-        if (typeof this.filePath === "object" && this.filePath.length - 1 - this.loaderIndex != 0) {
+        if (typeof this.filePath === "object" && this.filePath.length > this.loaderIndex) {
+          // Load completed
           this.$nextTick(() => {
             this.loaderIndex++;
+
+            if (this.loaderIndex === this.filePath.length) {
+              this.loaderIndex = 0;
+              return;
+            }
+
             this.load();
           });
         } else {
