@@ -4,25 +4,55 @@
       <ul>
         <li
           :class="currentMenuId === item.id ? 'active' : ''"
-          v-for="item in menu"
+          v-for="(item, index) in menu"
           :key="item.id"
           @click="getMenuId(item.id)"
         >
-          {{ getCurrentLanguageName(item.id) }}
+          {{ index + 1 + ". " + getCurrentLanguageName(item.id) }}
         </li>
       </ul>
     </div>
     <loadAModelVue v-if="currentMenuId === 1" />
-    <!-- <loaderFilePathVue /> -->
+    <loadMultipleModelsVue v-if="currentMenuId === 2" />
+    <heightAndWidthVue v-if="currentMenuId === 3" />
+    <materialsAndTexturesVue v-if="currentMenuId === 4" />
+    <backgroundColorAndAlphaVue v-if="currentMenuId === 5" />
+    <interactiveControlsVue v-if="currentMenuId === 6" />
+    <rotateModelVue v-if="currentMenuId === 7" />
+    <eventModelVue v-if="currentMenuId === 8" />
+    <lightModelVue v-if="currentMenuId === 9" />
+    <showFpsVue v-if="currentMenuId === 10" />
+    <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
+    <processBarVue v-if="currentMenuId === 12" />
   </div>
 </template>
 <script>
-// import loaderFilePathVue from "./loaderFilePath.vue";
 import loadAModelVue from "./load-a-model.vue";
+import loadMultipleModelsVue from "./load-multiple-models.vue";
+import heightAndWidthVue from "./height-and-width.vue";
+import materialsAndTexturesVue from "./materials-and-textures.vue";
+import backgroundColorAndAlphaVue from "./background-color-and-alpha.vue";
+import cameraPositionAndRotateVue from "./camera-position-and-rotate.vue";
+import interactiveControlsVue from "./interactive-controls.vue";
+import rotateModelVue from "./rotate-model.vue";
+import eventModelVue from "./event-model.vue";
+import lightModelVue from "./light-model.vue";
+import showFpsVue from "./show-fps.vue";
+import processBarVue from "./progress-bar.vue";
 export default {
   components: {
-    // loaderFilePathVue,
     loadAModelVue,
+    loadMultipleModelsVue,
+    heightAndWidthVue,
+    materialsAndTexturesVue,
+    backgroundColorAndAlphaVue,
+    interactiveControlsVue,
+    rotateModelVue,
+    eventModelVue,
+    lightModelVue,
+    showFpsVue,
+    cameraPositionAndRotateVue,
+    processBarVue,
   },
   data() {
     return {
@@ -33,7 +63,7 @@ export default {
         { id: 4, name_CN: "材质及纹理", name_EN: "Materials and textures" },
         { id: 5, name_CN: "背景颜色及透明度", name_EN: "Background" },
         { id: 6, name_CN: "交互控制", name_EN: "Control" },
-        { id: 7, name_CN: "旋转模型", name_EN: "Rotary model" },
+        { id: 7, name_CN: "旋转模型", name_EN: "Rotate model" },
         { id: 8, name_CN: "事件", name_EN: "Event" },
         { id: 9, name_CN: "灯光", name_EN: "Light" },
         { id: 10, name_CN: "显示FPS信息", name_EN: "Show stats" },
@@ -74,7 +104,7 @@ li {
   padding: 0;
 }
 li {
-  padding: 5px 10px;
+  padding: 8px 10px;
 }
 li.active {
   background-color: rgb(88, 88, 88);
