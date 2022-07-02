@@ -4,6 +4,8 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 
 ![demo gif image](./demo.gif)
 
+**当前仅支持vue2**
+
 ## 安装
 
 ```shell
@@ -236,6 +238,10 @@ export default {
 #### 8. 更多演示
 
 [点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
+
+### 提前预告
+
+- [ ] 支持Vue3
 
 ### bug提交
 
