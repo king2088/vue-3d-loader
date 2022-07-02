@@ -19,6 +19,7 @@ import {
   DirectionalLight,
   LinearEncoding,
   TextureLoader,
+  AnimationMixer,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -102,9 +103,16 @@ export default {
       default: LinearEncoding,
     },
     webGLRendererOptions: Object,
-    mtlPath: { type: [String, Array] },
-    showFps: { type: Boolean, default: false },
-    textureImage: { type: [String, Array] },
+    mtlPath: {
+      type: [String, Array],
+    },
+    showFps: {
+      type: Boolean,
+      default: false,
+    },
+    textureImage: {
+      type: [String, Array],
+    },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -126,11 +134,13 @@ export default {
       loader: null,
       requestAnimationId: null,
       stats: null,
+      mixer: null,
     };
     Object.assign(this, result);
     // 响应式对象
     return {
       loaderIndex: 0,
+      timer: null,
     };
   },
   mounted() {
@@ -236,6 +246,12 @@ export default {
     backgroundColor() {
       this.updateRenderer();
     },
+    cameraRotation: {
+      deep: true,
+      handler() {
+        this.updateCamera();
+      },
+    },
   },
   methods: {
     onResize() {
@@ -312,7 +328,6 @@ export default {
         cameraPosition,
         cameraRotation,
       } = this;
-
       camera.aspect = size.width / size.height;
       camera.updateProjectionMatrix();
 
@@ -450,10 +465,8 @@ export default {
           // single material
           this.loadMtl(_filePath, _getObject);
         } else {
-          console.log("this.loaderIndex", this.loaderIndex);
           // load materials and model
           if (!this.mtlPath[this.loaderIndex]) {
-            console.log("no mtl");
             this.loadFilePath(_filePath, _getObject);
             return;
           }
@@ -470,6 +483,11 @@ export default {
         (...args) => {
           const object = getObject(...args);
           this.addObject(object);
+          this.mixer = new AnimationMixer(object);
+          if (object.animations[0]) {
+            const action = this.mixer.clipAction(object.animations[0]);
+            action.play();
+          }
           // set texture
           if (this.textureImage) {
             let _texture =
@@ -484,7 +502,8 @@ export default {
         },
         (event) => {
           this.onProcess(event);
-          this.$emit("process", event, this.loaderIndex);
+          let modelIndex = this.loaderIndex + 1;
+          this.$emit("process", event, modelIndex);
         },
         (event) => {
           this.$emit("error", event);
@@ -503,7 +522,6 @@ export default {
         typeof this.mtlPath === "string"
           ? this.mtlPath
           : this.mtlPath[this.loaderIndex];
-      console.log("_mtl", _mtl);
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
@@ -540,14 +558,24 @@ export default {
     },
     onProcess(xhr) {
       let process = Math.floor((xhr.loaded / xhr.total) * 100);
+      if (process === Infinity) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          process = 100;
+        }, 200);
+      }
       if (process === 100) {
-        // Load completed
         if (
           typeof this.filePath === "object" &&
-          this.filePath.length - 1 - this.loaderIndex != 0
+          this.filePath.length > this.loaderIndex
         ) {
+          // Load completed
           this.$nextTick(() => {
             this.loaderIndex++;
+            if (this.loaderIndex === this.filePath.length) {
+              this.loaderIndex = 0;
+              return;
+            }
             this.load();
           });
         } else {
