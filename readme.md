@@ -2,6 +2,8 @@
 
 vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl，并支持同一个场景导入多个不同3D模型，材质方面，支持mtl材质
 
+![demo gif image](./demo.gif)
+
 ## 安装
 
 ```shell
@@ -81,27 +83,33 @@ Vue.use(vue3dLoader)
 
 ```vue
 <!-- 加载fbx模型 -->
-<vue3dLoader :filePath="'/fbx/1.fbx'"></vue3dLoader>
+<vue3dLoader filePath="models/collada/stormtrooper/stormtrooper.dae"></vue3dLoader>
 <!-- 加载obj模型 -->
-<vue3dLoader :filePath="'/obj/1.obj'"></vue3dLoader>
+<vue3dLoader filePath="/obj/1.obj"></vue3dLoader>
 ```
 
 #### 2. 同一个场景中加载多个模型
 
 ```vue
+<!-- 可同时加载多个不同种类的模型 -->
 <template>
-  <!-- 可加载任意模型 -->
-  <vue3dLoader :filePath="['/fbx/1.fbx', '/obj/1.obj']" @process="onProcess"></vue3dLoader>
+  <vue3dLoader
+    :filePath="filePath"
+    :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
+    :cameraPosition="{ x: 100, y: 200, z: 30 }"
+  ></vue3dLoader>
 </template>
 <script>
-  export default {
-    methods: {
-      onProcess(xhr, index) {
-        let process = Math.floor((xhr.loaded / xhr.total) * 100);
-        console.log(`加载第${index + 1}个，已加载完成${process}%`)
-      }
-    }
-  }
+export default {
+  data() {
+    return {
+      filePath: [
+        "/models/fbx/Samba Dancing.fbx",
+        "models/collada/pump/pump.dae",
+      ],
+    };
+  },
+};
 </script>
 ```
 
@@ -109,47 +117,57 @@ Vue.use(vue3dLoader)
 
 ```vue
 <!-- obj加载mtl材质 -->
-<vue3dLoader :filePath="'/obj/1.obj'" :mtlPath="'/obj/1.mtl'" ></vue3dLoader>
+<vue3dLoader filePath="/obj/1.obj" mtlPath="/obj/1.mtl" ></vue3dLoader>
 <!-- fbx图片纹理加载 -->
-<vue3dLoader :filePath="'/fbx/1.fbx'" :mtlPath="'/fbx/1.png'" ></vue3dLoader>
+<vue3dLoader filePath="/fbx/1.fbx" textureImage="/fbx/1.png" ></vue3dLoader>
 ```
 
 #### 4. 背景颜色及透明度
 
 ```vue
-<vue3dLoader :filePath="'/fbx/1.fbx'" :backgroundAlpha="0.5" :backgroundColor="'red'"></vue3dLoader>
+<vue3dLoader filePath="/fbx/1.fbx" :backgroundAlpha="0.5" backgroundColor="red"></vue3dLoader>
 ```
 
 #### 5. 交互控制controls
 
 ```vue
 <template>
-<div>
-  <div class="controls-buttons">
-    <!-- 禁止右键拖动 -->
-    <button @click="enablePan = !enablePan">{{ enablePan ? 'disable' : 'enable' }} translation</button>
-    <!-- 禁止缩放 -->
-    <button @click="enableZoom = !enableZoom">{{ enableZoom ? 'disable' : 'enable' }} zoom</button>
-    <!-- 禁止缩放 -->
-    <button @click="enableRotate = !enableRotate">{{ enableRotate ? 'disable' : 'enable' }} rotation</button>
+  <div class="controls">
+    <div class="buttons">
+      <!-- 禁止右键拖动 -->
+      <button @click="enablePan = !enablePan">
+        {{ enablePan ? "disable" : "enable" }} translation
+      </button>
+      <!-- 禁止缩放 -->
+      <button @click="enableZoom = !enableZoom">
+        {{ enableZoom ? "disable" : "enable" }} zoom
+      </button>
+      <!-- 禁止缩放 -->
+      <button @click="enableRotate = !enableRotate">
+        {{ enableRotate ? "disable" : "enable" }} rotation
+      </button>
+    </div>
+    <vue3dLoader
+      :filePath="'/models/collada/elf/elf.dae'"
+      :controlsOptions="{
+        enablePan,
+        enableZoom,
+        enableRotate,
+      }"
+      :cameraPosition="{ x: 0, y: -10, z: 13 }"
+    />
   </div>
-  <vue3dLoader :filePath="'/fbx/1.fbx'" :controlsOptions="{
-    enablePan,
-    enableZoom,
-    enableRotate,
-  }"/>
-</div>
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        enablePan: true,
-        enableZoom: true,
-        enableRotate: true
-      }
-    }
-  }
+export default {
+  data() {
+    return {
+      enablePan: true,
+      enableZoom: true,
+      enableRotate: true,
+    };
+  },
+};
 </script>
 ```
 
@@ -160,30 +178,30 @@ Vue.use(vue3dLoader)
   <vue3dLoader
     :rotation="rotation"
     @load="onLoad()"
-    src="/static/models/collada/elf/elf.dae"
+    filePath="/models/collada/elf/elf.dae"
   />
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        rotation: {
-          x: -Math.PI / 2,
-          y: 0,
-          z: 0,
-        }
-      }
-    },
-    methods: {
-      onLoad() {
-        this.rotate();
+export default {
+  data() {
+    return {
+      rotation: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
       },
-      rotate() {
-        requestAnimationFrame(rotate);
-        rotation.z += 0.01;
-      }
-    }
-  }
+    };
+  },
+  methods: {
+    onLoad() {
+      this.rotate();
+    },
+    rotate() {
+      requestAnimationFrame(this.rotate);
+      this.rotation.z += 0.01;
+    },
+  },
+};
 </script>
 ```
 
@@ -191,32 +209,37 @@ Vue.use(vue3dLoader)
 
 ```vue
 <template>
-  <vue3dLoader
-    src="/obj/1.obj"
-    @mousemove="onMouseMove"
-  />
+  <vue3dLoader filePath="/models/ply/Lucy100k.ply" @mousemove="onMouseMove" />
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        object: null
+export default {
+  data() {
+    return {
+      object: null,
+    };
+  },
+  methods: {
+    onMouseMove(event, intersected) {
+      if (this.object) {
+        this.object.material.color.setStyle("#fff");
+      }
+      if (intersected) {
+        this.object = intersected.object;
+        this.object.material.color.setStyle("#13ce66");
       }
     },
-    methods: {
-      onMouseMove(event, intersected) {
-        if (this.object) {
-          this.object.material.color.setStyle('#fff');
-        }
-        if (intersected) {
-          this.object = intersected.object;
-          this.object.material.color.setStyle('#13ce66');
-        }
-      }
-    }
-  }
+  },
+};
 </script>
 ```
+
+#### 8. 更多演示
+
+[点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
+
+### bug提交
+
+[issues](https://github.com/king2088/vue-3d-loader/issues)
 
 ### 感谢
 
