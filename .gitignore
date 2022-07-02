@@ -21,4 +21,4 @@ pnpm-debug.log*
 *.sw?
 
 # model directories
-public/models
+# public/models
