@@ -1,33 +1,35 @@
 # vue-3d-loader
 
-vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl，并支持同一个场景导入多个不同3D模型，材质方面，支持mtl材质
+[简体中文](./readme_CN.md)
+
+vueJS + [threeJS](https://threejs.org/) 3d viewer component, support dae/fbx/gltf(glb)/obj/ply/stl models, and support the same scene to import multiple different 3D models, support mtl materials and texture
 
 ![demo gif image](./demo.gif)
 
-**当前仅支持vue2**
+**Only supports vue2**
 
-## 安装
+## install
 
 ```shell
-npm i vue-3d-loader -S
+npm i vue-3d-loader -S # npm install vue-3d-loader -save
 ```
 
-或
+or
 
 ```shell
 yarn add vue-3d-loader
 ```
 
-## 使用
+## How to use vue-3d-loader
 
-在入口文件中全局安装，代码如下：
+Insert code in entry file：
 
 ```js
 import vue3dLoader from "vue-3d-loader";
 Vue.use(vue3dLoader)
 ```
 
-在组件中使用标签`<vue3dLoader></vue3dLoader>`
+Use tags in your components`<vue3dLoader></vue3dLoader>`
 
 ```vue
 <vue3dLoader
@@ -41,59 +43,59 @@ Vue.use(vue3dLoader)
 
 ## API
 
-### 属性
+### Attributes
 
 | prop                 | type             | default                                                                                                                             | description                                                                                                               |
 | -------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| filePath             | string \| array  | -                                                                                                                                   | 文件路径，支持多个文件一起加载，注意：如果有每一个文件都对应一个材质，则也需要将材质对象**mtlPath**设置为对应的数组                                                           |
-| mtlPath              | string \| array  | -                                                                                                                                   | .mtl材质路径，支持多个材质一起加载，设置此参数为数组，必须设置**filePath**为数组                                                                          |
-| textureImage         | string \| array  | -                                                                                                                                   | jpg/png纹理加载，与**filePath**一一对应，为数组时，必须设置**filePath**为数组                                                                    |
-| width                | number           | -                                                                                                                                   | 宽度                                                                                                                        |
-| height               | number           | -                                                                                                                                   | 高度                                                                                                                        |
-| position             | object           | { x: 0, y: 0, z: 0 }                                                                                                                | 物体位置                                                                                                                      |
-| rotation             | object           | { x: 0, y: 0, z: 0 }                                                                                                                | 旋转                                                                                                                        |
-| cameraPosition       | object           | { x: 0, y: 0, z: 0 }                                                                                                                | 摄像机位置                                                                                                                     |
-| cameraRotation       | object           | { x: 0, y: 0, z: 0 }                                                                                                                | 摄像机旋转                                                                                                                     |
-| scale                | object           | { x: 1, y: 1, z: 1 }                                                                                                                | 缩放                                                                                                                        |
-| lights               | array            | [{type: "AmbientLight",color: 0xaaaaaa,},{type: "DirectionalLight",position: { x: 1, y: 1, z: 1 },color: 0xffffff,intensity: 0.8,}] | 灯光，AmbientLight为环境光，DirectionalLight为定向光                                                                                                                      |
-| backgroundColor      | number \| string | 0xffffff                                                                                                                            | 背景颜色0xffffff/#f00/rgb(255,255,255)                                                                                        |
-| backgroundAlpha      | number           | 1                                                                                                                                   | 背景透明度(范围0-1)                                                                                                              |
-| controlsOptions      | object           | -                                                                                                                                   | 控制参数[OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)                              |
-| crossOrigin          | string           | anonymous                                                                                                                           | 跨域配置anonymous/use-credentials                                                                                             |
-| requestHeader        | object           | -                                                                                                                                   | 设置请求{ 'Authorization: Bearer token' }头                                                                                    |
-| outputEncoding       | number           | THREE.LinearEncoding                                                                                                                | 渲染器的输出编码[WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding) |
-| webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                    | WebGLRenderer可选参数[WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)           |
-| showFps              | boolean          | false                                                                                                                               | 显示FPS等信息                                                                                                                  |
+| filePath             | string \| array  | -                                                                                                                                   | File path, supports multiple files to be loaded together, note: If each file corresponds to a material, you need to set the material **mtlPath** as an array. The same is true for image textures, which need to be set to **textureImage** as an array                                                         |
+| mtlPath              | string \| array  | -                                                                                                                                   | .material path, supports multiple materials to be loaded together, set this parameter to an array, you must set **filePath** to an array                                                                          |
+| textureImage         | string \| array  | -                                                                                                                                   | jpg/png texture, if is array, **filePath** must be set to an array                                                                    |
+| width                | number           | -                                                                                                                                   | width                                                                                                                        |
+| height               | number           | -                                                                                                                                   | height                                                                                                                        |
+| position             | object           | { x: 0, y: 0, z: 0 }                                                                                                                | object position                                                                                                                      |
+| rotation             | object           | { x: 0, y: 0, z: 0 }                                                                                                                | rotation coordinates                                                                                                                        |
+| cameraPosition       | object           | { x: 0, y: 0, z: 0 }                                                                                                                | camera position                                                                                                                     |
+| cameraRotation       | object           | { x: 0, y: 0, z: 0 }                                                                                                                | camera rotation                                                                                                                     |
+| scale                | object           | { x: 1, y: 1, z: 1 }                                                                                                                | scale the model                                                                                                                        |
+| lights               | array            | [{type: "AmbientLight",color: 0xaaaaaa,},{type: "DirectionalLight",position: { x: 1, y: 1, z: 1 },color: 0xffffff,intensity: 0.8,}] | lights is array, type AmbientLight and DirectionalLight                                                                                                                      |
+| backgroundColor      | number \| string | 0xffffff                                                                                                                            | background color supports number/hex/rgb. like 0xffffff/#f00/rgb(255,255,255)                                                                                        |
+| backgroundAlpha      | number           | 1                                                                                                                                   | Background transparency (range 0-1)                                                                                                             |
+| controlsOptions      | object           | -                                                                                                                                   | control parameter [OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)                              |
+| crossOrigin          | string           | anonymous                                                                                                                           | Cross-domain configuration. The value is anonymous or use-credentials                                                                                             |
+| requestHeader        | object           | -                                                                                                                                   | set request header. example: { 'Authorization: Bearer token' }                                                                                    |
+| outputEncoding       | number           | THREE.LinearEncoding                                                                                                                | Renderer's output encoding [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding) |
+| webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                    | WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)           |
+| showFps              | boolean          | false                                                                                                                               | show stats infomation                                                                                                                  |
 
 ### 事件
 
 | event                        | description                 |
 | ---------------------------- | --------------------------- |
-| mousedown(event, intersects) | 鼠标按下, intersect:当前相交最近的物体   |
-| mousemove(event, intersects) | 鼠标移动, intersect:当前相交最近的物体   |
-| mouseup(event, intersects)   | 鼠标放开, intersect:当前相交最近的物体   |
-| click(event, intersects)     | 点击, intersect:当前相交最近的物体     |
-| load                         | 加载模型事件                      |
-| process(event, fileIndex)    | 加载进度, fileIndex:当前正在加载第几个文件 |
-| error(event)                 | 错误事件                        |
+| mousedown(event, intersects) | mouse down, intersect: currently intersecting objects   |
+| mousemove(event, intersects) | mouse move, intersect: currently intersecting objects   |
+| mouseup(event, intersects)   | mouse up, intersect: currently intersecting objects   |
+| click(event, intersects)     | click, intersect: currently intersecting objects     |
+| load                         | load model event                      |
+| process(event, fileIndex)    | loading progress, fileIndex: the index of the currently loaded model |
+| error(event)                 | error event                        |
 
-### 使用样例
+### Example
 
-#### 1. 加载一个3D模型
+#### 1. Load a 3D model
 
-目前支持dae/fbx/gltf(glb)/obj/ply/stl中任意一种
+supports dae/fbx/gltf(glb)/obj/ply/stl models
 
 ```vue
-<!-- 加载fbx模型 -->
+<!-- fbx model -->
 <vue3dLoader filePath="models/collada/stormtrooper/stormtrooper.dae"></vue3dLoader>
-<!-- 加载obj模型 -->
+<!-- obj model -->
 <vue3dLoader filePath="/obj/1.obj"></vue3dLoader>
 ```
 
-#### 2. 同一个场景中加载多个模型
+#### 2. Loading multiple models in the same scene
 
 ```vue
-<!-- 可同时加载多个不同种类的模型 -->
+<!-- Load multiple models of different type -->
 <template>
   <vue3dLoader
     :filePath="filePath"
@@ -115,36 +117,36 @@ export default {
 </script>
 ```
 
-#### 3. 材质及纹理加载
+#### 3. Material and texture
 
 ```vue
-<!-- obj加载mtl材质 -->
+<!-- obj and mtl material -->
 <vue3dLoader filePath="/obj/1.obj" mtlPath="/obj/1.mtl" ></vue3dLoader>
-<!-- fbx图片纹理加载 -->
+<!-- fbx and png texture -->
 <vue3dLoader filePath="/fbx/1.fbx" textureImage="/fbx/1.png" ></vue3dLoader>
 ```
 
-#### 4. 背景颜色及透明度
+#### 4. Background color and transparency
 
 ```vue
 <vue3dLoader filePath="/fbx/1.fbx" :backgroundAlpha="0.5" backgroundColor="red"></vue3dLoader>
 ```
 
-#### 5. 交互控制controls
+#### 5. Controls
 
 ```vue
 <template>
   <div class="controls">
     <div class="buttons">
-      <!-- 禁止右键拖动 -->
+      <!-- Disable right-click dragging -->
       <button @click="enablePan = !enablePan">
         {{ enablePan ? "disable" : "enable" }} translation
       </button>
-      <!-- 禁止缩放 -->
+      <!-- Disable zoom -->
       <button @click="enableZoom = !enableZoom">
         {{ enableZoom ? "disable" : "enable" }} zoom
       </button>
-      <!-- 禁止缩放 -->
+      <!-- Disable rotate -->
       <button @click="enableRotate = !enableRotate">
         {{ enableRotate ? "disable" : "enable" }} rotation
       </button>
@@ -173,7 +175,7 @@ export default {
 </script>
 ```
 
-#### 6. 旋转模型
+#### 6. Rotate model
 
 ```vue
 <template>
@@ -207,7 +209,7 @@ export default {
 </script>
 ```
 
-#### 7. 事件
+#### 7. Events
 
 ```vue
 <template>
@@ -235,18 +237,18 @@ export default {
 </script>
 ```
 
-#### 8. 更多演示
+#### 8. More demos code
 
-[点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
+[Click here to see more demo code](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 
-### 即将到来
+### Coming soon
 
-- [ ] 支持Vue3
+- [ ] Supports Vue3
 
-### bug提交
+### Bugs
 
 [issues](https://github.com/king2088/vue-3d-loader/issues)
 
-### 感谢
+### Thanks
 
-本插件参考[vue-3d-model](https://vue-3d-model.netlify.app/)实现
+This plugin is inseparable from [vue-3d-model](https://github.com/hujiulong/vue-3d-model)
