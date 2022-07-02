@@ -55,7 +55,10 @@ function getLoader(filePath) {
       break;
     case "gltf":
       obj = {
-        loader: new GLTFLoader(manager)
+        loader: new GLTFLoader(manager),
+        getObject: (collada) => {
+          return collada.scene;
+        }
       };
       break;
     case "obj":
