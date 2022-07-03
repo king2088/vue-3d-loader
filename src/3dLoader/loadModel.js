@@ -27,10 +27,21 @@ function getCenter(obj) {
   return box.getCenter(new Vector3());
 }
 
+function getExtension(str) { 
+  const pathSplit = str.split('.');
+  if (pathSplit.length <= 1){
+    return "";
+  } else {
+    let extension = pathSplit.pop();
+    extension = extension.toLowerCase();
+    return extension;
+  }
+}
+
 // auto select model loader
 function getLoader(filePath) {
   // Get file extension
-  let fileExtension = filePath.split(".").filter(i => i)[1];
+  let fileExtension = getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
   if (fileExtension === "glb") {
     fileExtension = "gltf";
