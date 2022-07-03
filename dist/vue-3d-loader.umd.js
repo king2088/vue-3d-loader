@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=83651a28&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=d3fc9c1e&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21052,12 +21052,24 @@ function getSize(obj) {
 function getCenter(obj) {
   box.setFromObject(obj);
   return box.getCenter(new Vector3());
+}
+
+function getExtension(str) {
+  const pathSplit = str.split('.');
+
+  if (pathSplit.length <= 1) {
+    return "";
+  } else {
+    let extension = pathSplit.pop();
+    extension = extension.toLowerCase();
+    return extension;
+  }
 } // auto select model loader
 
 
 function getLoader(filePath) {
   // Get file extension
-  let fileExtension = filePath.split(".").filter(i => i)[1]; // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
+  let fileExtension = getExtension(filePath); // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
 
   if (fileExtension === "glb") {
     fileExtension = "gltf";
@@ -21153,26 +21165,8 @@ function getMTLLoader() {
     // supports one or more filePath
     width: Number,
     height: Number,
-    position: {
-      type: Object,
-      default: () => {
-        return {
-          x: 0,
-          y: 0,
-          z: 0
-        };
-      }
-    },
-    rotation: {
-      type: Object,
-      default: () => {
-        return {
-          x: 0,
-          y: 0,
-          z: 0
-        };
-      }
-    },
+    position: Object,
+    rotation: Object,
     scale: {
       type: Object,
       default: () => {
@@ -21211,16 +21205,7 @@ function getMTLLoader() {
         };
       }
     },
-    cameraRotation: {
-      type: Object,
-      default: () => {
-        return {
-          x: 0,
-          y: 0,
-          z: 0
-        };
-      }
-    },
+    cameraRotation: Object,
     cameraUp: Object,
     cameraLookAt: Object,
     backgroundColor: {
@@ -21269,13 +21254,13 @@ function getMTLLoader() {
       object: null,
       raycaster: new Raycaster(),
       mouse: new Vector2(),
-      camera: new PerspectiveCamera(45, 1, 0.01, 100000),
+      camera: null,
       scene: new Scene(),
       wrapper: new Object3D(),
       renderer: null,
       controls: null,
       allLights: [],
-      clock: null,
+      clock: new Clock(),
       loader: null,
       requestAnimationId: null,
       stats: null,
@@ -21285,7 +21270,8 @@ function getMTLLoader() {
 
     return {
       loaderIndex: 0,
-      timer: null
+      timer: null,
+      objectPositionHasSet: false
     };
   },
 
@@ -21300,6 +21286,7 @@ function getMTLLoader() {
     const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
       canvas: this.$refs.canvas
     });
+    this.camera = new PerspectiveCamera(45, this.size.width / this.size.height, 1, 100000);
     this.renderer = new WebGLRenderer(options);
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
@@ -21423,7 +21410,7 @@ function getMTLLoader() {
             width: this.width ? this.width : el.offsetWidth,
             height: this.height ? this.height : el.offsetHeight
           };
-          this.update();
+          this.update(true);
         });
       }
     },
@@ -21466,9 +21453,9 @@ function getMTLLoader() {
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
 
-    update() {
+    update(isResize = false) {
       this.updateRenderer();
-      this.updateCamera();
+      this.updateCamera(isResize);
       this.updateLights();
       this.updateControls();
     },
@@ -21481,8 +21468,15 @@ function getMTLLoader() {
         scale
       } = this;
       if (!object) return;
-      object.position.set(position.x, position.y, position.z);
-      object.rotation.set(rotation.x, rotation.y, rotation.z);
+
+      if (position) {
+        object.position.set(position.x, position.y, position.z);
+      }
+
+      if (rotation) {
+        object.rotation.set(rotation.x, rotation.y, rotation.z);
+      }
+
       object.scale.set(scale.x, scale.y, scale.z);
     },
 
@@ -21499,7 +21493,7 @@ function getMTLLoader() {
       renderer.setClearAlpha(backgroundAlpha);
     },
 
-    updateCamera() {
+    updateCamera(isResize = false) {
       const {
         size,
         camera,
@@ -21511,12 +21505,16 @@ function getMTLLoader() {
       } = this;
       camera.aspect = size.width / size.height;
       camera.updateProjectionMatrix();
+      if (isResize) return;
 
       if (!cameraLookAt || !cameraUp) {
         if (!object) return;
         const distance = getSize(object).length();
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+
+        if (cameraRotation) {
+          camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+        }
 
         if (cameraPosition.x === 0 && cameraPosition.y === 0 && cameraPosition.z === 0) {
           camera.position.z = distance;
@@ -21525,7 +21523,11 @@ function getMTLLoader() {
         camera.lookAt(new Vector3());
       } else {
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+
+        if (cameraRotation) {
+          camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+        }
+
         camera.up.set(cameraUp.x, cameraUp.y, cameraUp.z);
         camera.lookAt(new Vector3(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z));
       }
@@ -21692,9 +21694,13 @@ function getMTLLoader() {
     },
 
     addObject(object) {
-      const center = getCenter(object); // correction position
+      const center = getCenter(object); // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
 
-      this.wrapper.position.copy(center.negate());
+      if (!this.objectPositionHasSet) {
+        this.wrapper.position.copy(center.negate());
+        this.objectPositionHasSet = true;
+      }
+
       this.object = object;
       this.wrapper.add(object);
       this.updateCamera();
@@ -21704,6 +21710,8 @@ function getMTLLoader() {
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
       this.updateStats();
+      const delta = this.clock.getDelta();
+      if (this.mixer) this.mixer.update(delta);
       this.render();
     },
 
@@ -21753,9 +21761,8 @@ function getMTLLoader() {
           textureLoader.load(texture, _texture => {
             child.material.map = _texture;
             child.material.needsUpdate = true;
-            console.log("texture is finished.");
           }, () => {}, err => {
-            console.log("texture err", err);
+            this.$emit("error", err);
           });
         }
       });
