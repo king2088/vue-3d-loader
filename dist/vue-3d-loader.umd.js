@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=d3fc9c1e&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=03a5626c&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21254,7 +21254,7 @@ function getMTLLoader() {
       object: null,
       raycaster: new Raycaster(),
       mouse: new Vector2(),
-      camera: null,
+      camera: new PerspectiveCamera(45, 1, 1, 100000),
       scene: new Scene(),
       wrapper: new Object3D(),
       renderer: null,
@@ -21286,7 +21286,6 @@ function getMTLLoader() {
     const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
       canvas: this.$refs.canvas
     });
-    this.camera = new PerspectiveCamera(45, this.size.width / this.size.height, 1, 100000);
     this.renderer = new WebGLRenderer(options);
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
@@ -21477,7 +21476,9 @@ function getMTLLoader() {
         object.rotation.set(rotation.x, rotation.y, rotation.z);
       }
 
-      object.scale.set(scale.x, scale.y, scale.z);
+      if (scale) {
+        object.scale.set(scale.x, scale.y, scale.z);
+      }
     },
 
     updateRenderer() {
@@ -21602,7 +21603,7 @@ function getMTLLoader() {
 
       const _getObject = loaderObj.getObject ? loaderObj.getObject : this.getObject;
 
-      if (this.object) {
+      if (this.object && this.loaderIndex === 0) {
         this.wrapper.remove(this.object);
       }
 
