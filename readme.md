@@ -69,7 +69,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 | webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                    | WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)           |
 | showFps              | boolean          | false                                                                                                                               | show stats infomation                                                                                                                  |
 
-### 事件
+### Events
 
 | event                        | description                 |
 | ---------------------------- | --------------------------- |
