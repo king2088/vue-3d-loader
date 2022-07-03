@@ -20,6 +20,7 @@ import {
   LinearEncoding,
   TextureLoader,
   AnimationMixer,
+  Clock
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -30,18 +31,8 @@ export default {
     filePath: { type: [String, Array] }, // supports one or more filePath
     width: Number,
     height: Number,
-    position: {
-      type: Object,
-      default: () => {
-        return { x: 0, y: 0, z: 0 };
-      },
-    },
-    rotation: {
-      type: Object,
-      default: () => {
-        return { x: 0, y: 0, z: 0 };
-      },
-    },
+    position: Object,
+    rotation: Object,
     scale: {
       type: Object,
       default: () => {
@@ -71,12 +62,7 @@ export default {
         return { x: 0, y: 0, z: 0 };
       },
     },
-    cameraRotation: {
-      type: Object,
-      default: () => {
-        return { x: 0, y: 0, z: 0 };
-      },
-    },
+    cameraRotation: Object,
     cameraUp: Object,
     cameraLookAt: Object,
     backgroundColor: {
@@ -124,13 +110,13 @@ export default {
       object: null,
       raycaster: new Raycaster(),
       mouse: new Vector2(),
-      camera: new PerspectiveCamera(45, 1, 0.01, 100000),
+      camera: null,
       scene: new Scene(),
       wrapper: new Object3D(),
       renderer: null,
       controls: null,
       allLights: [],
-      clock: null,
+      clock: new Clock(),
       loader: null,
       requestAnimationId: null,
       stats: null,
@@ -141,6 +127,7 @@ export default {
     return {
       loaderIndex: 0,
       timer: null,
+      objectPositionHasSet: false
     };
   },
   mounted() {
@@ -156,7 +143,7 @@ export default {
         canvas: this.$refs.canvas,
       }
     );
-
+    this.camera = new PerspectiveCamera(45, this.size.width / this.size.height, 1, 100000)
     this.renderer = new WebGLRenderer(options);
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
@@ -164,7 +151,7 @@ export default {
     this.controls = new OrbitControls(this.camera, el);
 
     this.scene.add(this.wrapper);
-
+    
     this.load();
     this.update();
 
@@ -262,7 +249,7 @@ export default {
             width: this.width ? this.width : el.offsetWidth,
             height: this.height ? this.height : el.offsetHeight,
           };
-          this.update();
+          this.update(true);
         });
       }
     },
@@ -298,17 +285,21 @@ export default {
       const intersects = this.raycaster.intersectObject(this.object, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
-    update() {
+    update(isResize=false) {
       this.updateRenderer();
-      this.updateCamera();
+      this.updateCamera(isResize);
       this.updateLights();
       this.updateControls();
     },
     updateModel() {
       const { object, position, rotation, scale } = this;
       if (!object) return;
-      object.position.set(position.x, position.y, position.z);
-      object.rotation.set(rotation.x, rotation.y, rotation.z);
+      if(position) {
+        object.position.set(position.x, position.y, position.z);
+      }
+      if(rotation) {
+        object.rotation.set(rotation.x, rotation.y, rotation.z);
+      }
       object.scale.set(scale.x, scale.y, scale.z);
     },
     updateRenderer() {
@@ -318,7 +309,7 @@ export default {
       renderer.setClearColor(new Color(backgroundColor).getHex());
       renderer.setClearAlpha(backgroundAlpha);
     },
-    updateCamera() {
+    updateCamera(isResize=false) {
       const {
         size,
         camera,
@@ -330,7 +321,7 @@ export default {
       } = this;
       camera.aspect = size.width / size.height;
       camera.updateProjectionMatrix();
-
+      if (isResize) return
       if (!cameraLookAt || !cameraUp) {
         if (!object) return;
         const distance = getSize(object).length();
@@ -339,11 +330,13 @@ export default {
           cameraPosition.y,
           cameraPosition.z
         );
-        camera.rotation.set(
-          cameraRotation.x,
-          cameraRotation.y,
-          cameraRotation.z
-        );
+        if(cameraRotation) {
+          camera.rotation.set(
+            cameraRotation.x,
+            cameraRotation.y,
+            cameraRotation.z
+          );
+        }
         if (
           cameraPosition.x === 0 &&
           cameraPosition.y === 0 &&
@@ -358,11 +351,14 @@ export default {
           cameraPosition.y,
           cameraPosition.z
         );
-        camera.rotation.set(
-          cameraRotation.x,
-          cameraRotation.y,
-          cameraRotation.z
-        );
+        if(cameraRotation) {
+          camera.rotation.set(
+            cameraRotation.x,
+            cameraRotation.y,
+            cameraRotation.z
+          );
+        }
+
         camera.up.set(cameraUp.x, cameraUp.y, cameraUp.z);
         camera.lookAt(
           new Vector3(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z)
@@ -536,8 +532,11 @@ export default {
     },
     addObject(object) {
       const center = getCenter(object);
-      // correction position
-      this.wrapper.position.copy(center.negate());
+      // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
+      if(!this.objectPositionHasSet) {
+        this.wrapper.position.copy(center.negate());
+        this.objectPositionHasSet = true
+      }
       this.object = object;
       this.wrapper.add(object);
       this.updateCamera();
@@ -546,6 +545,8 @@ export default {
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
       this.updateStats();
+      const delta = this.clock.getDelta();
+      if (this.mixer) this.mixer.update(delta);
       this.render();
     },
     render() {
@@ -592,11 +593,10 @@ export default {
             (_texture) => {
               child.material.map = _texture;
               child.material.needsUpdate = true;
-              console.log("texture is finished.");
             },
             () => {},
             (err) => {
-              console.log("texture err", err);
+              this.$emit("error", err)
             }
           );
         }
