@@ -35,9 +35,9 @@ export default {
     rotation: Object,
     scale: {
       type: Object,
-      default: () => {
-        return { x: 1, y: 1, z: 1 };
-      },
+      default: ()=>{
+        return {x:1, y:1, z:1}
+      }
     },
     lights: {
       type: Array,
@@ -110,7 +110,7 @@ export default {
       object: null,
       raycaster: new Raycaster(),
       mouse: new Vector2(),
-      camera: null,
+      camera: new PerspectiveCamera(45, 1, 1, 100000),
       scene: new Scene(),
       wrapper: new Object3D(),
       renderer: null,
@@ -143,7 +143,7 @@ export default {
         canvas: this.$refs.canvas,
       }
     );
-    this.camera = new PerspectiveCamera(45, this.size.width / this.size.height, 1, 100000)
+
     this.renderer = new WebGLRenderer(options);
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
@@ -300,7 +300,9 @@ export default {
       if(rotation) {
         object.rotation.set(rotation.x, rotation.y, rotation.z);
       }
-      object.scale.set(scale.x, scale.y, scale.z);
+      if(scale) {
+        object.scale.set(scale.x, scale.y, scale.z);
+      }
     },
     updateRenderer() {
       const { renderer, size, backgroundAlpha, backgroundColor } = this;
@@ -445,7 +447,7 @@ export default {
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject
         : this.getObject;
-      if (this.object) {
+      if (this.object && this.loaderIndex === 0) {
         this.wrapper.remove(this.object);
       }
       if (this.requestHeader) {
