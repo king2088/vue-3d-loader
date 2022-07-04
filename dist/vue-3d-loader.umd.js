@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=03a5626c&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=a5fd51ea&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21729,30 +21729,36 @@ function getMTLLoader() {
     onProcess(xhr) {
       let process = Math.floor(xhr.loaded / xhr.total * 100);
 
+      const next = () => {
+        if (process === 100) {
+          if (typeof this.filePath === "object" && this.filePath.length > this.loaderIndex) {
+            // Load completed
+            this.$nextTick(() => {
+              this.loaderIndex++;
+
+              if (this.loaderIndex === this.filePath.length) {
+                this.loaderIndex = 0;
+                return;
+              }
+
+              this.load();
+            });
+          } else {
+            this.loaderIndex = 0;
+          }
+        }
+      }; // local webpack environment http response headers no content-length, the xhr.total is 0, so process === Infinity
+
+
       if (process === Infinity) {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           process = 100;
+          next();
         }, 200);
       }
 
-      if (process === 100) {
-        if (typeof this.filePath === "object" && this.filePath.length > this.loaderIndex) {
-          // Load completed
-          this.$nextTick(() => {
-            this.loaderIndex++;
-
-            if (this.loaderIndex === this.filePath.length) {
-              this.loaderIndex = 0;
-              return;
-            }
-
-            this.load();
-          });
-        } else {
-          this.loaderIndex = 0;
-        }
-      }
+      next();
     },
 
     addTexture(object, texture) {
