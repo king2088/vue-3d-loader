@@ -561,30 +561,35 @@ export default {
     },
     onProcess(xhr) {
       let process = Math.floor((xhr.loaded / xhr.total) * 100);
+      const next = () => {
+        if (process === 100) {
+          if (
+            typeof this.filePath === "object" &&
+            this.filePath.length > this.loaderIndex
+          ) {
+            // Load completed
+            this.$nextTick(() => {
+              this.loaderIndex++;
+              if (this.loaderIndex === this.filePath.length) {
+                this.loaderIndex = 0;
+                return;
+              }
+              this.load();
+            });
+          } else {
+            this.loaderIndex = 0;
+          }
+        }
+      }
+      // local webpack environment http response headers no content-length, the xhr.total is 0, so process === Infinity
       if (process === Infinity) {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           process = 100;
+          next()
         }, 200);
       }
-      if (process === 100) {
-        if (
-          typeof this.filePath === "object" &&
-          this.filePath.length > this.loaderIndex
-        ) {
-          // Load completed
-          this.$nextTick(() => {
-            this.loaderIndex++;
-            if (this.loaderIndex === this.filePath.length) {
-              this.loaderIndex = 0;
-              return;
-            }
-            this.load();
-          });
-        } else {
-          this.loaderIndex = 0;
-        }
-      }
+      next()
     },
     addTexture(object, texture) {
       const textureLoader = new TextureLoader();
