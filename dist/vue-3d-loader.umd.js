@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=a5fd51ea&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=53de6a40&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21241,6 +21241,12 @@ function getMTLLoader() {
     },
     textureImage: {
       type: [String, Array]
+    },
+    clearScene: {
+      type: Boolean,
+      default: () => {
+        return false;
+      }
     }
   },
 
@@ -21271,7 +21277,8 @@ function getMTLLoader() {
     return {
       loaderIndex: 0,
       timer: null,
-      objectPositionHasSet: false
+      objectPositionHasSet: false,
+      mouseMoveTimer: null
     };
   },
 
@@ -21398,7 +21405,22 @@ function getMTLLoader() {
         this.updateCamera();
       }
 
+    },
+    cameraPosition: {
+      deep: true,
+
+      handler() {
+        this.updateCamera();
+      }
+
+    },
+
+    clearScene(val) {
+      if (val) {
+        this.clearSceneWrapper();
+      }
     }
+
   },
   methods: {
     onResize() {
@@ -21420,8 +21442,20 @@ function getMTLLoader() {
     },
 
     onMouseMove(event) {
-      const intersected = this.pick(event.clientX, event.clientY);
-      this.$emit("mousemove", event, intersected);
+      const emit = () => {
+        const intersected = this.pick(event.clientX, event.clientY);
+        this.$emit("mousemove", event, intersected);
+      };
+
+      if (typeof this.filePath === 'string') {
+        emit();
+      } else {
+        // throttle
+        clearTimeout(this.mouseMoveTimer);
+        this.mouseMoveTimer = setTimeout(() => {
+          emit();
+        }, 200);
+      }
     },
 
     onMouseUp(event) {
@@ -21448,7 +21482,7 @@ function getMTLLoader() {
       this.mouse.x = x / this.size.width * 2 - 1;
       this.mouse.y = -(y / this.size.height) * 2 + 1;
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(this.object, true);
+      const intersects = this.raycaster.intersectObject(this.wrapper, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
 
@@ -21640,7 +21674,8 @@ function getMTLLoader() {
     loadFilePath(filePath, getObject) {
       this.loader.load(filePath, (...args) => {
         const object = getObject(...args);
-        this.addObject(object);
+        this.object = object;
+        this.addObject(object, filePath);
         this.mixer = new AnimationMixer(object);
 
         if (object.animations[0]) {
@@ -21657,7 +21692,7 @@ function getMTLLoader() {
           }
         }
 
-        this.$emit("load");
+        this.$emit("load", this.wrapper);
       }, event => {
         this.onProcess(event);
         let modelIndex = this.loaderIndex + 1;
@@ -21694,7 +21729,7 @@ function getMTLLoader() {
       return object;
     },
 
-    addObject(object) {
+    addObject(object, filePath) {
       const center = getCenter(object); // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
 
       if (!this.objectPositionHasSet) {
@@ -21702,7 +21737,12 @@ function getMTLLoader() {
         this.objectPositionHasSet = true;
       }
 
-      this.object = object;
+      this.object = object; // add the file name to object
+
+      let _fileName = filePath.split('/');
+
+      _fileName = _fileName[_fileName.length - 1];
+      this.object._fileName = _fileName;
       this.wrapper.add(object);
       this.updateCamera();
       this.updateModel();
@@ -21773,6 +21813,10 @@ function getMTLLoader() {
           });
         }
       });
+    },
+
+    clearSceneWrapper() {
+      this.wrapper.clear();
     }
 
   }
