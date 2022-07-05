@@ -99,6 +99,12 @@ export default {
     textureImage: {
       type: [String, Array],
     },
+    clearScene: {
+      type: Boolean, 
+      default: () => {
+        return false
+      }
+    }
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -127,7 +133,8 @@ export default {
     return {
       loaderIndex: 0,
       timer: null,
-      objectPositionHasSet: false
+      objectPositionHasSet: false,
+      mouseMoveTimer: null
     };
   },
   mounted() {
@@ -239,6 +246,17 @@ export default {
         this.updateCamera();
       },
     },
+    cameraPosition: {
+      deep: true,
+      handler() {
+        this.updateCamera();
+      }
+    },
+    clearScene(val) {
+      if (val) {
+        this.clearSceneWrapper()
+      }
+    }
   },
   methods: {
     onResize() {
@@ -258,8 +276,19 @@ export default {
       this.$emit("mousedown", event, intersected);
     },
     onMouseMove(event) {
-      const intersected = this.pick(event.clientX, event.clientY);
-      this.$emit("mousemove", event, intersected);
+      const emit = () => {
+        const intersected = this.pick(event.clientX, event.clientY);
+        this.$emit("mousemove", event, intersected);
+      }
+      if (typeof this.filePath === 'string') {
+        emit()
+      } else {
+        // throttle
+        clearTimeout(this.mouseMoveTimer)
+        this.mouseMoveTimer = setTimeout(() => {
+          emit()
+        }, 200)
+      }
     },
     onMouseUp(event) {
       const intersected = this.pick(event.clientX, event.clientY);
@@ -282,7 +311,7 @@ export default {
       this.mouse.x = (x / this.size.width) * 2 - 1;
       this.mouse.y = -(y / this.size.height) * 2 + 1;
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(this.object, true);
+      const intersects = this.raycaster.intersectObject(this.wrapper, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
     update(isResize=false) {
@@ -480,7 +509,8 @@ export default {
         filePath,
         (...args) => {
           const object = getObject(...args);
-          this.addObject(object);
+          this.object = object
+          this.addObject(object, filePath);
           this.mixer = new AnimationMixer(object);
           if (object.animations[0]) {
             const action = this.mixer.clipAction(object.animations[0]);
@@ -496,7 +526,7 @@ export default {
               this.addTexture(object, _texture);
             }
           }
-          this.$emit("load");
+          this.$emit("load", this.wrapper);
         },
         (event) => {
           this.onProcess(event);
@@ -532,7 +562,7 @@ export default {
     getObject(object) {
       return object;
     },
-    addObject(object) {
+    addObject(object, filePath) {
       const center = getCenter(object);
       // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
       if(!this.objectPositionHasSet) {
@@ -540,6 +570,10 @@ export default {
         this.objectPositionHasSet = true
       }
       this.object = object;
+      // add the file name to object
+      let _fileName = filePath.split('/')
+      _fileName = _fileName[_fileName.length - 1]
+      this.object._fileName = _fileName;
       this.wrapper.add(object);
       this.updateCamera();
       this.updateModel();
@@ -609,6 +643,9 @@ export default {
         }
       });
     },
+    clearSceneWrapper() {
+      this.wrapper.clear()
+    }
   },
 };
 </script>
