@@ -134,10 +134,14 @@ export default {
       loaderIndex: 0,
       timer: null,
       objectPositionHasSet: false,
-      mouseMoveTimer: null
+      mouseMoveTimer: null,
+      isMultipleModels: false
     };
   },
   mounted() {
+    if (this.filePath && typeof this.filePath === 'object') {
+      this.isMultipleModels = true
+    }
     const el = this.$refs.container;
     // init canvas width and height
     this.onResize();
@@ -152,6 +156,7 @@ export default {
     );
 
     this.renderer = new WebGLRenderer(options);
+    this.renderer.hadowMapEnabled = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
 
@@ -197,22 +202,19 @@ export default {
     rotation: {
       deep: true,
       handler(val) {
-        if (!this.object) return;
-        this.object.rotation.set(val.x, val.y, val.z);
+        this.setObjectAttr('rotation', val)
       },
     },
     position: {
       deep: true,
       handler(val) {
-        if (!this.object) return;
-        this.object.position.set(val.x, val.y, val.z);
+        this.setObjectAttr('position', val)
       },
     },
     scale: {
       deep: true,
       handler(val) {
-        if (!this.object) return;
-        this.object.scale.set(val.x, val.y, val.z);
+        this.setObjectAttr('scale', val)
       },
     },
     lights: {
@@ -280,7 +282,7 @@ export default {
         const intersected = this.pick(event.clientX, event.clientY);
         this.$emit("mousemove", event, intersected);
       }
-      if (typeof this.filePath === 'string') {
+      if (!this.isMultipleModels) {
         emit()
       } else {
         // throttle
@@ -303,7 +305,8 @@ export default {
       this.$emit("dblclick", event, intersected);
     },
     pick(x, y) {
-      if (!this.object) return null;
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      if (!obj) return null;
       if (!this.$refs.container) return;
       const rect = this.$refs.container.getBoundingClientRect();
       x -= rect.left;
@@ -311,7 +314,7 @@ export default {
       this.mouse.x = (x / this.size.width) * 2 - 1;
       this.mouse.y = -(y / this.size.height) * 2 + 1;
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(this.wrapper, true);
+      const intersects = this.raycaster.intersectObject(obj, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
     update(isResize=false) {
@@ -468,7 +471,7 @@ export default {
       if (!this.filePath) return;
       // if multiple files
       const _filePath =
-        typeof this.filePath === "string"
+        !this.isMultipleModels
           ? this.filePath
           : this.filePath[this.loaderIndex];
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
@@ -516,6 +519,14 @@ export default {
             const action = this.mixer.clipAction(object.animations[0]);
             action.play();
           }
+          // solve GLTF dim light problem
+          object.traverse((child) => {
+            if(child.isMesh) {
+              child.frustumCulled = false;
+              child.castShadow = true;
+              child.material.emissiveMap = child.material.map;
+            }
+          })
           // set texture
           if (this.textureImage) {
             let _texture =
@@ -598,7 +609,7 @@ export default {
       const next = () => {
         if (process === 100) {
           if (
-            typeof this.filePath === "object" &&
+            this.isMultipleModels &&
             this.filePath.length > this.loaderIndex
           ) {
             // Load completed
@@ -645,7 +656,12 @@ export default {
     },
     clearSceneWrapper() {
       this.wrapper.clear()
-    }
+    },
+    setObjectAttr(type, val) {
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      if (!obj) return;
+      obj[type].set(val.x, val.y, val.z);
+    },
   },
 };
 </script>
