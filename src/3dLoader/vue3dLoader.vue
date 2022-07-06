@@ -519,14 +519,6 @@ export default {
             const action = this.mixer.clipAction(object.animations[0]);
             action.play();
           }
-          // solve GLTF dim light problem
-          object.traverse((child) => {
-            if(child.isMesh) {
-              child.frustumCulled = false;
-              child.castShadow = true;
-              child.material.emissiveMap = child.material.map;
-            }
-          })
           // set texture
           if (this.textureImage) {
             let _texture =
