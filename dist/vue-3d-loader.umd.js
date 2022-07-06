@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=e0e014cc&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=538efd58&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21100,7 +21100,17 @@ function getLoader(filePath) {
       obj = {
         loader: new GLTFLoader(manager),
         getObject: gltf => {
-          return gltf.scene;
+          const object = gltf.scene; // solve GLTF dim light problem
+
+          object.traverse(child => {
+            if (child.isMesh) {
+              child.frustumCulled = false;
+              child.castShadow = true;
+              child.material.emissive = child.material.color;
+              child.material.emissiveMap = child.material.map;
+            }
+          });
+          return object;
         }
       };
       break;
@@ -21685,16 +21695,8 @@ function getMTLLoader() {
         if (object.animations[0]) {
           const action = this.mixer.clipAction(object.animations[0]);
           action.play();
-        } // solve GLTF dim light problem
+        } // set texture
 
-
-        object.traverse(child => {
-          if (child.isMesh) {
-            child.frustumCulled = false;
-            child.castShadow = true;
-            child.material.emissiveMap = child.material.map;
-          }
-        }); // set texture
 
         if (this.textureImage) {
           let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[this.loaderIndex];
