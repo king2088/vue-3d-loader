@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=53de6a40&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=e0e014cc&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21099,8 +21099,8 @@ function getLoader(filePath) {
     case "gltf":
       obj = {
         loader: new GLTFLoader(manager),
-        getObject: collada => {
-          return collada.scene;
+        getObject: gltf => {
+          return gltf.scene;
         }
       };
       break;
@@ -21278,11 +21278,16 @@ function getMTLLoader() {
       loaderIndex: 0,
       timer: null,
       objectPositionHasSet: false,
-      mouseMoveTimer: null
+      mouseMoveTimer: null,
+      isMultipleModels: false
     };
   },
 
   mounted() {
+    if (this.filePath && typeof this.filePath === 'object') {
+      this.isMultipleModels = true;
+    }
+
     const el = this.$refs.container; // init canvas width and height
 
     this.onResize();
@@ -21294,6 +21299,7 @@ function getMTLLoader() {
       canvas: this.$refs.canvas
     });
     this.renderer = new WebGLRenderer(options);
+    this.renderer.hadowMapEnabled = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
     this.controls = new OrbitControls(this.camera, el);
@@ -21341,8 +21347,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        if (!this.object) return;
-        this.object.rotation.set(val.x, val.y, val.z);
+        this.setObjectAttr('rotation', val);
       }
 
     },
@@ -21350,8 +21355,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        if (!this.object) return;
-        this.object.position.set(val.x, val.y, val.z);
+        this.setObjectAttr('position', val);
       }
 
     },
@@ -21359,8 +21363,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        if (!this.object) return;
-        this.object.scale.set(val.x, val.y, val.z);
+        this.setObjectAttr('scale', val);
       }
 
     },
@@ -21447,7 +21450,7 @@ function getMTLLoader() {
         this.$emit("mousemove", event, intersected);
       };
 
-      if (typeof this.filePath === 'string') {
+      if (!this.isMultipleModels) {
         emit();
       } else {
         // throttle
@@ -21474,7 +21477,8 @@ function getMTLLoader() {
     },
 
     pick(x, y) {
-      if (!this.object) return null;
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      if (!obj) return null;
       if (!this.$refs.container) return;
       const rect = this.$refs.container.getBoundingClientRect();
       x -= rect.left;
@@ -21482,7 +21486,7 @@ function getMTLLoader() {
       this.mouse.x = x / this.size.width * 2 - 1;
       this.mouse.y = -(y / this.size.height) * 2 + 1;
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(this.wrapper, true);
+      const intersects = this.raycaster.intersectObject(obj, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
 
@@ -21629,7 +21633,7 @@ function getMTLLoader() {
     load() {
       if (!this.filePath) return; // if multiple files
 
-      const _filePath = typeof this.filePath === "string" ? this.filePath : this.filePath[this.loaderIndex];
+      const _filePath = !this.isMultipleModels ? this.filePath : this.filePath[this.loaderIndex];
 
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
 
@@ -21681,8 +21685,16 @@ function getMTLLoader() {
         if (object.animations[0]) {
           const action = this.mixer.clipAction(object.animations[0]);
           action.play();
-        } // set texture
+        } // solve GLTF dim light problem
 
+
+        object.traverse(child => {
+          if (child.isMesh) {
+            child.frustumCulled = false;
+            child.castShadow = true;
+            child.material.emissiveMap = child.material.map;
+          }
+        }); // set texture
 
         if (this.textureImage) {
           let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[this.loaderIndex];
@@ -21771,7 +21783,7 @@ function getMTLLoader() {
 
       const next = () => {
         if (process === 100) {
-          if (typeof this.filePath === "object" && this.filePath.length > this.loaderIndex) {
+          if (this.isMultipleModels && this.filePath.length > this.loaderIndex) {
             // Load completed
             this.$nextTick(() => {
               this.loaderIndex++;
@@ -21817,6 +21829,12 @@ function getMTLLoader() {
 
     clearSceneWrapper() {
       this.wrapper.clear();
+    },
+
+    setObjectAttr(type, val) {
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      if (!obj) return;
+      obj[type].set(val.x, val.y, val.z);
     }
 
   }
