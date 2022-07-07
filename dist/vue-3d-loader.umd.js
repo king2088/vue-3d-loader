@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=538efd58&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=92732b28&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21257,6 +21257,12 @@ function getMTLLoader() {
       default: () => {
         return false;
       }
+    },
+    parallelLoad: {
+      type: Boolean,
+      default: () => {
+        return false;
+      }
     }
   },
 
@@ -21314,7 +21320,7 @@ function getMTLLoader() {
     this.renderer.outputEncoding = this.outputEncoding;
     this.controls = new OrbitControls(this.camera, el);
     this.scene.add(this.wrapper);
-    this.load();
+    this.loadModelSelect();
     this.update();
     el.addEventListener("mousedown", this.onMouseDown, false);
     el.addEventListener("mousemove", this.onMouseMove, false);
@@ -21350,7 +21356,7 @@ function getMTLLoader() {
 
   watch: {
     filePath() {
-      this.load();
+      this.loadModelSelect();
     },
 
     rotation: {
@@ -21640,10 +21646,22 @@ function getMTLLoader() {
       }
     },
 
-    load() {
-      if (!this.filePath) return; // if multiple files
+    loadModelSelect() {
+      // parallel load
+      if (this.parallelLoad && this.isMultipleModels) {
+        this.filePath.forEach((path, index) => {
+          this.load(index);
+        });
+      } else {
+        this.load();
+      }
+    },
 
-      const _filePath = !this.isMultipleModels ? this.filePath : this.filePath[this.loaderIndex];
+    load(fileIndex = null) {
+      if (!this.filePath) return;
+      let index = fileIndex ? fileIndex : this.loaderIndex; // if multiple files
+
+      const _filePath = !this.isMultipleModels ? this.filePath : this.filePath[index];
 
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
 
@@ -21651,7 +21669,7 @@ function getMTLLoader() {
 
       const _getObject = loaderObj.getObject ? loaderObj.getObject : this.getObject;
 
-      if (this.object && this.loaderIndex === 0) {
+      if (this.object && index === 0) {
         this.wrapper.remove(this.object);
       }
 
@@ -21669,37 +21687,40 @@ function getMTLLoader() {
 
         if (isMultipleMTL) {
           // single material
-          this.loadMtl(_filePath, _getObject);
+          this.loadMtl(_filePath, _getObject, index);
         } else {
           // load materials and model
-          if (!this.mtlPath[this.loaderIndex]) {
-            this.loadFilePath(_filePath, _getObject);
+          if (!this.mtlPath[index]) {
+            this.loadFilePath(_filePath, _getObject, index);
             return;
           }
 
-          this.loadMtl(_filePath, _getObject);
+          this.loadMtl(_filePath, _getObject, index);
         }
       } else {
         // don't load materials
-        this.loadFilePath(_filePath, _getObject);
+        this.loadFilePath(_filePath, _getObject, index);
       }
     },
 
-    loadFilePath(filePath, getObject) {
+    loadFilePath(filePath, getObject, index) {
       this.loader.load(filePath, (...args) => {
         const object = getObject(...args);
         this.object = object;
         this.addObject(object, filePath);
         this.mixer = new AnimationMixer(object);
+        console.log(filePath, object.animations);
 
-        if (object.animations[0]) {
-          const action = this.mixer.clipAction(object.animations[0]);
-          action.play();
+        if (object.animations) {
+          object.animations.forEach(clip => {
+            const action = this.mixer.clipAction(clip);
+            action.play();
+          });
         } // set texture
 
 
         if (this.textureImage) {
-          let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[this.loaderIndex];
+          let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[index];
 
           if (_texture) {
             this.addTexture(object, _texture);
@@ -21708,7 +21729,10 @@ function getMTLLoader() {
 
         this.$emit("load", this.wrapper);
       }, event => {
-        this.onProcess(event);
+        if (!this.parallelLoad) {
+          this.onProcess(event);
+        }
+
         let modelIndex = this.loaderIndex + 1;
         this.$emit("process", event, modelIndex);
       }, event => {
@@ -21716,7 +21740,7 @@ function getMTLLoader() {
       });
     },
 
-    loadMtl(filePath, getObject) {
+    loadMtl(filePath, getObject, index) {
       const mtlLoader = getMTLLoader();
 
       if (this.crossOrigin) {
@@ -21727,7 +21751,7 @@ function getMTLLoader() {
         mtlLoader.setRequestHeader(this.requestHeader);
       }
 
-      const _mtl = typeof this.mtlPath === "string" ? this.mtlPath : this.mtlPath[this.loaderIndex];
+      const _mtl = typeof this.mtlPath === "string" ? this.mtlPath : this.mtlPath[index];
 
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
@@ -21735,7 +21759,7 @@ function getMTLLoader() {
       mtlLoader.setPath(path).load(file, materials => {
         materials.preload();
         this.loader.setMaterials(materials);
-        this.loadFilePath(filePath, getObject);
+        this.loadFilePath(filePath, getObject, index);
       });
     },
 
