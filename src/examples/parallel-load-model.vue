@@ -3,7 +3,8 @@
     :filePath="filePath"
     :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
     :cameraPosition="{ x: 100, y: 200, z: 30 }"
-  />
+    :parallelLoad="true"
+  ></vue3dLoader>
 </template>
 <script>
 export default {
@@ -11,7 +12,8 @@ export default {
     return {
       filePath: [
         "/models/fbx/Samba Dancing.fbx",
-        "models/collada/pump/pump.dae",
+        "/models/collada/pump/pump.dae",
+        "/models/ply/Lucy100k.ply"
       ],
     };
   },

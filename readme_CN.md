@@ -69,6 +69,7 @@ Vue.use(vue3dLoader)
 | webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                    | WebGLRenderer可选参数[WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)                           |
 | showFps              | boolean          | false                                                                                                                               | 显示FPS等信息                                                                                                                                 |
 | clearScene           | boolean          | false                                                                                                                               | 清空场景中的内容                                                                                                                              |
+| parallelLoad         | boolean          | false                                                                                                                               | 开启/关闭并行加载模型（仅在多模型下有效）**注意：使用此属性后，load进度process事件将不可预测**                                                                                                     |
 
 ### 事件
 
