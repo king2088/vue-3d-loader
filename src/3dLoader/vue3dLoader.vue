@@ -102,9 +102,15 @@ export default {
     clearScene: {
       type: Boolean, 
       default: () => {
-        return false
-      }
-    }
+        return false;
+      },
+    },
+    parallelLoad: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -164,7 +170,7 @@ export default {
 
     this.scene.add(this.wrapper);
     
-    this.load();
+    this.loadModelSelect();
     this.update();
 
     el.addEventListener("mousedown", this.onMouseDown, false);
@@ -197,7 +203,7 @@ export default {
   },
   watch: {
     filePath() {
-      this.load();
+      this.loadModelSelect();
     },
     rotation: {
       deep: true,
@@ -467,19 +473,30 @@ export default {
         Object.assign(this.controls, this.controlsOptions);
       }
     },
-    load() {
+    loadModelSelect() {
+      // parallel load
+      if (this.parallelLoad && this.isMultipleModels) {
+        this.filePath.forEach((path, index) => {
+          this.load(index)
+        })
+      } else {
+        this.load()
+      }
+    },
+    load(fileIndex=null) {
       if (!this.filePath) return;
+      let index = fileIndex ? fileIndex : this.loaderIndex
       // if multiple files
       const _filePath =
         !this.isMultipleModels
           ? this.filePath
-          : this.filePath[this.loaderIndex];
+          : this.filePath[index];
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject
         : this.getObject;
-      if (this.object && this.loaderIndex === 0) {
+      if (this.object && index === 0) {
         this.wrapper.remove(this.object);
       }
       if (this.requestHeader) {
@@ -493,21 +510,21 @@ export default {
         const isMultipleMTL = typeof this.mtlPath === "string";
         if (isMultipleMTL) {
           // single material
-          this.loadMtl(_filePath, _getObject);
+          this.loadMtl(_filePath, _getObject, index);
         } else {
           // load materials and model
-          if (!this.mtlPath[this.loaderIndex]) {
-            this.loadFilePath(_filePath, _getObject);
+          if (!this.mtlPath[index]) {
+            this.loadFilePath(_filePath, _getObject, index);
             return;
           }
-          this.loadMtl(_filePath, _getObject);
+          this.loadMtl(_filePath, _getObject, index);
         }
       } else {
         // don't load materials
-        this.loadFilePath(_filePath, _getObject);
+        this.loadFilePath(_filePath, _getObject, index);
       }
     },
-    loadFilePath(filePath, getObject) {
+    loadFilePath(filePath, getObject, index) {
       this.loader.load(
         filePath,
         (...args) => {
@@ -515,16 +532,19 @@ export default {
           this.object = object
           this.addObject(object, filePath);
           this.mixer = new AnimationMixer(object);
-          if (object.animations[0]) {
-            const action = this.mixer.clipAction(object.animations[0]);
-            action.play();
+          console.log(filePath, object.animations);
+          if (object.animations) {
+            object.animations.forEach(clip => {
+              const action = this.mixer.clipAction(clip);
+              action.play();
+            })
           }
           // set texture
           if (this.textureImage) {
             let _texture =
               typeof this.textureImage === "string"
                 ? this.textureImage
-                : this.textureImage[this.loaderIndex];
+                : this.textureImage[index];
             if (_texture) {
               this.addTexture(object, _texture);
             }
@@ -532,7 +552,9 @@ export default {
           this.$emit("load", this.wrapper);
         },
         (event) => {
-          this.onProcess(event);
+          if (!this.parallelLoad) {
+            this.onProcess(event);
+          }
           let modelIndex = this.loaderIndex + 1;
           this.$emit("process", event, modelIndex);
         },
@@ -541,7 +563,7 @@ export default {
         }
       );
     },
-    loadMtl(filePath, getObject) {
+    loadMtl(filePath, getObject, index) {
       const mtlLoader = getMTLLoader();
       if (this.crossOrigin) {
         mtlLoader.setCrossOrigin(this.crossOrigin);
@@ -552,14 +574,14 @@ export default {
       const _mtl =
         typeof this.mtlPath === "string"
           ? this.mtlPath
-          : this.mtlPath[this.loaderIndex];
+          : this.mtlPath[index];
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
       mtlLoader.setPath(path).load(file, (materials) => {
         materials.preload();
         this.loader.setMaterials(materials);
-        this.loadFilePath(filePath, getObject);
+        this.loadFilePath(filePath, getObject, index);
       });
     },
     getObject(object) {
