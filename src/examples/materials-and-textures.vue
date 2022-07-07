@@ -9,7 +9,7 @@
         :mtlPath="item.mtlPath"
         :textureImage="item.textureImage"
         :backgroundColor="item.backgroundColor"
-      ></vue3dLoader>
+      />
     </div>
   </div>
 </template>

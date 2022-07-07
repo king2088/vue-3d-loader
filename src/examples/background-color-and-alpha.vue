@@ -8,7 +8,7 @@
         :backgroundAlpha="0.5"
         :height="600"
         :width="600"
-      ></vue3dLoader>
+      />
     </div>
   </div>
 </template>
