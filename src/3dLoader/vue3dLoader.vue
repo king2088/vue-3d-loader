@@ -20,7 +20,9 @@ import {
   LinearEncoding,
   TextureLoader,
   AnimationMixer,
-  Clock
+  Clock,
+  Sprite,
+  SpriteMaterial
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -111,6 +113,7 @@ export default {
         return false;
       },
     },
+    label: Array
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -133,6 +136,7 @@ export default {
       requestAnimationId: null,
       stats: null,
       mixer: null,
+      textureLoader: null
     };
     Object.assign(this, result);
     // 响应式对象
@@ -167,10 +171,11 @@ export default {
     this.renderer.outputEncoding = this.outputEncoding;
 
     this.controls = new OrbitControls(this.camera, el);
-
+    this.textureLoader = new TextureLoader();
     this.scene.add(this.wrapper);
     
     this.loadModelSelect();
+    this.setLabel();
     this.update();
 
     el.addEventListener("mousedown", this.onMouseDown, false);
@@ -264,6 +269,12 @@ export default {
       if (val) {
         this.clearSceneWrapper()
       }
+    },
+    label: {
+      deep: true,
+      handler() {
+        this.setLabel()
+      }
     }
   },
   methods: {
@@ -311,7 +322,7 @@ export default {
       this.$emit("dblclick", event, intersected);
     },
     pick(x, y) {
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      let obj = this.returnObject();
       if (!obj) return null;
       if (!this.$refs.container) return;
       const rect = this.$refs.container.getBoundingClientRect();
@@ -651,10 +662,9 @@ export default {
       next()
     },
     addTexture(object, texture) {
-      const textureLoader = new TextureLoader();
       object.traverse((child) => {
         if (child.isMesh) {
-          textureLoader.load(
+          this.textureLoader.load(
             texture,
             (_texture) => {
               child.material.map = _texture;
@@ -672,9 +682,49 @@ export default {
       this.wrapper.clear()
     },
     setObjectAttr(type, val) {
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      let obj = this.returnObject();
       if (!obj) return;
       obj[type].set(val.x, val.y, val.z);
+    },
+    returnObject() {
+      return this.isMultipleModels ? this.wrapper : this.object;
+    },
+    setLabel() {
+      /**
+       * label的数据格式应该如下
+       * type: '' // 2dCss || 3dCss || sprite
+       * image: ''
+       * spriteMaterialColor: null // default: #ffffff
+       * position: {x:0, y:0, z:0}
+       * scale: {x:1, y:1, z:1}
+       * id: null // 标识，可有可无
+       */
+      if (this.label.length === 0) return;
+      let obj = this.returnObject();
+      this.label.forEach(item => {
+        if(item.type === 'sprite') {
+          this.spriteLabel(obj, item)
+        }
+      })
+    },
+    spriteLabel(obj, item) {
+      const spriteMap = this.textureLoader.load(item.image);
+      const spriteMaterial = new SpriteMaterial({
+        map: spriteMap,
+        color: 0xffffff,
+      });
+      const sprite = new Sprite(spriteMaterial);
+      if (item.scale) {
+        sprite.scale.set(item.scale.x, item.scale.y, item.scale.z);
+      }
+      if (item.position) {
+        sprite.position.set(
+          item.position.x,
+          item.position.y,
+          item.position.z
+        );
+      };
+      obj.add(sprite);
     },
   },
 };
