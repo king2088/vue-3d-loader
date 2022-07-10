@@ -2708,7 +2708,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=92732b28&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=a5a9882e&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -3936,7 +3936,7 @@ if(typeof __THREE_DEVTOOLS__!=='undefined'){__THREE_DEVTOOLS__.dispatchEvent(new
 if(this.array.buffer._uuid===undefined){this.array.buffer._uuid=generateUUID();}if(data.arrayBuffers[this.array.buffer._uuid]===undefined){data.arrayBuffers[this.array.buffer._uuid]=Array.from(new Uint32Array(this.array.buffer));}//
 return{uuid:this.uuid,buffer:this.array.buffer._uuid,type:this.array.constructor.name,stride:this.stride};}}const _vector$6=/*@__PURE__*/new Vector3();class InterleavedBufferAttribute{constructor(interleavedBuffer,itemSize,offset,normalized=false){this.isInterleavedBufferAttribute=true;this.name='';this.data=interleavedBuffer;this.itemSize=itemSize;this.offset=offset;this.normalized=normalized===true;}get count(){return this.data.count;}get array(){return this.data.array;}set needsUpdate(value){this.data.needsUpdate=value;}applyMatrix4(m){for(let i=0,l=this.data.count;i<l;i++){_vector$6.fromBufferAttribute(this,i);_vector$6.applyMatrix4(m);this.setXYZ(i,_vector$6.x,_vector$6.y,_vector$6.z);}return this;}applyNormalMatrix(m){for(let i=0,l=this.count;i<l;i++){_vector$6.fromBufferAttribute(this,i);_vector$6.applyNormalMatrix(m);this.setXYZ(i,_vector$6.x,_vector$6.y,_vector$6.z);}return this;}transformDirection(m){for(let i=0,l=this.count;i<l;i++){_vector$6.fromBufferAttribute(this,i);_vector$6.transformDirection(m);this.setXYZ(i,_vector$6.x,_vector$6.y,_vector$6.z);}return this;}setX(index,x){this.data.array[index*this.data.stride+this.offset]=x;return this;}setY(index,y){this.data.array[index*this.data.stride+this.offset+1]=y;return this;}setZ(index,z){this.data.array[index*this.data.stride+this.offset+2]=z;return this;}setW(index,w){this.data.array[index*this.data.stride+this.offset+3]=w;return this;}getX(index){return this.data.array[index*this.data.stride+this.offset];}getY(index){return this.data.array[index*this.data.stride+this.offset+1];}getZ(index){return this.data.array[index*this.data.stride+this.offset+2];}getW(index){return this.data.array[index*this.data.stride+this.offset+3];}setXY(index,x,y){index=index*this.data.stride+this.offset;this.data.array[index+0]=x;this.data.array[index+1]=y;return this;}setXYZ(index,x,y,z){index=index*this.data.stride+this.offset;this.data.array[index+0]=x;this.data.array[index+1]=y;this.data.array[index+2]=z;return this;}setXYZW(index,x,y,z,w){index=index*this.data.stride+this.offset;this.data.array[index+0]=x;this.data.array[index+1]=y;this.data.array[index+2]=z;this.data.array[index+3]=w;return this;}clone(data){if(data===undefined){console.log('THREE.InterleavedBufferAttribute.clone(): Cloning an interleaved buffer attribute will deinterleave buffer data.');const array=[];for(let i=0;i<this.count;i++){const index=i*this.data.stride+this.offset;for(let j=0;j<this.itemSize;j++){array.push(this.data.array[index+j]);}}return new BufferAttribute(new this.array.constructor(array),this.itemSize,this.normalized);}else{if(data.interleavedBuffers===undefined){data.interleavedBuffers={};}if(data.interleavedBuffers[this.data.uuid]===undefined){data.interleavedBuffers[this.data.uuid]=this.data.clone(data);}return new InterleavedBufferAttribute(data.interleavedBuffers[this.data.uuid],this.itemSize,this.offset,this.normalized);}}toJSON(data){if(data===undefined){console.log('THREE.InterleavedBufferAttribute.toJSON(): Serializing an interleaved buffer attribute will deinterleave buffer data.');const array=[];for(let i=0;i<this.count;i++){const index=i*this.data.stride+this.offset;for(let j=0;j<this.itemSize;j++){array.push(this.data.array[index+j]);}}// deinterleave data and save it as an ordinary buffer attribute for now
 return{itemSize:this.itemSize,type:this.array.constructor.name,array:array,normalized:this.normalized};}else{// save as true interleaved attribtue
-if(data.interleavedBuffers===undefined){data.interleavedBuffers={};}if(data.interleavedBuffers[this.data.uuid]===undefined){data.interleavedBuffers[this.data.uuid]=this.data.toJSON(data);}return{isInterleavedBufferAttribute:true,itemSize:this.itemSize,data:this.data.uuid,offset:this.offset,normalized:this.normalized};}}}class SpriteMaterial extends (/* unused pure expression or super */ null && (Material)){constructor(parameters){super();this.isSpriteMaterial=true;this.type='SpriteMaterial';this.color=new Color(0xffffff);this.map=null;this.alphaMap=null;this.rotation=0;this.sizeAttenuation=true;this.transparent=true;this.fog=true;this.setValues(parameters);}copy(source){super.copy(source);this.color.copy(source.color);this.map=source.map;this.alphaMap=source.alphaMap;this.rotation=source.rotation;this.sizeAttenuation=source.sizeAttenuation;this.fog=source.fog;return this;}}let _geometry;const _intersectPoint=/*@__PURE__*/new Vector3();const _worldScale=/*@__PURE__*/new Vector3();const _mvPosition=/*@__PURE__*/new Vector3();const _alignedPosition=/*@__PURE__*/new Vector2();const _rotatedPosition=/*@__PURE__*/new Vector2();const _viewWorldMatrix=/*@__PURE__*/new Matrix4();const _vA=/*@__PURE__*/new Vector3();const _vB=/*@__PURE__*/new Vector3();const _vC=/*@__PURE__*/new Vector3();const _uvA=/*@__PURE__*/new Vector2();const _uvB=/*@__PURE__*/new Vector2();const _uvC=/*@__PURE__*/new Vector2();class Sprite extends (/* unused pure expression or super */ null && (Object3D)){constructor(material){super();this.isSprite=true;this.type='Sprite';if(_geometry===undefined){_geometry=new BufferGeometry();const float32Array=new Float32Array([-0.5,-0.5,0,0,0,0.5,-0.5,0,1,0,0.5,0.5,0,1,1,-0.5,0.5,0,0,1]);const interleavedBuffer=new InterleavedBuffer(float32Array,5);_geometry.setIndex([0,1,2,0,2,3]);_geometry.setAttribute('position',new InterleavedBufferAttribute(interleavedBuffer,3,0,false));_geometry.setAttribute('uv',new InterleavedBufferAttribute(interleavedBuffer,2,3,false));}this.geometry=_geometry;this.material=material!==undefined?material:new SpriteMaterial();this.center=new Vector2(0.5,0.5);}raycast(raycaster,intersects){if(raycaster.camera===null){console.error('THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.');}_worldScale.setFromMatrixScale(this.matrixWorld);_viewWorldMatrix.copy(raycaster.camera.matrixWorld);this.modelViewMatrix.multiplyMatrices(raycaster.camera.matrixWorldInverse,this.matrixWorld);_mvPosition.setFromMatrixPosition(this.modelViewMatrix);if(raycaster.camera.isPerspectiveCamera&&this.material.sizeAttenuation===false){_worldScale.multiplyScalar(-_mvPosition.z);}const rotation=this.material.rotation;let sin,cos;if(rotation!==0){cos=Math.cos(rotation);sin=Math.sin(rotation);}const center=this.center;transformVertex(_vA.set(-0.5,-0.5,0),_mvPosition,center,_worldScale,sin,cos);transformVertex(_vB.set(0.5,-0.5,0),_mvPosition,center,_worldScale,sin,cos);transformVertex(_vC.set(0.5,0.5,0),_mvPosition,center,_worldScale,sin,cos);_uvA.set(0,0);_uvB.set(1,0);_uvC.set(1,1);// check first triangle
+if(data.interleavedBuffers===undefined){data.interleavedBuffers={};}if(data.interleavedBuffers[this.data.uuid]===undefined){data.interleavedBuffers[this.data.uuid]=this.data.toJSON(data);}return{isInterleavedBufferAttribute:true,itemSize:this.itemSize,data:this.data.uuid,offset:this.offset,normalized:this.normalized};}}}class SpriteMaterial extends Material{constructor(parameters){super();this.isSpriteMaterial=true;this.type='SpriteMaterial';this.color=new Color(0xffffff);this.map=null;this.alphaMap=null;this.rotation=0;this.sizeAttenuation=true;this.transparent=true;this.fog=true;this.setValues(parameters);}copy(source){super.copy(source);this.color.copy(source.color);this.map=source.map;this.alphaMap=source.alphaMap;this.rotation=source.rotation;this.sizeAttenuation=source.sizeAttenuation;this.fog=source.fog;return this;}}let _geometry;const _intersectPoint=/*@__PURE__*/new Vector3();const _worldScale=/*@__PURE__*/new Vector3();const _mvPosition=/*@__PURE__*/new Vector3();const _alignedPosition=/*@__PURE__*/new Vector2();const _rotatedPosition=/*@__PURE__*/new Vector2();const _viewWorldMatrix=/*@__PURE__*/new Matrix4();const _vA=/*@__PURE__*/new Vector3();const _vB=/*@__PURE__*/new Vector3();const _vC=/*@__PURE__*/new Vector3();const _uvA=/*@__PURE__*/new Vector2();const _uvB=/*@__PURE__*/new Vector2();const _uvC=/*@__PURE__*/new Vector2();class Sprite extends Object3D{constructor(material){super();this.isSprite=true;this.type='Sprite';if(_geometry===undefined){_geometry=new BufferGeometry();const float32Array=new Float32Array([-0.5,-0.5,0,0,0,0.5,-0.5,0,1,0,0.5,0.5,0,1,1,-0.5,0.5,0,0,1]);const interleavedBuffer=new InterleavedBuffer(float32Array,5);_geometry.setIndex([0,1,2,0,2,3]);_geometry.setAttribute('position',new InterleavedBufferAttribute(interleavedBuffer,3,0,false));_geometry.setAttribute('uv',new InterleavedBufferAttribute(interleavedBuffer,2,3,false));}this.geometry=_geometry;this.material=material!==undefined?material:new SpriteMaterial();this.center=new Vector2(0.5,0.5);}raycast(raycaster,intersects){if(raycaster.camera===null){console.error('THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.');}_worldScale.setFromMatrixScale(this.matrixWorld);_viewWorldMatrix.copy(raycaster.camera.matrixWorld);this.modelViewMatrix.multiplyMatrices(raycaster.camera.matrixWorldInverse,this.matrixWorld);_mvPosition.setFromMatrixPosition(this.modelViewMatrix);if(raycaster.camera.isPerspectiveCamera&&this.material.sizeAttenuation===false){_worldScale.multiplyScalar(-_mvPosition.z);}const rotation=this.material.rotation;let sin,cos;if(rotation!==0){cos=Math.cos(rotation);sin=Math.sin(rotation);}const center=this.center;transformVertex(_vA.set(-0.5,-0.5,0),_mvPosition,center,_worldScale,sin,cos);transformVertex(_vB.set(0.5,-0.5,0),_mvPosition,center,_worldScale,sin,cos);transformVertex(_vC.set(0.5,0.5,0),_mvPosition,center,_worldScale,sin,cos);_uvA.set(0,0);_uvB.set(1,0);_uvC.set(1,1);// check first triangle
 let intersect=raycaster.ray.intersectTriangle(_vA,_vB,_vC,false,_intersectPoint);if(intersect===null){// check second triangle
 transformVertex(_vB.set(-0.5,0.5,0),_mvPosition,center,_worldScale,sin,cos);_uvB.set(0,1);intersect=raycaster.ray.intersectTriangle(_vA,_vC,_vB,false,_intersectPoint);if(intersect===null){return;}}const distance=raycaster.ray.origin.distanceTo(_intersectPoint);if(distance<raycaster.near||distance>raycaster.far)return;intersects.push({distance:distance,point:_intersectPoint.clone(),uv:Triangle.getUV(_intersectPoint,_vA,_vB,_vC,_uvA,_uvB,_uvC,new Vector2()),face:null,object:this});}copy(source,recursive){super.copy(source,recursive);if(source.center!==undefined)this.center.copy(source.center);this.material=source.material;return this;}}function transformVertex(vertexPosition,mvPosition,center,scale,sin,cos){// compute position in camera space
 _alignedPosition.subVectors(vertexPosition,center).addScalar(0.5).multiply(scale);// to check if rotation is not zero
@@ -21263,7 +21263,8 @@ function getMTLLoader() {
       default: () => {
         return false;
       }
-    }
+    },
+    labels: Array
   },
 
   data() {
@@ -21286,7 +21287,9 @@ function getMTLLoader() {
       loader: null,
       requestAnimationId: null,
       stats: null,
-      mixer: null
+      mixer: null,
+      textureLoader: null,
+      css2DRenderer: null
     };
     Object.assign(this, result); // 响应式对象
 
@@ -21300,7 +21303,7 @@ function getMTLLoader() {
   },
 
   mounted() {
-    if (this.filePath && typeof this.filePath === 'object') {
+    if (this.filePath && typeof this.filePath === "object") {
       this.isMultipleModels = true;
     }
 
@@ -21363,7 +21366,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        this.setObjectAttr('rotation', val);
+        this.setObjectAttr("rotation", val);
       }
 
     },
@@ -21371,7 +21374,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        this.setObjectAttr('position', val);
+        this.setObjectAttr("position", val);
       }
 
     },
@@ -21379,7 +21382,7 @@ function getMTLLoader() {
       deep: true,
 
       handler(val) {
-        this.setObjectAttr('scale', val);
+        this.setObjectAttr("scale", val);
       }
 
     },
@@ -21493,7 +21496,7 @@ function getMTLLoader() {
     },
 
     pick(x, y) {
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      let obj = this.returnObject();
       if (!obj) return null;
       if (!this.$refs.container) return;
       const rect = this.$refs.container.getBoundingClientRect();
@@ -21709,7 +21712,6 @@ function getMTLLoader() {
         this.object = object;
         this.addObject(object, filePath);
         this.mixer = new AnimationMixer(object);
-        console.log(filePath, object.animations);
 
         if (object.animations) {
           object.animations.forEach(clip => {
@@ -21727,6 +21729,7 @@ function getMTLLoader() {
           }
         }
 
+        this.setLabel();
         this.$emit("load", this.wrapper);
       }, event => {
         if (!this.parallelLoad) {
@@ -21777,10 +21780,9 @@ function getMTLLoader() {
 
       this.object = object; // add the file name to object
 
-      let _fileName = filePath.split('/');
-
-      _fileName = _fileName[_fileName.length - 1];
-      this.object._fileName = _fileName;
+      let fileName = filePath.split("/");
+      fileName = fileName[fileName.length - 1];
+      this.object.fileName = fileName;
       this.wrapper.add(object);
       this.updateCamera();
       this.updateModel();
@@ -21840,10 +21842,13 @@ function getMTLLoader() {
     },
 
     addTexture(object, texture) {
-      const textureLoader = new TextureLoader();
+      if (!this.textureLoader) {
+        this.textureLoader = new TextureLoader();
+      }
+
       object.traverse(child => {
         if (child.isMesh) {
-          textureLoader.load(texture, _texture => {
+          this.textureLoader.load(texture, _texture => {
             child.material.map = _texture;
             child.material.needsUpdate = true;
           }, () => {}, err => {
@@ -21858,9 +21863,117 @@ function getMTLLoader() {
     },
 
     setObjectAttr(type, val) {
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      let obj = this.returnObject();
       if (!obj) return;
       obj[type].set(val.x, val.y, val.z);
+    },
+
+    returnObject() {
+      return this.isMultipleModels ? this.wrapper : this.object;
+    },
+
+    setLabel() {
+      if (this.isMultipleModels) {
+        if (this.loaderIndex === this.filePath.length) {
+          this.setSpriteLabel();
+        }
+      } else {
+        this.setSpriteLabel();
+      }
+    },
+
+    setSpriteLabel() {
+      if (!this.labels) return;
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+
+      const spriteImageLabel = image => {
+        if (!this.textureLoader) {
+          this.textureLoader = new TextureLoader();
+        }
+
+        const imageTexture = this.textureLoader.load(image);
+        return imageTexture;
+      };
+
+      const spriteTextLabel = (text, style) => {
+        const canvas = this.generateCanvas(text, style);
+        const texture = new Texture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+      };
+
+      this.labels.forEach(item => {
+        const spriteMap = item.image ? spriteImageLabel(item.image) : spriteTextLabel(item.text, item.textStyle || {});
+        const spriteMaterial = new SpriteMaterial({
+          map: spriteMap,
+          color: item.spriteMaterialColor || 0xffffff // useScreenCoordinates: false
+          // alignment: spriteAlignment
+
+        });
+        const sprite = new Sprite(spriteMaterial);
+
+        if (item.scale) {
+          sprite.scale.set(item.scale.x || 1, item.scale.y || 1, item.scale.z || 0);
+        } else {
+          sprite.scale.set(1, 1, 0);
+        }
+
+        if (item.position) {
+          sprite.position.set(item.position.x, item.position.y, item.position.z);
+        }
+
+        if (item.sid) {
+          sprite.sid = item.sid;
+        }
+
+        obj.add(sprite);
+      });
+    },
+
+    generateCanvas(text, style) {
+      if (style === undefined) style = {};
+
+      const roundRect = (ctx, x, y, w, h, r) => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      };
+
+      const fontFamily = style.fontFamily || "Arial";
+      const fontSize = style.fontSize === 0 || style.fontSize ? style.fontSize : 18;
+      const fontColor = style.color || "#ffffff";
+      const fontWeight = style.fontWeight || "normal";
+      const borderWidth = style.borderWidth === 0 || style.borderWidth ? style.borderWidth : 4;
+      const borderColor = style.borderColor || "rgba(0,0,0,1)";
+      const borderRadius = style.borderRadius === 0 || style.borderRadius ? style.borderRadius : 4;
+      const backgroundColor = style.backgroundColor || "rgba(255, 255, 255, 1)";
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = `${fontWeight} ${fontSize}px ${fontFamily}`; // get size data (height depends only on font size)
+
+      const metrics = context.measureText(text);
+      const textWidth = metrics.width; // background color
+
+      context.fillStyle = backgroundColor; // border color
+
+      context.strokeStyle = borderColor;
+      context.lineWidth = borderWidth;
+      roundRect(context, borderWidth / 2, borderWidth / 2, textWidth + borderWidth, fontSize * 1.4 + borderWidth, borderRadius); // 1.4 is extra height factor for text below baseline: g,j,p,q.
+      // text color
+
+      context.fillStyle = fontColor;
+      context.fillText(text, borderWidth, fontSize + borderWidth);
+      return canvas;
     }
 
   }
