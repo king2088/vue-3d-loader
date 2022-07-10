@@ -4,6 +4,8 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 
 [English](./readme.md)
 
+[点击查看演示](https://king2088.github.io/vue-3d-loader/example-demo/index.html)
+
 演示动画
 
 ![demo gif image](./demo.gif)
