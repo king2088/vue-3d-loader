@@ -25,8 +25,7 @@
     <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
     <processBarVue v-if="currentMenuId === 12" />
     <parallelLoadModelVue v-if="currentMenuId === 13 "/>
-    <addImageLabel v-if="currentMenuId === 14" />
-    <addTextLabel v-if="currentMenuId === 15" />
+    <addLabel v-if="currentMenuId === 14" />
   </div>
 </template>
 <script>
@@ -43,8 +42,7 @@ import lightModelVue from "./light-model.vue";
 import showFpsVue from "./show-fps.vue";
 import processBarVue from "./progress-bar.vue";
 import parallelLoadModelVue from "./parallel-load-model.vue";
-import AddImageLabel from './add-image-label.vue';
-import AddTextLabel from './add-text-label.vue';
+import AddLabel from './add-label.vue';
 export default {
   components: {
     loadAModelVue,
@@ -60,8 +58,7 @@ export default {
     cameraPositionAndRotateVue,
     processBarVue,
     parallelLoadModelVue,
-    AddImageLabel,
-    AddTextLabel,
+    AddLabel,
   },
   data() {
     return {
@@ -79,8 +76,7 @@ export default {
         { id: 11, name_CN: "相机位置及旋转", name_EN: "Camera" },
         { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
         { id: 13, name_CN: "并行加载", name_EN: "Parallel load" },
-        { id: 14, name_CN: "图片标注", name_EN: "Images label"},
-        { id: 15, name_CN: "文字标注", name_EN: "Text label"},
+        { id: 14, name_CN: "标注", name_EN: "Add label"},
       ],
       currentMenuId: 1,
     };
