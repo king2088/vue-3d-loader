@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/gltf/DamagedHelmet.gltf"
+    filePath="/vue-3d-loader/example-demo/models/gltf/DamagedHelmet.gltf"
     backgroundColor="rgb(216,217,219)"
     :height="600"
     :width="600"

@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="./models/collada/elf/elf.dae"
+    filePath="/vue-3d-loader/example-demo/models/collada/elf/elf.dae"
     :lights="lights"
     :cameraPosition="{ x: 0, y: 10, z: 10 }"
   />
