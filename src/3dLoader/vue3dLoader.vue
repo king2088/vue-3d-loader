@@ -18,6 +18,7 @@ import {
   HemisphereLight,
   DirectionalLight,
   LinearEncoding,
+  Texture,
   TextureLoader,
   AnimationMixer,
   Clock,
@@ -26,6 +27,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { CSS2DRenderer, CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 export default {
   name: "vue3dLoader",
@@ -113,7 +115,8 @@ export default {
         return false;
       },
     },
-    label: Array
+    imagesLabel: Array,
+    textLabel: Array
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -136,7 +139,8 @@ export default {
       requestAnimationId: null,
       stats: null,
       mixer: null,
-      textureLoader: null
+      textureLoader: null,
+      css2DRenderer: null
     };
     Object.assign(this, result);
     // 响应式对象
@@ -171,11 +175,9 @@ export default {
     this.renderer.outputEncoding = this.outputEncoding;
 
     this.controls = new OrbitControls(this.camera, el);
-    this.textureLoader = new TextureLoader();
     this.scene.add(this.wrapper);
     
     this.loadModelSelect();
-    this.setLabel();
     this.update();
 
     el.addEventListener("mousedown", this.onMouseDown, false);
@@ -270,12 +272,19 @@ export default {
         this.clearSceneWrapper()
       }
     },
-    label: {
-      deep: true,
-      handler() {
-        this.setLabel()
-      }
-    }
+    // imagesLabel: {
+    //   deep: true,
+    //   handler() {
+    //     console.log('imagesLabel change');
+    //     this.setSpriteLabel();
+    //   }
+    // },
+    // textLabel: {
+    //   deep: true,
+    //   handler() {
+    //     this.setCss2DLabel();
+    //   }
+    // }
   },
   methods: {
     onResize() {
@@ -543,7 +552,6 @@ export default {
           this.object = object
           this.addObject(object, filePath);
           this.mixer = new AnimationMixer(object);
-          console.log(filePath, object.animations);
           if (object.animations) {
             object.animations.forEach(clip => {
               const action = this.mixer.clipAction(clip);
@@ -560,6 +568,7 @@ export default {
               this.addTexture(object, _texture);
             }
           }
+          this.setLabel()
           this.$emit("load", this.wrapper);
         },
         (event) => {
@@ -607,9 +616,9 @@ export default {
       }
       this.object = object;
       // add the file name to object
-      let _fileName = filePath.split('/')
-      _fileName = _fileName[_fileName.length - 1]
-      this.object._fileName = _fileName;
+      let fileName = filePath.split('/')
+      fileName = fileName[fileName.length - 1]
+      this.object.fileName = fileName;
       this.wrapper.add(object);
       this.updateCamera();
       this.updateModel();
@@ -662,6 +671,9 @@ export default {
       next()
     },
     addTexture(object, texture) {
+      if (!this.textureLoader) {
+        this.textureLoader = new TextureLoader();
+      }
       object.traverse((child) => {
         if (child.isMesh) {
           this.textureLoader.load(
@@ -690,42 +702,167 @@ export default {
       return this.isMultipleModels ? this.wrapper : this.object;
     },
     setLabel() {
+      if (this.isMultipleModels) {
+        if(this.loaderIndex === this.filePath.length) {
+          this.setSpriteLabel();
+          this.setCss2DLabel();
+        }
+      } else {
+        this.setSpriteLabel();
+        this.setCss2DLabel();
+      }
+    },
+    setSpriteLabel() {
       /**
        * label的数据格式应该如下
-       * type: '' // 2dCss || 3dCss || sprite
        * image: ''
+       * text: ''
        * spriteMaterialColor: null // default: #ffffff
        * position: {x:0, y:0, z:0}
        * scale: {x:1, y:1, z:1}
-       * id: null // 标识，可有可无
+       * sid: null // 自定义标识，可有可无
        */
-      if (this.label.length === 0) return;
-      let obj = this.returnObject();
-      this.label.forEach(item => {
-        if(item.type === 'sprite') {
-          this.spriteLabel(obj, item)
+      if (!this.imagesLabel) return;
+      
+      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      console.log('obj', obj);
+
+      const spriteImageLabel = (image) => {
+        if (!this.textureLoader) {
+          this.textureLoader = new TextureLoader();
         }
+        const imageTexture = this.textureLoader.load(image);
+        return imageTexture
+      }
+
+      const spriteTextLabel = (text, style) => {
+        const canvas = this.generateCanvas(text, style)
+        const texture = new Texture(canvas)
+        texture.needsUpdate = true
+        return texture
+      }
+
+      this.imagesLabel.forEach(item => {
+        const spriteMap = item.image ? spriteImageLabel(item.image) : spriteTextLabel(item.text, item.textStyle||{})
+        const spriteMaterial = new SpriteMaterial({
+          map: spriteMap,
+          color: item.spriteMaterialColor || 0xffffff,
+        });
+        const sprite = new Sprite(spriteMaterial);
+        if (item.scale) {
+          sprite.scale.set(item.scale.x, item.scale.y, item.scale.z);
+        } else {
+          sprite.scale.set(1, 1, 1);
+        }
+        if (item.position) {
+          sprite.position.set(
+            item.position.x,
+            item.position.y,
+            item.position.z
+          );
+        }
+        if (item.sid) {
+          sprite.sid = item.sid
+        }
+        obj.add(sprite);
       })
     },
-    spriteLabel(obj, item) {
-      const spriteMap = this.textureLoader.load(item.image);
-      const spriteMaterial = new SpriteMaterial({
-        map: spriteMap,
-        color: 0xffffff,
-      });
-      const sprite = new Sprite(spriteMaterial);
-      if (item.scale) {
-        sprite.scale.set(item.scale.x, item.scale.y, item.scale.z);
-      }
-      if (item.position) {
-        sprite.position.set(
-          item.position.x,
-          item.position.y,
-          item.position.z
-        );
-      };
-      obj.add(sprite);
+    generateCanvas(text, style) {
+      const options = {
+          fontFamily: style.fontFamily || 'Arial',
+          fontSize: style.fontSize || 30,
+          fontWeight: style.fontWeight || 'normal',
+          lineHeight: style.lineHeight || 1.5,
+          color: style.color || '#000',
+          borderWidth: style.borderWidth || 0,
+          borderRadius: style.borderRadius || 0,
+          borderColor: style.borderColor || 'transparent',
+          backgroundColor: style.backgroundColor || 'transparent'
+        }
+        const setCanvasBackground = (ctx, x, y, w, h, r) => {
+          ctx.beginPath();
+          ctx.moveTo(x+r, y);
+          ctx.lineTo(x+w-r, y);
+          ctx.quadraticCurveTo(x+w,y,x+w,y+r)
+          ctx.lineTo(x+w, y+h-r)
+          ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h)
+          ctx.lineTo(x+r, y+h)
+          ctx.quadraticCurveTo(x, y+h, x, y+h-r)
+          ctx.lineTo(x, y+r)
+          ctx.quadraticCurveTo(x,y,x+r,y)
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke()
+        }
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        context.font = `${options.fontWeight} ${options.fontSize || 14}px ${options.fontFamily}`
+        context.fillStyle = options.backgroundColor;
+        context.strokeStyle = options.borderColor;
+        context.lineWidth = options.borderWidth;
+        
+        const textWidth = context.measureText(text).width;
+        const x = options.borderWidth
+        const y = x
+        const w = textWidth + options.borderWidth
+        const h = options.fontSize * options.lineHeight + options.borderWidth
+        const r = options.borderRadius
+        setCanvasBackground(context, x, y, w, h, r)
+        context.fillStyle = options.color
+        context.fillText(text, options.borderWidth, options.fontSize + options.borderWidth)
+        
+        return canvas
     },
+    setCss2DLabel() {
+      console.log('textLabel', this.textLabel);
+      /**
+       * {
+       *   text: '',
+       *   divStyle: {
+       *    width: '20px',
+       *    marginTop: '-1em' 
+       *   },
+       *   position: {x: 0, y:0, z:0},
+       * }
+       */
+      if (!this.textLabel) return;
+      let obj = this.returnObject();
+      console.log('obj1', obj);
+      obj.layers.enableAll();
+      this.camera.layers.enableAll()
+      const el = this.$refs.container
+      this.textLabel.forEach(item => {
+        const div = document.createElement( 'div' );
+        div.className = 'label';
+        div.textContent = item.text;
+        if (item.divStyle) {
+          const keys = Object.keys(item.divStyle)
+          keys.forEach(key => {
+            div.style[key] = item.divStyle[key]
+          })
+        }
+        console.log('div', div);
+        const label = new CSS2DObject(div);
+        console.log('x', label);
+        label.position.set(item.position.x||0, item.position.y||1, item.position.z||0);
+        console.log('_label',label);
+        // this.wrapper.add(label)
+        this.wrapper.traverse((child) => {
+        if (child.isMesh) {
+          child.add(label)
+        }
+      });
+        label.layers.set(0);
+        console.log('do it', this.scene);
+      })
+      if (!this.css2DRenderer) {
+        this.css2DRenderer = new CSS2DRenderer();
+        this.css2DRenderer.setSize(this.size.width, this.size.height);
+        this.css2DRenderer.domElement.style.position = 'absolute';
+        this.css2DRenderer.domElement.style.top = '0px';
+        el.appendChild(this.css2DRenderer.domElement);
+      }
+    }
   },
 };
 </script>
