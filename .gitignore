@@ -25,4 +25,4 @@ node_modules
 # public/assets
 dist/models
 dist/assets
-examples-demo
+# examples-demo

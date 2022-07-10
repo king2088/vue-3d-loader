@@ -2,7 +2,7 @@
   <vue3dLoader
     :rotation="rotation"
     @load="onLoad()"
-    filePath="/models/collada/elf/elf.dae"
+    filePath="./models/collada/elf/elf.dae"
   />
 </template>
 <script setup lang="ts">
