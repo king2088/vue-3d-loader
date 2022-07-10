@@ -70,6 +70,7 @@ Vue.use(vue3dLoader)
 | showFps              | boolean          | false                                                                                                                               | 显示FPS等信息                                                                                                                                 |
 | clearScene           | boolean          | false                                                                                                                               | 清空场景中的内容                                                                                                                              |
 | parallelLoad         | boolean          | false                                                                                                                               | 开启/关闭并行加载模型（仅在多模型下有效）**注意：使用此属性后，load进度process事件将不可预测**                                                                                                     |
+| labels               | object           | {image: "", text: "", textStyle: { fontFamily: "Arial", fontSize: 18, fontWeight: "normal", lineHeight: 1, color: "#ffffff", borderWidth: 8, borderRadius: 4, borderColor: "rgba(0,0,0,1)",backgroundColor: "rgba(0, 0, 0, 1)"  }, position: {x:0, y:0, z:0}, scale:{x:1, y:1, z:0}, sid: null} | 添加图片/文字标签，设置image则显示图片标签。设置text显示文字标签，文字样式通过textStyle进行设置，样例可以查看[examples/add-label.vue](./src/examples/add-label.vue)文件                            |
 
 ### 事件
 

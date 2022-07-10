@@ -23,7 +23,7 @@ import {
   AnimationMixer,
   Clock,
   Sprite,
-  SpriteMaterial
+  SpriteMaterial,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -38,9 +38,9 @@ export default {
     rotation: Object,
     scale: {
       type: Object,
-      default: ()=>{
-        return {x:1, y:1, z:1}
-      }
+      default: () => {
+        return { x: 1, y: 1, z: 1 };
+      },
     },
     lights: {
       type: Array,
@@ -103,7 +103,7 @@ export default {
       type: [String, Array],
     },
     clearScene: {
-      type: Boolean, 
+      type: Boolean,
       default: () => {
         return false;
       },
@@ -114,7 +114,7 @@ export default {
         return false;
       },
     },
-    imagesLabel: Array
+    labels: Array,
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -138,7 +138,7 @@ export default {
       stats: null,
       mixer: null,
       textureLoader: null,
-      css2DRenderer: null
+      css2DRenderer: null,
     };
     Object.assign(this, result);
     // 响应式对象
@@ -147,12 +147,12 @@ export default {
       timer: null,
       objectPositionHasSet: false,
       mouseMoveTimer: null,
-      isMultipleModels: false
+      isMultipleModels: false,
     };
   },
   mounted() {
-    if (this.filePath && typeof this.filePath === 'object') {
-      this.isMultipleModels = true
+    if (this.filePath && typeof this.filePath === "object") {
+      this.isMultipleModels = true;
     }
     const el = this.$refs.container;
     // init canvas width and height
@@ -174,7 +174,7 @@ export default {
 
     this.controls = new OrbitControls(this.camera, el);
     this.scene.add(this.wrapper);
-    
+
     this.loadModelSelect();
     this.update();
 
@@ -213,19 +213,19 @@ export default {
     rotation: {
       deep: true,
       handler(val) {
-        this.setObjectAttr('rotation', val)
+        this.setObjectAttr("rotation", val);
       },
     },
     position: {
       deep: true,
       handler(val) {
-        this.setObjectAttr('position', val)
+        this.setObjectAttr("position", val);
       },
     },
     scale: {
       deep: true,
       handler(val) {
-        this.setObjectAttr('scale', val)
+        this.setObjectAttr("scale", val);
       },
     },
     lights: {
@@ -263,11 +263,11 @@ export default {
       deep: true,
       handler() {
         this.updateCamera();
-      }
+      },
     },
     clearScene(val) {
       if (val) {
-        this.clearSceneWrapper()
+        this.clearSceneWrapper();
       }
     },
   },
@@ -292,15 +292,15 @@ export default {
       const emit = () => {
         const intersected = this.pick(event.clientX, event.clientY);
         this.$emit("mousemove", event, intersected);
-      }
+      };
       if (!this.isMultipleModels) {
-        emit()
+        emit();
       } else {
         // throttle
-        clearTimeout(this.mouseMoveTimer)
+        clearTimeout(this.mouseMoveTimer);
         this.mouseMoveTimer = setTimeout(() => {
-          emit()
-        }, 200)
+          emit();
+        }, 200);
       }
     },
     onMouseUp(event) {
@@ -328,7 +328,7 @@ export default {
       const intersects = this.raycaster.intersectObject(obj, true);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
-    update(isResize=false) {
+    update(isResize = false) {
       this.updateRenderer();
       this.updateCamera(isResize);
       this.updateLights();
@@ -337,13 +337,13 @@ export default {
     updateModel() {
       const { object, position, rotation, scale } = this;
       if (!object) return;
-      if(position) {
+      if (position) {
         object.position.set(position.x, position.y, position.z);
       }
-      if(rotation) {
+      if (rotation) {
         object.rotation.set(rotation.x, rotation.y, rotation.z);
       }
-      if(scale) {
+      if (scale) {
         object.scale.set(scale.x, scale.y, scale.z);
       }
     },
@@ -354,7 +354,7 @@ export default {
       renderer.setClearColor(new Color(backgroundColor).getHex());
       renderer.setClearAlpha(backgroundAlpha);
     },
-    updateCamera(isResize=false) {
+    updateCamera(isResize = false) {
       const {
         size,
         camera,
@@ -366,7 +366,7 @@ export default {
       } = this;
       camera.aspect = size.width / size.height;
       camera.updateProjectionMatrix();
-      if (isResize) return
+      if (isResize) return;
       if (!cameraLookAt || !cameraUp) {
         if (!object) return;
         const distance = getSize(object).length();
@@ -375,7 +375,7 @@ export default {
           cameraPosition.y,
           cameraPosition.z
         );
-        if(cameraRotation) {
+        if (cameraRotation) {
           camera.rotation.set(
             cameraRotation.x,
             cameraRotation.y,
@@ -396,7 +396,7 @@ export default {
           cameraPosition.y,
           cameraPosition.z
         );
-        if(cameraRotation) {
+        if (cameraRotation) {
           camera.rotation.set(
             cameraRotation.x,
             cameraRotation.y,
@@ -482,20 +482,19 @@ export default {
       // parallel load
       if (this.parallelLoad && this.isMultipleModels) {
         this.filePath.forEach((path, index) => {
-          this.load(index)
-        })
+          this.load(index);
+        });
       } else {
-        this.load()
+        this.load();
       }
     },
-    load(fileIndex=null) {
+    load(fileIndex = null) {
       if (!this.filePath) return;
-      let index = fileIndex ? fileIndex : this.loaderIndex
+      let index = fileIndex ? fileIndex : this.loaderIndex;
       // if multiple files
-      const _filePath =
-        !this.isMultipleModels
-          ? this.filePath
-          : this.filePath[index];
+      const _filePath = !this.isMultipleModels
+        ? this.filePath
+        : this.filePath[index];
       const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
@@ -534,14 +533,14 @@ export default {
         filePath,
         (...args) => {
           const object = getObject(...args);
-          this.object = object
+          this.object = object;
           this.addObject(object, filePath);
           this.mixer = new AnimationMixer(object);
           if (object.animations) {
-            object.animations.forEach(clip => {
+            object.animations.forEach((clip) => {
               const action = this.mixer.clipAction(clip);
               action.play();
-            })
+            });
           }
           // set texture
           if (this.textureImage) {
@@ -553,7 +552,7 @@ export default {
               this.addTexture(object, _texture);
             }
           }
-          this.setLabel()
+          this.setLabel();
           this.$emit("load", this.wrapper);
         },
         (event) => {
@@ -577,9 +576,7 @@ export default {
         mtlLoader.setRequestHeader(this.requestHeader);
       }
       const _mtl =
-        typeof this.mtlPath === "string"
-          ? this.mtlPath
-          : this.mtlPath[index];
+        typeof this.mtlPath === "string" ? this.mtlPath : this.mtlPath[index];
       const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
@@ -595,14 +592,14 @@ export default {
     addObject(object, filePath) {
       const center = getCenter(object);
       // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
-      if(!this.objectPositionHasSet) {
+      if (!this.objectPositionHasSet) {
         this.wrapper.position.copy(center.negate());
-        this.objectPositionHasSet = true
+        this.objectPositionHasSet = true;
       }
       this.object = object;
       // add the file name to object
-      let fileName = filePath.split('/')
-      fileName = fileName[fileName.length - 1]
+      let fileName = filePath.split("/");
+      fileName = fileName[fileName.length - 1];
       this.object.fileName = fileName;
       this.wrapper.add(object);
       this.updateCamera();
@@ -644,16 +641,16 @@ export default {
             this.loaderIndex = 0;
           }
         }
-      }
+      };
       // local webpack environment http response headers no content-length, the xhr.total is 0, so process === Infinity
       if (process === Infinity) {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           process = 100;
-          next()
+          next();
         }, 200);
       }
-      next()
+      next();
     },
     addTexture(object, texture) {
       if (!this.textureLoader) {
@@ -669,14 +666,14 @@ export default {
             },
             () => {},
             (err) => {
-              this.$emit("error", err)
+              this.$emit("error", err);
             }
           );
         }
       });
     },
     clearSceneWrapper() {
-      this.wrapper.clear()
+      this.wrapper.clear();
     },
     setObjectAttr(type, val) {
       let obj = this.returnObject();
@@ -688,7 +685,7 @@ export default {
     },
     setLabel() {
       if (this.isMultipleModels) {
-        if(this.loaderIndex === this.filePath.length) {
+        if (this.loaderIndex === this.filePath.length) {
           this.setSpriteLabel();
         }
       } else {
@@ -696,37 +693,27 @@ export default {
       }
     },
     setSpriteLabel() {
-      /**
-       * label的数据格式应该如下
-       * image: ''
-       * text: ''
-       * spriteMaterialColor: null // default: #ffffff
-       * position: {x:0, y:0, z:0}
-       * scale: {x:1, y:1, z:1}
-       * sid: null // 自定义标识，可有可无
-       */
-      if (!this.imagesLabel) return;
-      
+      if (!this.labels) return;
       let obj = this.isMultipleModels ? this.wrapper : this.object;
-      console.log('obj', obj);
-
       const spriteImageLabel = (image) => {
         if (!this.textureLoader) {
           this.textureLoader = new TextureLoader();
         }
         const imageTexture = this.textureLoader.load(image);
-        return imageTexture
-      }
+        return imageTexture;
+      };
 
       const spriteTextLabel = (text, style) => {
-        const canvas = this.generateCanvas(text, style)
-        const texture = new Texture(canvas)
-        texture.needsUpdate = true
-        return texture
-      }
+        const canvas = this.generateCanvas(text, style);
+        const texture = new Texture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+      };
 
-      this.imagesLabel.forEach(item => {
-        const spriteMap = item.image ? spriteImageLabel(item.image) : spriteTextLabel(item.text, item.textStyle||{})
+      this.labels.forEach((item) => {
+        const spriteMap = item.image
+          ? spriteImageLabel(item.image)
+          : spriteTextLabel(item.text, item.textStyle || {});
         const spriteMaterial = new SpriteMaterial({
           map: spriteMap,
           color: item.spriteMaterialColor || 0xffffff,
@@ -735,9 +722,13 @@ export default {
         });
         const sprite = new Sprite(spriteMaterial);
         if (item.scale) {
-          sprite.scale.set(item.scale.x, item.scale.y, item.scale.z);
+          sprite.scale.set(
+            item.scale.x || 1,
+            item.scale.y || 1,
+            item.scale.z || 0
+          );
         } else {
-          sprite.scale.set(1, 1, 1);
+          sprite.scale.set(1, 1, 0);
         }
         if (item.position) {
           sprite.position.set(
@@ -747,13 +738,13 @@ export default {
           );
         }
         if (item.sid) {
-          sprite.sid = item.sid
+          sprite.sid = item.sid;
         }
         obj.add(sprite);
-      })
+      });
     },
     generateCanvas(text, style) {
-			if (style === undefined) style = {};
+      if (style === undefined) style = {};
       const roundRect = (ctx, x, y, w, h, r) => {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -768,41 +759,48 @@ export default {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-      }
-			const fontFamily = style.fontFamily || "Arial";
-			const fontSize = style.fontSize || 18;
-      const fontColor = style.color || '#ffffff';
-      const fontWeight = style.fontWeight || 'normal';
-			const borderWidth = style.borderWidth || 4;
-			const borderColor = style.borderColor || 'rgba(0,0,0,1)';
+      };
+      const fontFamily = style.fontFamily || "Arial";
+      const fontSize =
+        style.fontSize === 0 || style.fontSize ? style.fontSize : 18;
+      const fontColor = style.color || "#ffffff";
+      const fontWeight = style.fontWeight || "normal";
+      const borderWidth =
+        style.borderWidth === 0 || style.borderWidth ? style.borderWidth : 4;
+      const borderColor = style.borderColor || "rgba(0,0,0,1)";
+      const borderRadius =
+        style.borderRadius === 0 || style.borderRadius ? style.borderRadius : 4;
+      const backgroundColor = style.backgroundColor || "rgba(255, 255, 255, 1)";
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
 
-			const backgroundColor = style.backgroundColor || 'rgba(255, 255, 255, 1)';
-			const canvas = document.createElement('canvas');
-			const context = canvas.getContext('2d');
-			context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+      // get size data (height depends only on font size)
+      const metrics = context.measureText(text);
+      const textWidth = metrics.width;
 
-			// get size data (height depends only on font size)
-			const metrics = context.measureText(text);
-			const textWidth = metrics.width;
+      // background color
+      context.fillStyle = backgroundColor;
+      // border color
+      context.strokeStyle = borderColor;
 
-			// background color
-			context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," +
-				backgroundColor.b + "," + backgroundColor.a + ")";
-			// border color
-			context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + "," +
-				borderColor.b + "," + borderColor.a + ")";
+      context.lineWidth = borderWidth;
+      roundRect(
+        context,
+        borderWidth / 2,
+        borderWidth / 2,
+        textWidth + borderWidth,
+        fontSize * 1.4 + borderWidth,
+        borderRadius
+      );
+      // 1.4 is extra height factor for text below baseline: g,j,p,q.
 
-			context.lineWidth = borderWidth;
-			roundRect(context, borderWidth / 2, borderWidth / 2, textWidth + borderWidth, fontSize * 1.4 +
-				borderWidth, 6);
-			// 1.4 is extra height factor for text below baseline: g,j,p,q.
+      // text color
+      context.fillStyle = fontColor;
 
-			// text color
-			context.fillStyle = fontColor;
+      context.fillText(text, borderWidth, fontSize + borderWidth);
 
-			context.fillText(text, borderWidth, fontSize + borderWidth);
-
-			return canvas;
+      return canvas;
     },
   },
 };
