@@ -6,6 +6,3 @@
     :width="600"
   />
 </template>
-<script>
-export default {};
-</script>

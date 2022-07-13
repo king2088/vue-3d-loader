@@ -5,6 +5,3 @@
     :showFps="true"
   />
 </template>
-<script>
-export default {};
-</script>

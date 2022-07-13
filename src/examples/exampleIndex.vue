@@ -24,11 +24,11 @@
     <showFpsVue v-if="currentMenuId === 10" />
     <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
     <processBarVue v-if="currentMenuId === 12" />
-    <parallelLoadModelVue v-if="currentMenuId === 13 "/>
+    <parallelLoadModelVue v-if="currentMenuId === 13" />
     <addLabel v-if="currentMenuId === 14" />
   </div>
 </template>
-<script>
+<script setup lang="ts">
 import loadAModelVue from "./load-a-model.vue";
 import loadMultipleModelsVue from "./load-multiple-models.vue";
 import heightAndWidthVue from "./height-and-width.vue";
@@ -42,64 +42,43 @@ import lightModelVue from "./light-model.vue";
 import showFpsVue from "./show-fps.vue";
 import processBarVue from "./progress-bar.vue";
 import parallelLoadModelVue from "./parallel-load-model.vue";
-import AddLabel from './add-label.vue';
-export default {
-  components: {
-    loadAModelVue,
-    loadMultipleModelsVue,
-    heightAndWidthVue,
-    materialsAndTexturesVue,
-    backgroundColorAndAlphaVue,
-    interactiveControlsVue,
-    rotateModelVue,
-    eventModelVue,
-    lightModelVue,
-    showFpsVue,
-    cameraPositionAndRotateVue,
-    processBarVue,
-    parallelLoadModelVue,
-    AddLabel,
-  },
-  data() {
-    return {
-      menu: [
-        { id: 1, name_CN: "加载一个模型", name_EN: "Load a model" },
-        { id: 2, name_CN: "加载多个模型", name_EN: "Load multiple models" },
-        { id: 3, name_CN: "设置场景高宽", name_EN: "Height and width" },
-        { id: 4, name_CN: "材质及纹理", name_EN: "Materials and textures" },
-        { id: 5, name_CN: "背景颜色及透明度", name_EN: "Background" },
-        { id: 6, name_CN: "交互控制", name_EN: "Control" },
-        { id: 7, name_CN: "旋转模型", name_EN: "Rotate model" },
-        { id: 8, name_CN: "事件", name_EN: "Event" },
-        { id: 9, name_CN: "灯光", name_EN: "Light" },
-        { id: 10, name_CN: "显示FPS信息", name_EN: "Show stats" },
-        { id: 11, name_CN: "相机位置及旋转", name_EN: "Camera" },
-        { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
-        { id: 13, name_CN: "并行加载", name_EN: "Parallel load" },
-        { id: 14, name_CN: "标注", name_EN: "Add label"},
-      ],
-      currentMenuId: 1,
-    };
-  },
-  methods: {
-    getLocal() {
-      let lang = navigator.language.substring(0, 2) || "zh";
-      return lang;
-    },
-    getCurrentLanguageName(id) {
-      let menuItem = this.menu.filter((item) => item.id === id)[0];
-      let lang = this.getLocal();
-      if (lang === "zh") {
-        return menuItem.name_CN;
-      } else {
-        return menuItem.name_EN;
-      }
-    },
-    getMenuId(id) {
-      this.currentMenuId = id;
-    },
-  },
-};
+import AddLabel from "./add-label.vue";
+import { onMounted, ref } from "vue";
+const menu = ref();
+menu.value = [
+  { id: 1, name_CN: "加载一个模型", name_EN: "Load a model" },
+  { id: 2, name_CN: "加载多个模型", name_EN: "Load multiple models" },
+  { id: 3, name_CN: "设置场景高宽", name_EN: "Height and width" },
+  { id: 4, name_CN: "材质及纹理", name_EN: "Materials and textures" },
+  { id: 5, name_CN: "背景颜色及透明度", name_EN: "Background" },
+  { id: 6, name_CN: "交互控制", name_EN: "Control" },
+  { id: 7, name_CN: "旋转模型", name_EN: "Rotate model" },
+  { id: 8, name_CN: "事件", name_EN: "Event" },
+  { id: 9, name_CN: "灯光", name_EN: "Light" },
+  { id: 10, name_CN: "显示FPS信息", name_EN: "Show stats" },
+  { id: 11, name_CN: "相机位置及旋转", name_EN: "Camera" },
+  { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
+  { id: 13, name_CN: "并行加载", name_EN: "Parallel load" },
+  { id: 14, name_CN: "标注", name_EN: "Add label" },
+];
+const currentMenuId = ref(1);
+
+function getLocal() {
+  let lang = navigator.language.substring(0, 2) || "zh";
+  return lang;
+}
+function getCurrentLanguageName(id: number) {
+  let menuItem = menu.value.filter((item: any) => item.id === id)[0];
+  let lang = getLocal();
+  if (lang === "zh") {
+    return menuItem.name_CN;
+  } else {
+    return menuItem.name_EN;
+  }
+}
+function getMenuId(id: number) {
+  currentMenuId.value = id;
+}
 </script>
 <style>
 .example {

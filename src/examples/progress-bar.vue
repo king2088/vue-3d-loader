@@ -11,25 +11,18 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      filePath: ["/models/obj/male02.obj", "/models/fbx/Samba Dancing.fbx"],
-      currentModelIndex: 0,
-      process: 0,
-    };
-  },
-  methods: {
-    onProcess(event, index) {
-      // console.log("event", event, index);
-      this.process = Math.floor((event.loaded / event.total) * 100);
-      if (index != 0) {
-        this.currentModelIndex = index;
-      }
-    },
-  },
-};
+<script setup lang="ts">
+import { ref } from "vue";
+const filePath = ref();
+filePath.value = ["/models/obj/male02.obj", "/models/fbx/Samba Dancing.fbx"];
+const currentModelIndex = ref();
+const process = ref(0);
+function onProcess(event: any, index: number) {
+  process.value = Math.floor((event.loaded / event.total) * 100);
+  if (index != 0) {
+    currentModelIndex.value = index;
+  }
+}
 </script>
 <style>
 .content {

@@ -5,15 +5,11 @@
     :cameraPosition="{ x: 100, y: 200, z: 30 }"
   />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      filePath: [
-        "/models/fbx/Samba Dancing.fbx",
-        "models/collada/pump/pump.dae",
-      ],
-    };
-  },
-};
+<script setup lang="ts">
+import { ref } from "vue";
+const filePath = ref();
+filePath.value = [
+  "/models/fbx/Samba Dancing.fbx",
+  "models/collada/pump/pump.dae",
+];
 </script>

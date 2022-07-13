@@ -12,8 +12,7 @@
     </div>
   </div>
 </template>
-<script>
-export default {};
+<script setup lang="ts">
 </script>
 <style>
 .content {
@@ -30,6 +29,7 @@ export default {};
   z-index: 0;
   font-size: 60px;
   width: 100%;
+  text-align: center;
 }
 .model {
   z-index: 100;
