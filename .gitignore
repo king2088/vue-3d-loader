@@ -22,4 +22,5 @@ node_modules
 *.sw?
 # model directories
 public/models
+dist/models
 examples-demo
