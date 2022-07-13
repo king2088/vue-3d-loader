@@ -407,7 +407,7 @@ function updateLights() {
   lights.forEach((item: any) => {
     if (!item.type) return;
     const type = item.type.toLowerCase();
-    let light = null;
+    let light: any = null;
     if (type === "ambient" || type === "ambientlight") {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0x404040;
@@ -484,10 +484,14 @@ function load(fileIndex?: number) {
   if (!filePath) return;
   const index = fileIndex || loaderIndex.value;
   // if multiple files
-  const _filePath: any = !isMultipleModels.value ? filePath : filePath[index];
-  const loaderObj: any = getLoader(_filePath); // {loader, getObject, mtlLoader}
-  loader = loaderObj.loader;
-  const _getObject = loaderObj.getObject ? loaderObj.getObject : getObject;
+  const filePathStrng: any = !isMultipleModels.value
+    ? filePath
+    : filePath[index];
+  const loaderObject3d: any = getLoader(filePathStrng); // {loader, getObject, mtlLoader}
+  loader = loaderObject3d.loader;
+  const getObjectFun = loaderObject3d.getObject
+    ? loaderObject3d.getObject
+    : getObject;
   if (object && index === 0) {
     wrapper.remove(object);
   }
@@ -502,18 +506,18 @@ function load(fileIndex?: number) {
     const isMultipleMTL = typeof mtlPath === "string";
     if (isMultipleMTL) {
       // single material
-      loadMtl(_filePath, _getObject, index);
+      loadMtl(filePathStrng, getObjectFun, index);
     } else {
       // load materials and model
       if (!mtlPath[index]) {
-        loadFilePath(_filePath, _getObject, index);
+        loadFilePath(filePathStrng, getObjectFun, index);
         return;
       }
-      loadMtl(_filePath, _getObject, index);
+      loadMtl(filePathStrng, getObjectFun, index);
     }
   } else {
     // don't load materials
-    loadFilePath(_filePath, _getObject, index);
+    loadFilePath(filePathStrng, getObjectFun, index);
   }
 }
 function loadFilePath(filePath: string, getObject: any, index: number) {

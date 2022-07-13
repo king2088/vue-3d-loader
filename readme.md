@@ -4,7 +4,7 @@ vueJS + [threeJS](https://threejs.org/) 3d viewer component, support dae/fbx/glt
 
 [简体中文](./readme_CN.md)
 
-[Click here view demo page](https://king2088.github.io/vue-3d-loader/example-demo/index.html)
+[Click here view demo page](https://king2088.github.io/vue-3d-loader/examples-demo/index.html)
 
 demo gif
 
