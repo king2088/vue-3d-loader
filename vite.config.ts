@@ -1,4 +1,4 @@
-import { build, defineConfig } from "vite";
+import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
 import VueSetupExtend from "vite-plugin-vue-setup-extend";
@@ -10,7 +10,7 @@ export default defineConfig(({ command, mode }) => {
   let config = {
     plugins: [vue(), VueSetupExtend()],
     build: {
-      outDir: "example-demo",
+      outDir: "examples-demo",
     },
   };
   if (isRelease) {

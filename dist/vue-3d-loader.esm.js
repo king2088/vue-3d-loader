@@ -40271,7 +40271,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     const camera = new PerspectiveCamera(45, 1, 1, 1e5);
     const scene = new Scene();
     const wrapper = new Object3D();
-    let renderer = {};
+    let renderer = null;
     let controls = {};
     let allLights = [];
     const clock = new Clock();
@@ -40295,7 +40295,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       () => props.backgroundColor
     ], (valueArray) => {
       if (valueArray[0]) {
-        console.log("file path", props.filePath);
         loadModelSelect();
       }
       if (valueArray[1]) {
@@ -40311,7 +40310,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       () => props.scale,
       () => props.lights
     ], (valueArray) => {
-      console.log("console.log(valueArray);", valueArray);
       if (valueArray[0]) {
         setObjectAttribute("rotation", valueArray[0]);
       }
@@ -40326,7 +40324,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       }
     }, { deep: true });
     watch([() => size], () => {
-      updateCamera();
+      updateCamera(true);
       updateRenderer();
     }, { deep: true });
     watch([() => props.controlsOptions], () => {
@@ -40391,7 +40389,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
             width: width || el.offsetWidth,
             height: height || el.offsetHeight
           };
-          update(true);
         });
       }
     }
@@ -40477,17 +40474,16 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         if (!object)
           return;
         const distance = getSize(object).length();
-        console.log("distance", distance);
-        camera.position.set((cameraPosition == null ? void 0 : cameraPosition.x) || 0, (cameraPosition == null ? void 0 : cameraPosition.y) || 0, (cameraPosition == null ? void 0 : cameraPosition.z) || 0);
+        camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         if (cameraRotation) {
           camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
         }
-        if ((cameraPosition == null ? void 0 : cameraPosition.x) === 0 && (cameraPosition == null ? void 0 : cameraPosition.y) === 0 && (cameraPosition == null ? void 0 : cameraPosition.z) === 0) {
+        if (cameraPosition.x === 0 && cameraPosition.y === 0 && cameraPosition.z === 0) {
           camera.position.z = distance;
         }
         camera.lookAt(new Vector3());
       } else {
-        camera.position.set((cameraPosition == null ? void 0 : cameraPosition.x) || 0, (cameraPosition == null ? void 0 : cameraPosition.y) || 0, (cameraPosition == null ? void 0 : cameraPosition.z) || 0);
+        camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         if (cameraRotation) {
           camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
         }
@@ -40563,10 +40559,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       if (!filePath)
         return;
       const index2 = fileIndex || loaderIndex.value;
-      const _filePath = !isMultipleModels.value ? filePath : filePath[index2];
-      const loaderObj = getLoader(_filePath);
-      loader = loaderObj.loader;
-      const _getObject = loaderObj.getObject ? loaderObj.getObject : getObject;
+      const filePathStrng = !isMultipleModels.value ? filePath : filePath[index2];
+      const loaderObject3d = getLoader(filePathStrng);
+      loader = loaderObject3d.loader;
+      const getObjectFun = loaderObject3d.getObject ? loaderObject3d.getObject : getObject;
       if (object && index2 === 0) {
         wrapper.remove(object);
       }
@@ -40579,16 +40575,16 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       if (mtlPath) {
         const isMultipleMTL = typeof mtlPath === "string";
         if (isMultipleMTL) {
-          loadMtl(_filePath, _getObject, index2);
+          loadMtl(filePathStrng, getObjectFun, index2);
         } else {
           if (!mtlPath[index2]) {
-            loadFilePath(_filePath, _getObject, index2);
+            loadFilePath(filePathStrng, getObjectFun, index2);
             return;
           }
-          loadMtl(_filePath, _getObject, index2);
+          loadMtl(filePathStrng, getObjectFun, index2);
         }
       } else {
-        loadFilePath(_filePath, _getObject, index2);
+        loadFilePath(filePathStrng, getObjectFun, index2);
       }
     }
     function loadFilePath(filePath, getObject2, index2) {
@@ -40726,7 +40722,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       const obj = getAllObject();
       if (!obj)
         return;
-      console.log(type, val.x, val.y, val.z);
       obj[type].set(val.x, val.y, val.z);
     }
     function getAllObject() {
@@ -40837,7 +40832,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-0c907fe0"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2ba48279"]]);
 const components = [vue3dLoader];
 const INSTALL_KEY = Symbol("VUE_3D_LOADER_INSTALLED");
 const install = (app) => {
