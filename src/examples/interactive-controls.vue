@@ -25,23 +25,19 @@
     />
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      enablePan: true,
-      enableZoom: true,
-      enableRotate: true,
-    };
-  },
-};
+<script setup lang="ts">
+import { ref } from "vue";
+const enablePan = ref(true);
+const enableZoom = ref(true);
+const enableRotate = ref(true);
 </script>
-<style>
+<style scoped>
 .controls {
   height: 600px;
 }
 .buttons {
   padding: 10px;
+  text-align: center;
 }
 button {
   margin: 0 5px;

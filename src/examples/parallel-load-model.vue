@@ -6,16 +6,12 @@
     :parallelLoad="true"
   ></vue3dLoader>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      filePath: [
-        "/models/fbx/Samba Dancing.fbx",
-        "/models/collada/pump/pump.dae",
-        "/models/ply/Lucy100k.ply"
-      ],
-    };
-  },
-};
+<script setup lang="ts">
+import { ref } from "vue";
+const filePath = ref();
+filePath.value = [
+  "/models/fbx/Samba Dancing.fbx",
+  "/models/collada/pump/pump.dae",
+  "/models/ply/Lucy100k.ply",
+];
 </script>

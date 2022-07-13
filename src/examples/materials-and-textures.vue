@@ -14,46 +14,36 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HelloWorld",
-  props: {
-    msg: String,
+<script setup lang="ts">
+import { ref } from "vue";
+const object = ref(null);
+const loaderList = ref();
+loaderList.value = [
+  {
+    title: "OBJ+MTL",
+    filePath: "/models/obj/male02.obj",
+    mtlPath: "/models/obj/male02.mtl",
+    showFps: false,
+    height: 400,
   },
-  data() {
-    return {
-      object: null,
-      loaderList: [
-        {
-          title: "OBJ+MTL",
-          filePath: "/models/obj/male02.obj",
-          mtlPath: "/models/obj/male02.mtl",
-          showFps: false,
-          height: 400,
-        },
-        {
-          title: "FBX+JPG",
-          filePath: "/models/fbx/stanford-bunny.fbx",
-          textureImage: "/models/fbx/brick.png",
-          height: 400,
-        },
-      ],
-    };
+  {
+    title: "FBX+JPG",
+    filePath: "/models/fbx/stanford-bunny.fbx",
+    textureImage: "/models/fbx/brick.png",
+    height: 400,
   },
-  methods: {
-    onMouseMove(event, intersected) {
-      // console.log('event', event);
-      if (this.object) {
-        this.object.material.color.setStyle("#fff");
-      }
+];
+function onMouseMove(event: MouseEvent, intersected: any) {
+  // console.log('event', event);
+  if (object.value) {
+    (object.value as any).material.color.setStyle("#fff");
+  }
 
-      if (intersected) {
-        this.object = intersected.object;
-        this.object.material.color.setStyle("#13ce66");
-      }
-    },
-  },
-};
+  if (intersected) {
+    object.value = intersected.object;
+    (object.value as any).material.color.setStyle("#13ce66");
+  }
+}
 </script>
 <style>
 h1 {
