@@ -7,7 +7,7 @@
   "types": "dist/types/vue3dLoader.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && npm run build:types && rm -rf ./dist/models",
+    "build": "vue-tsc --noEmit && vite build && npm run build:types",
     "build:types": "node scripts/build-types.js",
     "build:example": "vue-tsc --noEmit && vite build --mode examples",
     "preview": "vite preview"
