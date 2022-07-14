@@ -1,4 +1,9 @@
-# vue-3d-loader
+<center>
+<h1>vue-3d-loader</h1>
+
+[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
+
+</center>
 
 vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl/json，并支持同一个场景导入多个不同3D模型，支持mtl材质以及jpg/png等图片纹理
 
@@ -73,30 +78,405 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 
 ### 属性
 
-| prop                 | type             | default                                                                                                                             | description                                                                                                                                   |
-| -------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| filePath             | string \| array  | -                                                                                                                                   | 文件路径，支持多个文件一起加载，注意：如果每个文件对应一个材质，需要将材质**mtlPath**设置为数组。图片纹理也一样需要设置**textureImage**为数组 |
-| mtlPath              | string \| array  | -                                                                                                                                   | .mtl材质路径，支持多个材质一起加载，设置此参数为数组，必须设置**filePath**为数组                                                              |
-| textureImage         | string \| array  | -                                                                                                                                   | jpg/png纹理加载，与**filePath**一一对应，为数组时，必须设置**filePath**为数组                                                                 |
-| width                | number           | -                                                                                                                                   | 宽度                                                                                                                                          |
-| height               | number           | -                                                                                                                                   | 高度                                                                                                                                          |
-| position             | object           | -                                                                                                                                   | 物体位置                                                                                                                                      |
-| rotation             | object           | -                                                                                                                                   | 旋转                                                                                                                                          |
-| cameraPosition       | object           | { x: 0, y: 0, z: 0 }                                                                                                                | 摄像机位置                                                                                                                                    |
-| cameraRotation       | object           | -                                                                                                                                   | 摄像机旋转                                                                                                                                    |
-| scale                | object           | { x: 1, y: 1, z: 1 }                                                                                                                | 缩放                                                                                                                                          |
-| lights               | array            | [{type: "AmbientLight",color: 0xaaaaaa,},{type: "DirectionalLight",position: { x: 1, y: 1, z: 1 },color: 0xffffff,intensity: 0.8,}] | 灯光，AmbientLight为环境光，DirectionalLight为定向光                                                                                          |
-| backgroundColor      | number \| string | 0xffffff                                                                                                                            | 背景颜色0xffffff/#f00/rgb(255,255,255)                                                                                                        |
-| backgroundAlpha      | number           | 1                                                                                                                                   | 背景透明度(范围0-1)                                                                                                                           |
-| controlsOptions      | object           | -                                                                                                                                   | 控制参数[OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)                                              |
-| crossOrigin          | string           | anonymous                                                                                                                           | 跨域配置anonymous/use-credentials                                                                                                             |
-| requestHeader        | object           | -                                                                                                                                   | 设置请求{ 'Authorization: Bearer token' }头                                                                                                   |
-| outputEncoding       | number           | THREE.LinearEncoding                                                                                                                | 渲染器的输出编码[WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)             |
-| webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                    | WebGLRenderer可选参数[WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)                           |
-| showFps              | boolean          | false                                                                                                                               | 显示FPS等信息                                                                                                                                 |
-| clearScene           | boolean          | false                                                                                                                               | 清空场景中的内容                                                                                                                              |
-| parallelLoad         | boolean          | false                                                                                                                               | 开启/关闭并行加载模型（仅在多模型下有效）**注意：使用此属性后，load进度process事件将不可预测**                                                                                                     |
-| labels               | object           | {image: "", text: "", textStyle: { fontFamily: "Arial", fontSize: 18, fontWeight: "normal", lineHeight: 1, color: "#ffffff", borderWidth: 8, borderRadius: 4, borderColor: "rgba(0,0,0,1)",backgroundColor: "rgba(0, 0, 0, 1)"  }, position: {x:0, y:0, z:0}, scale:{x:1, y:1, z:0}, sid: null} | 添加图片/文字标签，设置image则显示图片标签。设置text显示文字标签，文字样式通过textStyle进行设置，样例可以查看[examples/add-label.vue](./src/examples/add-label.vue)文件                            |
+<table>
+<tr>
+  <th>属性名</th>
+  <th style="min-width:100px">类型</th>
+  <th>默认值</th>
+  <th>值</th>
+  <th>描述</th>
+</tr>
+<tr>
+  <td>
+  filePath
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+
+  ```js
+  const filePath = './models/tree.obj'
+  /* or */
+  const filePath = [
+    './models/tree.obj',
+    './models/building.obj'
+  ]
+  ```
+  </td>
+  <td>
+  
+  文件路径，支持多个文件一起加载，注意：如果每个文件对应一个材质，需要将材质**mtlPath**设置为数组。图片纹理也一样需要设置**textureImage**为数组
+  </td>
+</tr>
+<tr>
+  <td>
+  mtlPath
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+
+  ```js
+  const mltPath = './models/tree.mlt'
+  /* or */
+  const mltPath = [
+    './models/tree.mlt', 
+    './models/building.mlt'
+  ]
+  ```
+  </td>
+  <td>
+
+  .mtl材质路径，支持多个材质一起加载，设置此参数为数组，必须设置**filePath**为数组
+  </td>
+</tr>
+<tr>
+  <td>
+  textureImage
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+
+  ```js
+  const textureImage = './texture/tree.jpg'
+  /* or */
+  const textureImage = [
+    './texture/tree.jpg'
+    ,null,
+    './building.png'
+  ]
+  ```
+  </td>
+  <td>
+
+  jpg/png纹理加载，与**filePath**一一对应，为数组时，必须设置**filePath**为数组
+  </td>
+</tr>
+<tr>
+  <td>
+  width
+  </td>
+  <td>number</td>
+  <td>parent element width</td>
+  <td>100</td>
+  <td>
+  场景宽度
+  </td>
+</tr>
+<tr>
+  <td>
+  height
+  </td>
+  <td>number</td>
+  <td>parent element height</td>
+  <td>100</td>
+  <td>
+  场景高度
+  </td>
+</tr>
+<tr>
+  <td>
+  position
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const position = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  模型位置坐标
+  </td>
+</tr>
+<tr>
+  <td>
+  rotation
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const rotation = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  模型旋转坐标
+  </td>
+</tr>
+<tr>
+  <td>
+  cameraPosition
+  </td>
+  <td>object</td>
+  <td>{x:0, y:0, z:0}</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const cameraPosition = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  摄像机位置坐标
+  </td>
+</tr>
+<tr>
+  <td>
+  cameraRotation
+  </td>
+  <td>object</td>
+  <td>{x:0, y:0, z:0}</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const cameraRotation = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  摄像机旋转坐标
+  </td>
+</tr>
+<tr>
+  <td>
+  scale
+  </td>
+  <td>object</td>
+  <td>{x:1, y:1, z:1}</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const scale = {x:1, y:2, z:1}
+  ```
+  </td>
+  <td>
+  模型比例
+  </td>
+</tr>
+<tr>
+  <td>
+  lights
+  </td>
+  <td>array</td>
+  <td>[{
+        type: "AmbientLight",
+        color: 0xaaaaaa,
+      },
+      {
+        type: "DirectionalLight",
+        position: { x: 1, y: 1, z: 1 },
+        color: 0xffffff,
+        intensity: 0.8,
+      }]</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const lights = [
+    { 
+      type: "AmbientLight", 
+      color: "red", 
+    }, 
+    { 
+      type: "DirectionalLight", 
+      position: { x: 100, y: 10, z: 100 }, 
+      color: "green", 
+      intensity: 0.8, 
+    }, 
+    { 
+      type: "PointLight", 
+      color: "#000000", 
+      position: { x: 200, y: -200, z: 100 }, 
+      intensity: 1 
+    }, 
+    { 
+      type: "HemisphereLight",
+      skyColor: "#00FF00",
+      groundColor: "#000000",
+      position: { x: 200, y: -200, z: 100 }
+    }
+  ]
+  ```
+  </td>
+  <td>
+  灯光为数组，type为 环境光(AmbientLight) | 方向光(DirectionalLight) | 点光(PointLight) | 半球光(HemisphereLight)
+  </td>
+</tr>
+<tr>
+  <td>
+  backgroundColor
+  </td>
+  <td>number | string</td>
+  <td>0xffffff</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const bgColor = 0xff00ff
+  /* or */
+  const bgColor = 'red'
+  /* or */
+  const bgColor = '#000000'
+  /* or */
+  const bgColor = 'rgba(0, 0, 0, 0.5)'
+  ```
+  </td>
+  <td>
+  场景背景色
+  </td>
+</tr>
+<tr>
+  <td>
+  backgroundAlpha
+  </td>
+  <td>number</td>
+  <td>1</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const bgAlpha = 0.5
+  ```
+  </td>
+  <td>
+  场景背景透明度, 值范围0-1
+  </td>
+</tr>
+<tr>
+  <td>
+  controlsOptions
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>-</td>
+  <td>
+
+  控制参数 [OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)
+  </td>
+</tr>
+<tr>
+  <td>
+  crossOrigin
+  </td>
+  <td>string</td>
+  <td>anonymous</td>
+  <td>anonymous | use-credentials</td>
+  <td>
+  跨域配置
+  </td>
+</tr>
+<tr>
+  <td>
+  requestHeader
+  </td>
+  <td>object</td>
+  <td>anonymous</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const headers = { 
+    'Authorization': 'Bearer token'
+  }
+  ```
+  </td>
+  <td>
+  设置请求头
+  </td>
+</tr>
+<tr>
+  <td>
+  outputEncoding
+  </td>
+  <td>number</td>
+  <td>THREE.LinearEncoding</td>
+  <td>-</td>
+  <td>
+
+  渲染器的输出编码 [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)
+  </td>
+</tr>
+<tr>
+  <td>
+  webGLRendererOptions
+  </td>
+  <td>object</td>
+  <td>{ antialias: true, alpha: true }</td>
+  <td>-</td>
+  <td>
+
+  WebGLRenderer可选参数 [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer) 
+  </td>
+</tr>
+<tr>
+  <td>
+  showFps
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  显示FPS等信息
+  </td>
+</tr>
+<tr>
+  <td>
+  clearScene
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>清空场景中的内容</td>
+</tr>
+<tr>
+  <td>
+  parallelLoad
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+  
+  开启/关闭并行加载模型（仅在多模型下有效）**注意：使用此属性后，load进度process事件将不可预测**
+  </td>
+</tr>
+<tr>
+  <td>
+  labels
+  </td>
+  <td>array</td>
+  <td>-</td>
+  <td style="font-size: 12px">
+  
+  ```js
+  const labels = [
+    {
+      image: "", 
+      text: "", 
+      textStyle: { 
+        fontFamily: "Arial", 
+        fontSize: 18, 
+        fontWeight: "normal", 
+        lineHeight: 1, 
+        color: "#ffffff", 
+        borderWidth: 8, 
+        borderRadius: 4, 
+        borderColor: "rgba(0,0,0,1)",
+        backgroundColor: "rgba(0, 0, 0, 1)" 
+      }, 
+      position: {x:0, y:0, z:0}, 
+      scale:{x:1, y:1, z:0}, 
+      sid: null
+    }
+  ]
+  ```
+  </td>
+  <td>
+  
+  添加图片/文字标签，设置image则显示图片标签。设置text显示文字标签，文字样式通过textStyle进行设置，样例可以查看[examples/add-label.vue](./src/examples/add-label.vue)文件
+  </td>
+</tr>
+</table>
+
 
 ### 事件
 
