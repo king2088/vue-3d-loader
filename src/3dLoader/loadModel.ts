@@ -109,6 +109,11 @@ function getLoader(filePath: string) {
         loader: new ObjectLoader(manager),
       };
       break;
+    case "json":
+      obj = {
+        loader: new ObjectLoader(manager)
+      }
+      break;
   }
   return obj;
 }
