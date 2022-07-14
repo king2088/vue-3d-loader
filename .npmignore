@@ -8,6 +8,7 @@ node_modules/
 scripts/
 src/
 dist/models
+dist/assets
 
 
 # Ignore files

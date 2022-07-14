@@ -25,6 +25,7 @@ loaderList.value = [
     mtlPath: "/models/obj/male02.mtl",
     showFps: false,
     height: 400,
+    backgroundColor: "#f2f2f2",
   },
   {
     title: "FBX+JPG",

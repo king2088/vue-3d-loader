@@ -1,6 +1,6 @@
 # vue-3d-loader
 
-vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl，并支持同一个场景导入多个不同3D模型，支持mtl材质以及jpg/png等图片纹理
+vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl/json，并支持同一个场景导入多个不同3D模型，支持mtl材质以及jpg/png等图片纹理
 
 [English](./readme.md)
 

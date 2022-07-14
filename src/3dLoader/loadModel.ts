@@ -1,4 +1,4 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D } from "three";
+import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, ObjectLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -102,6 +102,11 @@ function getLoader(filePath: string) {
         getObject: (geometry: any) => { // geometry
           return new Mesh(geometry, new MeshPhongMaterial())
         },
+      };
+      break;
+    case "json":
+      obj = {
+        loader: new ObjectLoader(manager),
       };
       break;
   }
