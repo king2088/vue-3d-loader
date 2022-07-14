@@ -13,7 +13,7 @@ src/
 *.gif
 *.md
 *.lock
-tsconfig.json
-tsconfig.node.json
-vue.config.ts
+babel.config.js
+jsconfig.json
+vue.config.js
 .gitignore
