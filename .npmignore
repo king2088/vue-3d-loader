@@ -17,5 +17,5 @@ dist/assets
 *.md
 tsconfig.json
 tsconfig.node.json
-vue.config.ts
+vite.config.ts
 .gitignore

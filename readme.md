@@ -1,6 +1,11 @@
-# vue-3d-loader
+<center>
+<h1>vue-3d-loader</h1>
 
-vueJS + [threeJS](https://threejs.org/) 3d viewer component, support dae/fbx/gltf(glb)/obj/ply/stl/json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
+[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
+
+</center>
+
+vueJS + [threeJS](https://threejs.org/) 3d viewer component, support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
 
 [简体中文](./readme_CN.md)
 
@@ -12,11 +17,11 @@ demo gif
 
 Vue3 please install **2.0.0** or later, vue2 please install **1.x.x** version
 
-## Feature Support List
+## Feature support list
 
 - Load a single 3D model
-- Loading Multiple 3D Models Simultaneously
-- Load multiple 3D models of different types at the same time
+- Load multiple 3D models simultaneously
+- Load multiple 3D models of different types simultaneously
 - Set scene width and height
 - Set up materials and textures
 - Interactive control
@@ -25,7 +30,7 @@ Vue3 please install **2.0.0** or later, vue2 please install **1.x.x** version
 - Camera position and rotation
 - Add label points
 
-## install
+## Install vue-3d-loader
 
 ```shell
 npm i vue-3d-loader -S # npm install vue-3d-loader -save
@@ -44,11 +49,11 @@ If use in global, insert code in entry file：
 ```js
 /* vue2 */
 import vue3dLoader from "vue-3d-loader";
-Vue.use(vue3dLoader)
+Vue.use(vue3dLoader);
 
 /* vue3 */
 import vue3dLoader from "vue-3d-loader";
-createApp(App).use(vue3dLoader).mount('#app')
+createApp(App).use(vue3dLoader).mount("#app");
 ```
 
 If non-global use, insert code in your vue files:
@@ -73,30 +78,404 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 
 ### Attributes
 
-| prop                 | type             | default                                                                                                                                                                                                                                                                                         | description                                                                                                                                                                                                                                             |
-| -------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| filePath             | string \| array  | -                                                                                                                                                                                                                                                                                               | File path, supports multiple files to be loaded together, note: If each file corresponds to a material, you need to set the material **mtlPath** as an array. The same is true for image textures, which need to be set to **textureImage** as an array |
-| mtlPath              | string \| array  | -                                                                                                                                                                                                                                                                                               | .material path, supports multiple materials to be loaded together, set this parameter to an array, you must set **filePath** to an array                                                                                                                |
-| textureImage         | string \| array  | -                                                                                                                                                                                                                                                                                               | jpg/png texture, if is array, **filePath** must be set to an array                                                                                                                                                                                      |
-| width                | number           | -                                                                                                                                                                                                                                                                                               | width                                                                                                                                                                                                                                                   |
-| height               | number           | -                                                                                                                                                                                                                                                                                               | height                                                                                                                                                                                                                                                  |
-| position             | object           | -                                                                                                                                                                                                                                                                                               | object position                                                                                                                                                                                                                                         |
-| rotation             | object           | -                                                                                                                                                                                                                                                                                               | rotation coordinates                                                                                                                                                                                                                                    |
-| cameraPosition       | object           | { x: 0, y: 0, z: 0 }                                                                                                                                                                                                                                                                            | camera position                                                                                                                                                                                                                                         |
-| cameraRotation       | object           | -                                                                                                                                                                                                                                                                                               | camera rotation                                                                                                                                                                                                                                         |
-| scale                | object           | { x: 1, y: 1, z: 1 }                                                                                                                                                                                                                                                                            | scale the model                                                                                                                                                                                                                                         |
-| lights               | array            | [{type: "AmbientLight",color: 0xaaaaaa,},{type: "DirectionalLight",position: { x: 1, y: 1, z: 1 },color: 0xffffff,intensity: 0.8,}]                                                                                                                                                             | lights is array, type AmbientLight and DirectionalLight                                                                                                                                                                                                 |
-| backgroundColor      | number \| string | 0xffffff                                                                                                                                                                                                                                                                                        | background color supports number/hex/rgb. like 0xffffff/#f00/rgb(255,255,255)                                                                                                                                                                           |
-| backgroundAlpha      | number           | 1                                                                                                                                                                                                                                                                                               | Background transparency (range 0-1)                                                                                                                                                                                                                     |
-| controlsOptions      | object           | -                                                                                                                                                                                                                                                                                               | control parameter [OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)                                                                                                                                              |
-| crossOrigin          | string           | anonymous                                                                                                                                                                                                                                                                                       | Cross-domain configuration. The value is anonymous or use-credentials                                                                                                                                                                                   |
-| requestHeader        | object           | -                                                                                                                                                                                                                                                                                               | set request header. example: { 'Authorization: Bearer token' }                                                                                                                                                                                          |
-| outputEncoding       | number           | THREE.LinearEncoding                                                                                                                                                                                                                                                                            | Renderer's output encoding [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)                                                                                                            |
-| webGLRendererOptions | object           | { antialias: true, alpha: true }                                                                                                                                                                                                                                                                | WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)                                                                                                                                    |
-| showFps              | boolean          | false                                                                                                                                                                                                                                                                                           | show stats infomation                                                                                                                                                                                                                                   |
-| clearScene           | boolean          | false                                                                                                                                                                                                                                                                                           | clear scene                                                                                                                                                                                                                                             |
-| parallelLoad         | boolean          | false                                                                                                                                                                                                                                                                                           | enable/disable parallel load models (useful only for multi-model loading). **Use this attribute, the process event will be unpredictable**                                                                                                              |
-| labels               | object           | {image: "", text: "", textStyle: { fontFamily: "Arial", fontSize: 18, fontWeight: "normal", lineHeight: 1, color: "#ffffff", borderWidth: 8, borderRadius: 4, borderColor: "rgba(0,0,0,1)",backgroundColor: "rgba(0, 0, 0, 1)"  }, position: {x:0, y:0, z:0}, scale:{x:1, y:1, z:0}, sid: null} | Add an image/text label and set image to display the image label. Set text to display text labels. Text styles can be set using textStyle. For examples, see the [examples/add-label.vue](./src/examples/add-label.vue) file                            |
+<table>
+<tr>
+  <th>Prop</th>
+  <th style="min-width:100px">Type</th>
+  <th>Default</th>
+  <th>Value</th>
+  <th>Description</th>
+</tr>
+<tr>
+  <td>
+  filePath
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const filePath = './models/tree.obj'
+  /* or */
+  const filePath = [
+    './models/tree.obj', 
+    './models/building.obj'
+  ]
+  ```
+  </td>
+  <td>
+  
+  File path, supports multiple files to be loaded together, note: If each file corresponds to a material, you need to set the material **mtlPath** as an array. The same is true for image textures, which need to be set to **textureImage** as an array
+  </td>
+</tr>
+<tr>
+  <td>
+  mtlPath
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const mltPath = './models/tree.mlt'
+  /* or */
+  const mltPath = [
+    './models/tree.mlt',
+    './models/building.mlt'
+  ]
+  ```
+  </td>
+  <td>
+
+  Material path, supports multiple materials to be loaded together, set this parameter to an array, you must set **filePath** to an array
+  </td>
+</tr>
+<tr>
+  <td>
+  textureImage
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const textureImage = './texture/tree.jpg'
+  /* or */
+  const textureImage = [
+    './texture/tree.jpg',
+    null, 
+    './building.png'
+  ]
+  ```
+  </td>
+  <td>
+
+  jpg/png texture, if is array, **filePath** must be set to an array
+  </td>
+</tr>
+<tr>
+  <td>
+  width
+  </td>
+  <td>number</td>
+  <td>parent element width</td>
+  <td>100</td>
+  <td>
+  Scene width
+  </td>
+</tr>
+<tr>
+  <td>
+  height
+  </td>
+  <td>number</td>
+  <td>parent element height</td>
+  <td>100</td>
+  <td>
+  Scene height
+  </td>
+</tr>
+<tr>
+  <td>
+  position
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>
+  
+  ```js
+  const position = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  Model position coordinates
+  </td>
+</tr>
+<tr>
+  <td>
+  rotation
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>
+  
+  ```js
+  const rotation = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  Model rotation coordinates
+  </td>
+</tr>
+<tr>
+  <td>
+  cameraPosition
+  </td>
+  <td>object</td>
+  <td>{x:0, y:0, z:0}</td>
+  <td>
+  
+  ```js
+  const cameraPosition = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  Camera position coordinates
+  </td>
+</tr>
+<tr>
+  <td>
+  cameraRotation
+  </td>
+  <td>object</td>
+  <td>{x:0, y:0, z:0}</td>
+  <td>
+  
+  ```js
+  const cameraRotation = {x:0, y:0, z:0}
+  ```
+  </td>
+  <td>
+  Camera rotation coordinates
+  </td>
+</tr>
+<tr>
+  <td>
+  scale
+  </td>
+  <td>object</td>
+  <td>{x:1, y:1, z:1}</td>
+  <td>
+  
+  ```js
+  const scale = {x:1, y:2, z:1}
+  ```
+  </td>
+  <td>
+  Model scale
+  </td>
+</tr>
+<tr>
+  <td>
+  lights
+  </td>
+  <td>array</td>
+  <td>[{
+        type: "AmbientLight",
+        color: 0xaaaaaa,
+      },
+      {
+        type: "DirectionalLight",
+        position: { x: 1, y: 1, z: 1 },
+        color: 0xffffff,
+        intensity: 0.8,
+      }]</td>
+  <td>
+  
+  ```js
+  const lights = [
+    { 
+      type: "AmbientLight", 
+      color: "red", 
+    }, 
+    { 
+      type: "DirectionalLight", 
+      position: { x: 100, y: 10, z: 100 }, 
+      color: "green", 
+      intensity: 0.8, 
+    }, 
+    { 
+      type: "PointLight", 
+      color: "#000000", 
+      position: { x: 200, y: -200, z: 100 }, 
+      intensity: 1 
+    }, 
+    { 
+      type: "HemisphereLight",
+      skyColor: "#00FF00",
+      groundColor: "#000000",
+      position: { x: 200, y: -200, z: 100 }
+    }
+  ]
+  ```
+  </td>
+  <td>
+  Lights is array, type AmbientLight | DirectionalLight | PointLight | HemisphereLight
+  </td>
+</tr>
+<tr>
+  <td>
+  backgroundColor
+  </td>
+  <td>number | string</td>
+  <td>0xffffff</td>
+  <td>
+  
+  ```js
+  const bgColor = 0xff00ff
+  /* or */
+  const bgColor = 'red'
+  /* or */
+  const bgColor = '#000000'
+  /* or */
+  const bgColor = 'rgba(0, 0, 0, 0.5)'
+  ```
+  </td>
+  <td>
+  Scene background color
+  </td>
+</tr>
+<tr>
+  <td>
+  backgroundAlpha
+  </td>
+  <td>number</td>
+  <td>1</td>
+  <td>
+  
+  ```js
+  const bgAlpha = 0.5
+  ```
+  </td>
+  <td>
+  Background transparency. value range 0-1
+  </td>
+</tr>
+<tr>
+  <td>
+  controlsOptions
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>-</td>
+  <td>
+
+  Control parameter [OrbitControls Properties](https://threejs.org/docs/#examples/en/controls/OrbitControls)
+  </td>
+</tr>
+<tr>
+  <td>
+  crossOrigin
+  </td>
+  <td>string</td>
+  <td>anonymous</td>
+  <td>anonymous | use-credentials</td>
+  <td>
+  Cross-domain configuration. 
+  </td>
+</tr>
+<tr>
+  <td>
+  requestHeader
+  </td>
+  <td>object</td>
+  <td>anonymous</td>
+  <td>
+  
+  ```js
+  const headers = { 
+    'Authorization': 'Bearer token'
+  }
+  ```
+  </td>
+  <td>
+  Set request header.
+  </td>
+</tr>
+<tr>
+  <td>
+  outputEncoding
+  </td>
+  <td>number</td>
+  <td>THREE.LinearEncoding</td>
+  <td>-</td>
+  <td>
+
+  Renderer's output encoding [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)
+  </td>
+</tr>
+<tr>
+  <td>
+  webGLRendererOptions
+  </td>
+  <td>object</td>
+  <td>{ antialias: true, alpha: true }</td>
+  <td>-</td>
+  <td>
+
+  WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer) 
+  </td>
+</tr>
+<tr>
+  <td>
+  showFps
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Show stats infomation
+  </td>
+</tr>
+<tr>
+  <td>
+  clearScene
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>Clear scene</td>
+</tr>
+<tr>
+  <td>
+  parallelLoad
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+  
+  Enable/disable parallel load models (useful only for multi-model loading). **Use this attribute, the process event will be unpredictable** 
+  </td>
+</tr>
+<tr>
+  <td>
+  labels
+  </td>
+  <td>array</td>
+  <td>-</td>
+  <td>
+  
+  ```js
+  const labels = [
+    {
+      image: "", 
+      text: "", 
+      textStyle: { 
+        fontFamily: "Arial", 
+        fontSize: 18, 
+        fontWeight: "normal", 
+        lineHeight: 1, 
+        color: "#ffffff", 
+        borderWidth: 8, 
+        borderRadius: 4, 
+        borderColor: "rgba(0,0,0,1)",
+        backgroundColor: "rgba(0, 0, 0, 1)" 
+      }, 
+      position: {x:0, y:0, z:0}, 
+      scale:{x:1, y:1, z:0}, 
+      sid: null
+    }
+  ]
+  ```
+  </td>
+  <td>
+  
+  Add an image/text label and set image to display the image label. Set text to display text labels. Text styles can be set using textStyle. For examples, see the [examples/add-label.vue](./src/examples/add-label.vue) file
+  </td>
+</tr>
+</table>
 
 ### Events
 
@@ -118,7 +497,9 @@ supports dae/fbx/gltf(glb)/obj/ply/stl models
 
 ```vue
 <!-- fbx model -->
-<vue3dLoader filePath="models/collada/stormtrooper/stormtrooper.dae"></vue3dLoader>
+<vue3dLoader
+  filePath="models/collada/stormtrooper/stormtrooper.dae"
+></vue3dLoader>
 <!-- obj model -->
 <vue3dLoader filePath="/obj/1.obj"></vue3dLoader>
 ```
@@ -152,15 +533,19 @@ export default {
 
 ```vue
 <!-- obj and mtl material -->
-<vue3dLoader filePath="/obj/1.obj" mtlPath="/obj/1.mtl" ></vue3dLoader>
+<vue3dLoader filePath="/obj/1.obj" mtlPath="/obj/1.mtl"></vue3dLoader>
 <!-- fbx and png texture -->
-<vue3dLoader filePath="/fbx/1.fbx" textureImage="/fbx/1.png" ></vue3dLoader>
+<vue3dLoader filePath="/fbx/1.fbx" textureImage="/fbx/1.png"></vue3dLoader>
 ```
 
 #### 4. Background color and transparency
 
 ```vue
-<vue3dLoader filePath="/fbx/1.fbx" :backgroundAlpha="0.5" backgroundColor="red"></vue3dLoader>
+<vue3dLoader
+  filePath="/fbx/1.fbx"
+  :backgroundAlpha="0.5"
+  backgroundColor="red"
+></vue3dLoader>
 ```
 
 #### 5. Controls
