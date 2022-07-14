@@ -12,6 +12,19 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 
 vue3请安装**2.0.0**及以上版本，vue2请安装**1.x.x**版本
 
+## 功能支持列表
+
+- 加载单个3D模型
+- 同时加载多个3D模型
+- 同时加载多个不同类型3D模型
+- 设置场景宽高
+- 设置材质及纹理
+- 交互控制
+- 鼠标事件
+- 灯光
+- 相机位置及旋转
+- 添加标注点
+
 ## 安装
 
 ```shell
@@ -26,11 +39,22 @@ yarn add vue-3d-loader
 
 ## 使用
 
-在入口文件中全局安装，代码如下：
+全局使用，在入口文件中全局安装，代码如下：
 
 ```js
+/* vue2 */
 import vue3dLoader from "vue-3d-loader";
 Vue.use(vue3dLoader)
+
+/* vue3 */
+import vue3dLoader from "vue-3d-loader";
+createApp(App).use(vue3dLoader).mount('#app')
+```
+
+非全局使用，在Vue文件中使用如下代码:
+
+```js
+import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 内
 ```
 
 在组件中使用标签`<vue3dLoader></vue3dLoader>`
@@ -250,7 +274,7 @@ export default {
 
 ### 即将到来
 
-- [ ] 支持Vue3
+- [x] 支持Vue3
 
 ### bug提交
 
