@@ -40182,6 +40182,11 @@ function getLoader(filePath) {
         }
       };
       break;
+    case "json":
+      obj = {
+        loader: new ObjectLoader(manager)
+      };
+      break;
   }
   return obj;
 }
@@ -40832,7 +40837,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2ba48279"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2dc1928e"]]);
 const components = [vue3dLoader];
 const INSTALL_KEY = Symbol("VUE_3D_LOADER_INSTALLED");
 const install = (app) => {

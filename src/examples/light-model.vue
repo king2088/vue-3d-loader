@@ -20,5 +20,17 @@ lights.value = [
     color: "green",
     intensity: 0.8,
   },
+  {
+    type: "PointLight",
+    color: "#000000",
+    position: { x: 200, y: -200, z: 100 },
+    intensity: 1
+  },
+  {
+    type: "HemisphereLight",
+    skyColor: "#00FF00",
+    groundColor: "#000000",
+    position: { x: 200, y: -200, z: 100 }
+  }
 ];
 </script>

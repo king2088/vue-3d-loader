@@ -24,8 +24,9 @@
     <showFpsVue v-if="currentMenuId === 10" />
     <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
     <processBarVue v-if="currentMenuId === 12" />
-    <parallelLoadModelVue v-if="currentMenuId === 13" />
-    <addLabel v-if="currentMenuId === 14" />
+    <parallelLoadModelsVue v-if="currentMenuId === 13" />
+    <addLabelVue v-if="currentMenuId === 14" />
+    <loadJsonModelVue v-if="currentMenuId === 15" />
   </div>
 </template>
 <script setup lang="ts">
@@ -41,9 +42,10 @@ import eventModelVue from "./event-model.vue";
 import lightModelVue from "./light-model.vue";
 import showFpsVue from "./show-fps.vue";
 import processBarVue from "./progress-bar.vue";
-import parallelLoadModelVue from "./parallel-load-model.vue";
-import AddLabel from "./add-label.vue";
-import { onMounted, ref } from "vue";
+import parallelLoadModelsVue from "./parallel-load-models.vue";
+import addLabelVue from "./add-label.vue";
+import loadJsonModelVue from "./load-json-model.vue";
+import { ref } from "vue";
 const menu = ref();
 menu.value = [
   { id: 1, name_CN: "加载一个模型", name_EN: "Load a model" },
@@ -58,8 +60,9 @@ menu.value = [
   { id: 10, name_CN: "显示FPS信息", name_EN: "Show stats" },
   { id: 11, name_CN: "相机位置及旋转", name_EN: "Camera" },
   { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
-  { id: 13, name_CN: "并行加载", name_EN: "Parallel load" },
+  { id: 13, name_CN: "并行加载多模型", name_EN: "Parallel load" },
   { id: 14, name_CN: "标注", name_EN: "Add label" },
+  { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model" },
 ];
 const currentMenuId = ref(1);
 
