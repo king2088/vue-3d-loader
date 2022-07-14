@@ -6,5 +6,5 @@ function resolve(dir) {
 }
 module.exports = defineConfig({
   transpileDependencies: true,
-  outputDir: 'example-demo'
+  outputDir: 'examples-demo'
 })

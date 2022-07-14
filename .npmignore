@@ -1,0 +1,19 @@
+# Ignore directories
+.idea
+.vscode
+docs/
+examples-demo/
+public/
+node_modules/
+src/
+
+
+# Ignore files
+*.html
+*.gif
+*.md
+*.lock
+tsconfig.json
+tsconfig.node.json
+vue.config.ts
+.gitignore

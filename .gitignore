@@ -22,4 +22,4 @@ pnpm-debug.log*
 
 # model directories
 public/models
-example-demo
+examples-demo
