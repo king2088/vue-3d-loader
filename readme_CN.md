@@ -10,7 +10,7 @@ vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae
 
 ![demo gif image](./demo.gif)
 
-vue3请安装**2.0.0**及以上，vue2请安装**1.x.x**版本
+vue3请安装**2.0.0**及以上版本，vue2请安装**1.x.x**版本
 
 ## 安装
 

@@ -4,7 +4,7 @@ import path from "path";
 import VueSetupExtend from "vite-plugin-vue-setup-extend";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command, mode }) => {  
   const isRelease = mode === "production";
   const entryFile = isRelease ? "src/index.ts" : "src/main.ts";
   let config = {
@@ -44,6 +44,13 @@ export default defineConfig(({ command, mode }) => {
       },
     };
     config = { ...config, ...build };
+  }
+
+  if(mode === 'examples') {
+    const base = {
+      base: "/vue-3d-loader/examples-demo/"
+    }
+    config = {...config, ...base}
   }
   return config;
 });
