@@ -21,8 +21,8 @@ node_modules
 *.sln
 *.sw?
 # model directories
-public/models
-public/assets
+# public/models
+# public/assets
 dist/models
 dist/assets
 examples-demo
