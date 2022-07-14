@@ -12,6 +12,19 @@ demo gif
 
 Vue3 please install **2.0.0** or later, vue2 please install **1.x.x** version
 
+## Feature support list
+
+- Load a single 3D model
+- Loading Multiple 3D Models Simultaneously
+- Load multiple 3D models of different types at the same time
+- Set scene width and height
+- Set up materials and textures
+- interactive control
+- mouse event
+- light
+- Camera position and rotation
+- Add label points
+
 ## install
 
 ```shell
