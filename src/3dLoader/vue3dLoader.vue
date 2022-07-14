@@ -602,6 +602,10 @@ export default {
       fileName = fileName[fileName.length - 1];
       this.object.fileName = fileName;
       this.wrapper.add(object);
+      if (object.isMesh) {
+        this.update()
+        return
+      }
       this.updateCamera();
       this.updateModel();
     },
