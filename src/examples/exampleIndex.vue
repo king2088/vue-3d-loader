@@ -25,7 +25,8 @@
     <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
     <processBarVue v-if="currentMenuId === 12" />
     <parallelLoadModelVue v-if="currentMenuId === 13 "/>
-    <addLabel v-if="currentMenuId === 14" />
+    <addLabelVue v-if="currentMenuId === 14" />
+    <loadJsonModalVue v-if="currentMenuId === 15" />
   </div>
 </template>
 <script>
@@ -42,7 +43,8 @@ import lightModelVue from "./light-model.vue";
 import showFpsVue from "./show-fps.vue";
 import processBarVue from "./progress-bar.vue";
 import parallelLoadModelVue from "./parallel-load-model.vue";
-import AddLabel from './add-label.vue';
+import addLabelVue from './add-label.vue';
+import loadJsonModalVue from "./load-json-modal.vue";
 export default {
   components: {
     loadAModelVue,
@@ -58,8 +60,9 @@ export default {
     cameraPositionAndRotateVue,
     processBarVue,
     parallelLoadModelVue,
-    AddLabel,
-  },
+    addLabelVue,
+    loadJsonModalVue
+},
   data() {
     return {
       menu: [
@@ -77,6 +80,7 @@ export default {
         { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
         { id: 13, name_CN: "并行加载", name_EN: "Parallel load" },
         { id: 14, name_CN: "标注", name_EN: "Add label"},
+        { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model"},
       ],
       currentMenuId: 1,
     };

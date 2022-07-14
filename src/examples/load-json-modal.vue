@@ -1,0 +1,8 @@
+<template>
+  <vue3dLoader
+    filePath="/models/json/lightmap.json"
+  />
+</template>
+<script>
+export default {};
+</script>

@@ -1,4 +1,4 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial } from "three";
+import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial, ObjectLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -104,6 +104,11 @@ function getLoader(filePath) {
         }
       };
       break;
+    case "json":
+      obj = {
+        loader: new ObjectLoader(manager)
+      }
+      break;
   }
   return obj;
 }
@@ -112,11 +117,6 @@ function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager);
   return mtlLoader;
 }
-
-// function getTAGLoader() {
-//   const tagLoader = new TGALoader(manager);
-//   return tagLoader;
-// }
 
 export {
   getSize,
