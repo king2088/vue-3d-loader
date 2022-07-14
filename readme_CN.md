@@ -39,11 +39,22 @@ yarn add vue-3d-loader
 
 ## 使用
 
-在入口文件中全局安装，代码如下：
+全局使用，在入口文件中全局安装，代码如下：
 
 ```js
+/* vue2 */
 import vue3dLoader from "vue-3d-loader";
 Vue.use(vue3dLoader)
+
+/* vue3 */
+import vue3dLoader from "vue-3d-loader";
+createApp(App).use(vue3dLoader).mount('#app')
+```
+
+非全局使用，在Vue文件中使用如下代码:
+
+```js
+import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 内
 ```
 
 在组件中使用标签`<vue3dLoader></vue3dLoader>`

@@ -39,11 +39,22 @@ yarn add vue-3d-loader
 
 ## How to use vue-3d-loader
 
-Insert code in entry file：
+If use in global, insert code in entry file：
 
 ```js
+/* vue2 */
 import vue3dLoader from "vue-3d-loader";
 Vue.use(vue3dLoader)
+
+/* vue3 */
+import vue3dLoader from "vue-3d-loader";
+createApp(App).use(vue3dLoader).mount('#app')
+```
+
+If non-global use, insert code in your vue files:
+
+```js
+import { vue3dLoader } from "vue-3d-loader"; // The vue3dLoader in {...}
 ```
 
 Use tags in your components`<vue3dLoader></vue3dLoader>`
@@ -263,7 +274,7 @@ export default {
 
 ### Coming soon
 
-- [ ] Supports Vue3
+- [x] Supports Vue3
 
 ### Bugs
 
