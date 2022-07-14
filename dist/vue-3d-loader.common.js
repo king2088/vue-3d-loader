@@ -2624,7 +2624,8 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "default": function() { return /* binding */ entry_lib; }
+  "default": function() { return /* binding */ entry_lib; },
+  "vue3dLoader": function() { return /* reexport */ vue3dLoader; }
 });
 
 // NAMESPACE OBJECT: ./node_modules/three/examples/jsm/libs/fflate.module.js
@@ -22123,6 +22124,7 @@ if (typeof window !== 'undefined' && window.Vue) {
   install,
   ...components
 });
+
 ;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
 
