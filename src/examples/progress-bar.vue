@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 const filePath = ref();
-filePath.value = ["/models/obj/male02.obj", "/models/fbx/Samba Dancing.fbx"];
+filePath.value = ["/vue-3d-loader/examples-demo/models/obj/male02.obj", "/vue-3d-loader/examples-demo/models/fbx/Samba Dancing.fbx"];
 const currentModelIndex = ref();
 const process = ref(0);
 function onProcess(event: any, index: number) {

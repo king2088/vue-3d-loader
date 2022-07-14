@@ -23,8 +23,8 @@ const loaderList = ref();
 loaderList.value = [
   {
     title: "OBJ+MTL",
-    filePath: "/models/obj/male02.obj",
-    mtlPath: "/models/obj/male02.mtl",
+    filePath: "/vue-3d-loader/examples-demo/models/obj/male02.obj",
+    mtlPath: "/vue-3d-loader/examples-demo/models/obj/male02.mtl",
     showFps: false,
     height: 400,
     backgroundColor: "#f2f2f2",
@@ -33,8 +33,8 @@ loaderList.value = [
   },
   {
     title: "FBX+JPG",
-    filePath: "/models/fbx/stanford-bunny.fbx",
-    textureImage: "/models/fbx/brick.png",
+    filePath: "/vue-3d-loader/examples-demo/models/fbx/stanford-bunny.fbx",
+    textureImage: "/vue-3d-loader/examples-demo/models/fbx/brick.png",
     height: 400,
   },
 ];

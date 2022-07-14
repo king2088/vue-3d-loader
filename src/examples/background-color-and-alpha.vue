@@ -3,7 +3,7 @@
     <div class="text">This text is on the back of the model</div>
     <div class="model">
       <vue3dLoader
-        filePath="/vue-3d-loader/example-demo/models/gltf/DamagedHelmet.gltf"
+        filePath="/vue-3d-loader/examples-demo/models/gltf/DamagedHelmet.gltf"
         :backgroundColor="'#00ffff'"
         :backgroundAlpha="0.5"
         :height="600"

@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/vue-3d-loader/example-demo/models/stl/colored.stl"
+    filePath="/vue-3d-loader/examples-demo/models/stl/colored.stl"
     backgroundColor="#cccccc"
     @load="onLoad"
     :cameraPosition="positon"

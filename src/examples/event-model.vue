@@ -3,7 +3,7 @@
     Move your mouse over the model to change the model color
   </div>
   <vue3dLoader
-    filePath="/models/ply/Lucy100k.ply"
+    filePath="/vue-3d-loader/examples-demo/models/ply/Lucy100k.ply"
     @mousemove="onMouseMove"
     :cameraPosition="{ x: 0, y: 0, z: -2500 }"
   />
