@@ -40837,7 +40837,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2dc1928e"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2ba48279"]]);
 const components = [vue3dLoader];
 const INSTALL_KEY = Symbol("VUE_3D_LOADER_INSTALLED");
 const install = (app) => {
