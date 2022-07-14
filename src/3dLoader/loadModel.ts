@@ -95,7 +95,7 @@ function getLoader(filePath: string) {
           return new Mesh(geometry, new MeshStandardMaterial());
         },
       };
-      break
+      break;
     case "stl":
       obj = {
         loader: new STLLoader(manager),
@@ -108,11 +108,6 @@ function getLoader(filePath: string) {
       obj = {
         loader: new ObjectLoader(manager),
       };
-      break;
-    case "json":
-      obj = {
-        loader: new ObjectLoader(manager)
-      }
       break;
   }
   return obj;
