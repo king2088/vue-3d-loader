@@ -1,11 +1,8 @@
-<center>
-<h1>vue-3d-loader</h1>
-
-[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
-
-</center>
+# vue-3d-loader
 
 vueJS + [threeJS](https://threejs.org/) 3d viewer component, support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
+
+[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
 
 [简体中文](./readme_CN.md)
 
@@ -526,19 +523,15 @@ supports dae/fbx/gltf(glb)/obj/ply/stl models
     :filePath="filePath"
     :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
     :cameraPosition="{ x: 100, y: 200, z: 30 }"
-  ></vue3dLoader>
+  />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      filePath: [
-        "/models/fbx/Samba Dancing.fbx",
-        "models/collada/pump/pump.dae",
-      ],
-    };
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const filePath = ref();
+  filePath.value = [
+    "/models/fbx/Samba Dancing.fbx",
+    "models/collada/pump/pump.dae",
+  ];
 </script>
 ```
 
@@ -567,15 +560,15 @@ export default {
 <template>
   <div class="controls">
     <div class="buttons">
-      <!-- Disable right-click dragging -->
+      <!-- 禁止右键拖动 -->
       <button @click="enablePan = !enablePan">
         {{ enablePan ? "disable" : "enable" }} translation
       </button>
-      <!-- Disable zoom -->
+      <!-- 禁止缩放 -->
       <button @click="enableZoom = !enableZoom">
         {{ enableZoom ? "disable" : "enable" }} zoom
       </button>
-      <!-- Disable rotate -->
+      <!-- 禁止缩放 -->
       <button @click="enableRotate = !enableRotate">
         {{ enableRotate ? "disable" : "enable" }} rotation
       </button>
@@ -591,16 +584,11 @@ export default {
     />
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      enablePan: true,
-      enableZoom: true,
-      enableRotate: true,
-    };
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const enablePan = ref(true);
+  const enableZoom = ref(true);
+  const enableRotate = ref(true);
 </script>
 ```
 
@@ -614,27 +602,21 @@ export default {
     filePath="/models/collada/elf/elf.dae"
   />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      rotation: {
-        x: -Math.PI / 2,
-        y: 0,
-        z: 0,
-      },
-    };
-  },
-  methods: {
-    onLoad() {
-      this.rotate();
-    },
-    rotate() {
-      requestAnimationFrame(this.rotate);
-      this.rotation.z += 0.01;
-    },
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const rotation = ref();
+  rotation.value = {
+    x: -Math.PI / 2,
+    y: 0,
+    z: 0,
+  };
+  function onLoad() {
+    rotate();
+  }
+  function rotate() {
+    requestAnimationFrame(rotate);
+    rotation.value.z -= 0.01;
+  }
 </script>
 ```
 
@@ -644,25 +626,18 @@ export default {
 <template>
   <vue3dLoader filePath="/models/ply/Lucy100k.ply" @mousemove="onMouseMove" />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      object: null,
-    };
-  },
-  methods: {
-    onMouseMove(event, intersected) {
-      if (this.object) {
-        this.object.material.color.setStyle("#fff");
-      }
-      if (intersected) {
-        this.object = intersected.object;
-        this.object.material.color.setStyle("#13ce66");
-      }
-    },
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const object = ref(null);
+  function onMouseMove(event: MouseEvent, intersected: any) {
+    if (object.value) {
+      (object.value as any).material.color.setStyle("#fff");
+    }
+    if (intersected) {
+      object.value = intersected.object;
+      (object.value as any).material.color.setStyle("#13ce66");
+    }
+  }
 </script>
 ```
 

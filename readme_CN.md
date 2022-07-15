@@ -1,11 +1,8 @@
-<center>
-<h1>vue-3d-loader</h1>
+# vue-3d-loader
+
+vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持.dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json，并支持同一个场景导入多个不同3D模型，支持mtl材质以及jpg/png等图片纹理
 
 [![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
-
-</center>
-
-vueJS + [threeJS](https://threejs.org/)整合的一个3d展示组件，支持dae/fbx/gltf(glb)/obj/ply/stl/json，并支持同一个场景导入多个不同3D模型，支持mtl材质以及jpg/png等图片纹理
 
 [English](./readme.md)
 
@@ -102,6 +99,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     './models/building.obj'
   ]
   ```
+
   </td>
   <td>
   
@@ -124,6 +122,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     './models/building.mlt'
   ]
   ```
+
   </td>
   <td>
 
@@ -147,6 +146,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     './building.png'
   ]
   ```
+
   </td>
   <td>
 
@@ -186,6 +186,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const position = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   模型位置坐标
@@ -202,6 +203,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const rotation = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   模型旋转坐标
@@ -218,6 +220,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const cameraPosition = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   摄像机位置坐标
@@ -234,6 +237,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const cameraRotation = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   摄像机旋转坐标
@@ -250,6 +254,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const scale = {x:1, y:2, z:1}
   ```
+
   </td>
   <td>
   模型比例
@@ -298,6 +303,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     }
   ]
   ```
+
   </td>
   <td>
   灯光为数组，type为 环境光(AmbientLight) | 方向光(DirectionalLight) | 点光(PointLight) | 半球光(HemisphereLight)
@@ -320,6 +326,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   /* or */
   const bgColor = 'rgba(0, 0, 0, 0.5)'
   ```
+
   </td>
   <td>
   场景背景色
@@ -336,6 +343,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   ```js
   const bgAlpha = 0.5
   ```
+
   </td>
   <td>
   场景背景透明度, 值范围0-1
@@ -377,6 +385,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     'Authorization': 'Bearer token'
   }
   ```
+
   </td>
   <td>
   设置请求头
@@ -403,7 +412,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   <td>-</td>
   <td>
 
-  WebGLRenderer可选参数 [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer) 
+  WebGLRenderer可选参数 [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)
   </td>
 </tr>
 <tr>
@@ -469,6 +478,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     }
   ]
   ```
+
   </td>
   <td>
   
@@ -476,7 +486,6 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   </td>
 </tr>
 </table>
-
 
 ### 事件
 
@@ -512,19 +521,15 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
     :filePath="filePath"
     :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
     :cameraPosition="{ x: 100, y: 200, z: 30 }"
-  ></vue3dLoader>
+  />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      filePath: [
-        "/models/fbx/Samba Dancing.fbx",
-        "models/collada/pump/pump.dae",
-      ],
-    };
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const filePath = ref();
+  filePath.value = [
+    "/models/fbx/Samba Dancing.fbx",
+    "models/collada/pump/pump.dae",
+  ];
 </script>
 ```
 
@@ -573,16 +578,11 @@ export default {
     />
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      enablePan: true,
-      enableZoom: true,
-      enableRotate: true,
-    };
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const enablePan = ref(true);
+  const enableZoom = ref(true);
+  const enableRotate = ref(true);
 </script>
 ```
 
@@ -596,27 +596,21 @@ export default {
     filePath="/models/collada/elf/elf.dae"
   />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      rotation: {
-        x: -Math.PI / 2,
-        y: 0,
-        z: 0,
-      },
-    };
-  },
-  methods: {
-    onLoad() {
-      this.rotate();
-    },
-    rotate() {
-      requestAnimationFrame(this.rotate);
-      this.rotation.z += 0.01;
-    },
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const rotation = ref();
+  rotation.value = {
+    x: -Math.PI / 2,
+    y: 0,
+    z: 0,
+  };
+  function onLoad() {
+    rotate();
+  }
+  function rotate() {
+    requestAnimationFrame(rotate);
+    rotation.value.z -= 0.01;
+  }
 </script>
 ```
 
@@ -626,25 +620,18 @@ export default {
 <template>
   <vue3dLoader filePath="/models/ply/Lucy100k.ply" @mousemove="onMouseMove" />
 </template>
-<script>
-export default {
-  data() {
-    return {
-      object: null,
-    };
-  },
-  methods: {
-    onMouseMove(event, intersected) {
-      if (this.object) {
-        this.object.material.color.setStyle("#fff");
-      }
-      if (intersected) {
-        this.object = intersected.object;
-        this.object.material.color.setStyle("#13ce66");
-      }
-    },
-  },
-};
+<script setup lang="ts">
+  import { ref } from "vue";
+  const object = ref(null);
+  function onMouseMove(event: MouseEvent, intersected: any) {
+    if (object.value) {
+      (object.value as any).material.color.setStyle("#fff");
+    }
+    if (intersected) {
+      object.value = intersected.object;
+      (object.value as any).material.color.setStyle("#13ce66");
+    }
+  }
 </script>
 ```
 
