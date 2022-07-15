@@ -41,7 +41,7 @@ import {
   onBeforeUnmount,
 } from "vue";
 
-interface Coordinates {
+export interface Coordinates {
   x: number;
   y: number;
   z: number;

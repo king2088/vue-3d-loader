@@ -102,6 +102,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     './models/building.obj'
   ]
   ```
+
   </td>
   <td>
   
@@ -124,6 +125,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     './models/building.mlt'
   ]
   ```
+
   </td>
   <td>
 
@@ -147,6 +149,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     './building.png'
   ]
   ```
+
   </td>
   <td>
 
@@ -186,6 +189,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const position = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   Model position coordinates
@@ -202,6 +206,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const rotation = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   Model rotation coordinates
@@ -218,6 +223,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const cameraPosition = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   Camera position coordinates
@@ -234,6 +240,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const cameraRotation = {x:0, y:0, z:0}
   ```
+
   </td>
   <td>
   Camera rotation coordinates
@@ -250,6 +257,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const scale = {x:1, y:2, z:1}
   ```
+
   </td>
   <td>
   Model scale
@@ -298,6 +306,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     }
   ]
   ```
+
   </td>
   <td>
   Lights is array, type AmbientLight | DirectionalLight | PointLight | HemisphereLight
@@ -320,6 +329,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   /* or */
   const bgColor = 'rgba(0, 0, 0, 0.5)'
   ```
+
   </td>
   <td>
   Scene background color
@@ -336,6 +346,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   ```js
   const bgAlpha = 0.5
   ```
+
   </td>
   <td>
   Background transparency. value range 0-1
@@ -361,7 +372,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>anonymous</td>
   <td>anonymous | use-credentials</td>
   <td>
-  Cross-domain configuration. 
+  Cross-domain configuration.
   </td>
 </tr>
 <tr>
@@ -377,6 +388,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     'Authorization': 'Bearer token'
   }
   ```
+
   </td>
   <td>
   Set request header.
@@ -403,7 +415,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>-</td>
   <td>
 
-  WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer) 
+  WebGLRenderer options [WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)
   </td>
 </tr>
 <tr>
@@ -436,7 +448,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>-</td>
   <td>
   
-  Enable/disable parallel load models (useful only for multi-model loading). **Use this attribute, the process event will be unpredictable** 
+  Enable/disable parallel load models (useful only for multi-model loading). **Use this attribute, the process event will be unpredictable**
   </td>
 </tr>
 <tr>
@@ -469,6 +481,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
     }
   ]
   ```
+
   </td>
   <td>
   

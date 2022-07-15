@@ -4,17 +4,10 @@ import vue3dLoader from './3dLoader/vue3dLoader.vue'
 
 export { Three }
 
-const components = [vue3dLoader]
-
-const INSTALL_KEY = Symbol('VUE_3D_LOADER_INSTALLED')
-
 const install = (app: App) => {
-  if ((app as any)[INSTALL_KEY]) return;
-  components.forEach(component => {
-    app.component(component.name, component)
-  })
+  app.component(vue3dLoader.name, vue3dLoader)
 }
 
-export default { install, ...components }
+export default { install, vue3dLoader }
 
-export { install, vue3dLoader }
+export { vue3dLoader }

@@ -1196,11 +1196,11 @@ class Color {
     if (m = /^((?:rgb|hsl)a?)\(([^\)]*)\)/.exec(style)) {
       let color;
       const name = m[1];
-      const components2 = m[2];
+      const components = m[2];
       switch (name) {
         case "rgb":
         case "rgba":
-          if (color = /^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components2)) {
+          if (color = /^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
             this.r = Math.min(255, parseInt(color[1], 10)) / 255;
             this.g = Math.min(255, parseInt(color[2], 10)) / 255;
             this.b = Math.min(255, parseInt(color[3], 10)) / 255;
@@ -1208,7 +1208,7 @@ class Color {
             handleAlpha(color[4]);
             return this;
           }
-          if (color = /^\s*(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components2)) {
+          if (color = /^\s*(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
             this.r = Math.min(100, parseInt(color[1], 10)) / 100;
             this.g = Math.min(100, parseInt(color[2], 10)) / 100;
             this.b = Math.min(100, parseInt(color[3], 10)) / 100;
@@ -1219,7 +1219,7 @@ class Color {
           break;
         case "hsl":
         case "hsla":
-          if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components2)) {
+          if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
             const h = parseFloat(color[1]) / 360;
             const s = parseInt(color[2], 10) / 100;
             const l = parseInt(color[3], 10) / 100;
@@ -10812,8 +10812,8 @@ function getShaderErrors(gl, shader, type) {
   }
 }
 function getTexelEncodingFunction(functionName, encoding) {
-  const components2 = getEncodingComponents(encoding);
-  return "vec4 " + functionName + "( vec4 value ) { return LinearTo" + components2[0] + components2[1] + "; }";
+  const components = getEncodingComponents(encoding);
+  return "vec4 " + functionName + "( vec4 value ) { return LinearTo" + components[0] + components[1] + "; }";
 }
 function getToneMappingFunction(functionName, toneMapping) {
   let toneMappingName;
@@ -40205,7 +40205,7 @@ var _export_sfc = (sfc, props) => {
 const __default__ = defineComponent({
   name: "vue3dLoader"
 });
-const _sfc_main = /* @__PURE__ */ defineComponent({
+const _sfc_main = defineComponent({
   ...__default__,
   props: {
     filePath: null,
@@ -40837,15 +40837,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2ba48279"]]);
-const components = [vue3dLoader];
-const INSTALL_KEY = Symbol("VUE_3D_LOADER_INSTALLED");
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-e09d0ab6"]]);
 const install = (app) => {
-  if (app[INSTALL_KEY])
-    return;
-  components.forEach((component) => {
-    app.component(component.name, component);
-  });
+  app.component(vue3dLoader.name, vue3dLoader);
 };
-var index = { install, ...components };
-export { three_module as Three, index as default, install, vue3dLoader };
+var index = { install, vue3dLoader };
+export { three_module as Three, index as default, vue3dLoader };

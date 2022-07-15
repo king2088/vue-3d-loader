@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "main": "dist/vue-3d-loader.cjs.js",
   "module": "dist/vue-3d-loader.esm.js",
-  "types": "dist/types/vue3dLoader.d.ts",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && npm run build:types",
