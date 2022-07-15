@@ -22,7 +22,7 @@ async function main() {
   });
 
   // get src/*.vue files and *.ts files
-  const files = await glob(["src/3dLoader/*.vue"]); // "src/3dLoader/*.ts"
+  const files = await glob(["src/3dLoader/*.vue", "src/index.ts"]); // "src/3dLoader/*.ts"
   const sourceFiles = [];
 
   await Promise.all(
@@ -58,15 +58,10 @@ async function main() {
   const diagnostics = project.getPreEmitDiagnostics();
   console.log(project.formatDiagnosticsWithColorAndContext(diagnostics));
   project.emitToMemory();
-
   for (const sourceFile of sourceFiles) {
     const emiOutput = sourceFile.getEmitOutput();
     for (const outputFile of emiOutput.getOutputFiles()) {
       let filePath = outputFile.getFilePath();
-      // remove fileName .vue
-      if (filePath.indexOf(".vue.d.ts") > -1) {
-        filePath = filePath.replace(".vue.d.ts", ".d.ts");
-      }
       await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
       await fs.promises.writeFile(filePath, outputFile.getText(), "utf-8");
     }

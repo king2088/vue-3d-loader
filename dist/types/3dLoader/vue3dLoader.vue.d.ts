@@ -1,6 +1,6 @@
 import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, Clock, Light } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-interface Coordinates {
+export interface Coordinates {
     x: number;
     y: number;
     z: number;
