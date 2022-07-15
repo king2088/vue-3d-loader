@@ -234,6 +234,7 @@ onMounted(() => {
     isMultipleModels.value = true;
   }
   const el: any = containerElement.value;
+  setContainerElementStyle(el);
   // init canvas width and height
   onResize();
   const WEB_GL_OPTIONS = { antialias: true, alpha: true };
@@ -286,6 +287,16 @@ onBeforeUnmount(() => {
 
   window.removeEventListener("resize", onResize, false);
 });
+
+function setContainerElementStyle(el: any) {
+  const { width, height } = props;
+  if (width) {
+    el.style.width = `${width}px`;
+  }
+  if (height) {
+    el.style.height = `${height}px`;
+  }
+}
 
 function onResize() {
   const { width, height } = props;
