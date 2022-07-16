@@ -18,6 +18,7 @@ import {
   HemisphereLight,
   DirectionalLight,
   LinearEncoding,
+  sRGBEncoding,
   Texture,
   TextureLoader,
   AnimationMixer,
@@ -41,30 +42,30 @@ import {
   onBeforeUnmount,
 } from "vue";
 
-export interface Coordinates {
+export interface coordinates {
   x: number;
   y: number;
   z: number;
 }
-
+type encode = "linear" | "sRGB";
 interface Props {
   filePath: string | string[];
   width?: number;
   height?: number;
-  position?: Coordinates;
-  rotation?: Coordinates;
-  scale?: Coordinates;
+  position?: coordinates;
+  rotation?: coordinates;
+  scale?: coordinates;
   lights?: object[];
-  cameraPosition?: Coordinates;
-  cameraRotation?: Coordinates;
-  cameraUp?: Coordinates;
-  cameraLookAt?: Coordinates;
+  cameraPosition?: coordinates;
+  cameraRotation?: coordinates;
+  cameraUp?: coordinates;
+  cameraLookAt?: coordinates;
   backgroundColor?: number | string;
   backgroundAlpha?: number;
   controlsOptions?: object;
   crossOrigin?: string;
   requestHeader?: object;
-  outputEncoding?: number;
+  outputEncoding?: encode;
   webGLRendererOptions?: object;
   mtlPath?: string | string[];
   showFps?: boolean;
@@ -100,7 +101,7 @@ const props = withDefaults(defineProps<Props>(), {
   },
   crossOrigin: "anonymous",
   outputEncoding: () => {
-    return LinearEncoding;
+    return "linear";
   },
   webGLRendererOptions: () => {
     return {};
@@ -250,7 +251,8 @@ onMounted(() => {
   renderer = new WebGLRenderer(options);
   // renderer.hadowMapEnabled = true
   renderer.shadowMap.enabled = true;
-  renderer.outputEncoding = outputEncoding as any;
+  const encoding = outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
+  renderer.outputEncoding = encoding;
 
   controls = new OrbitControls(camera, el);
   scene.add(wrapper);

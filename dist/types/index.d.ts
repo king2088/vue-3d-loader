@@ -93,9 +93,9 @@ declare const _default: {
             required: false;
         };
         outputEncoding: {
-            type: NumberConstructor;
+            type: StringConstructor;
             required: false;
-            default: () => Three.TextureEncoding;
+            default: () => string;
         };
         webGLRendererOptions: {
             type: ObjectConstructor;
@@ -137,20 +137,20 @@ declare const _default: {
             filePath: string | string[];
             width?: number | undefined;
             height?: number | undefined;
-            position?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
-            rotation?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
-            scale?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
+            position?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
+            rotation?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
+            scale?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
             lights: object[];
-            cameraPosition: import("./3dLoader/vue3dLoader.vue").Coordinates;
-            cameraRotation?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
-            cameraUp?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
-            cameraLookAt?: import("./3dLoader/vue3dLoader.vue").Coordinates | undefined;
+            cameraPosition: import("./3dLoader/vue3dLoader.vue").coordinates;
+            cameraRotation?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
+            cameraUp?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
+            cameraLookAt?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
             backgroundColor: string | number;
             backgroundAlpha: number;
             controlsOptions?: object | undefined;
             crossOrigin: string;
             requestHeader?: object | undefined;
-            outputEncoding: number;
+            outputEncoding: "linear" | "sRGB";
             webGLRendererOptions: object;
             mtlPath: string | string[];
             showFps: boolean;
@@ -186,6 +186,7 @@ declare const _default: {
         containerElement: import("vue").Ref<null>;
         canvasElement: import("vue").Ref<null>;
         emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
+        setContainerElementStyle: (el: any) => void;
         onResize: () => void;
         onMouseDown: (event: MouseEvent) => void;
         onMouseMove: (event: MouseEvent) => void;
@@ -305,9 +306,9 @@ declare const _default: {
             required: false;
         };
         outputEncoding: {
-            type: NumberConstructor;
+            type: StringConstructor;
             required: false;
-            default: () => Three.TextureEncoding;
+            default: () => string;
         };
         webGLRendererOptions: {
             type: ObjectConstructor;
@@ -359,7 +360,7 @@ declare const _default: {
         backgroundColor: string | number;
         backgroundAlpha: number;
         crossOrigin: string;
-        outputEncoding: number;
+        outputEncoding: string;
         webGLRendererOptions: Record<string, any>;
         mtlPath: string | unknown[];
         showFps: boolean;

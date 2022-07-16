@@ -1,6 +1,7 @@
 # vue-3d-loader
 
-vueJS + [threeJS](https://threejs.org/) 3d viewer component, support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
+vueJS + threeJS 3d viewer component.  
+support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
 
 [![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
 
@@ -395,11 +396,12 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>
   outputEncoding
   </td>
-  <td>number</td>
-  <td>THREE.LinearEncoding</td>
-  <td>-</td>
+  <td>string</td>
+  <td>linear</td>
+  <td>linear or sRGB</td>
   <td>
 
+  linear is LinearEncoding, sRGB is sRGBEncoding (sRGBEncoding can restore material color better).
   Renderer's output encoding [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)
   </td>
 </tr>

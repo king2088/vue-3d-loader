@@ -4,6 +4,7 @@
     backgroundColor="#cccccc"
     :labels="labels"
     :scale="{ x: 0.5, y: 0.5, z: 0.5 }"
+    outputEncoding="sRGB"
   />
 </template>
 <script setup lang="ts">

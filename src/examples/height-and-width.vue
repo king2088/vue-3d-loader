@@ -1,8 +1,9 @@
 <template>
   <vue3dLoader
     filePath="/models/gltf/DamagedHelmet.gltf"
-    backgroundColor="#00ffff"
+    backgroundColor="rgb(216,217,219)"
     :height="600"
     :width="600"
+    outputEncoding="sRGB"
   />
 </template>

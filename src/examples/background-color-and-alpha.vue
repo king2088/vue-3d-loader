@@ -8,6 +8,7 @@
         :backgroundAlpha="0.5"
         :height="600"
         :width="600"
+        outputEncoding="sRGB"
       />
     </div>
   </div>

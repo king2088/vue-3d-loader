@@ -9,6 +9,7 @@
         :mtlPath="item.mtlPath"
         :textureImage="item.textureImage"
         :backgroundColor="item.backgroundColor"
+        :outputEncoding="item.outputEncoding"
       />
     </div>
   </div>
@@ -26,6 +27,7 @@ loaderList.value = [
     showFps: false,
     height: 400,
     backgroundColor: "#f2f2f2",
+    outputEncoding: "sRGB",
   },
   {
     title: "FBX+JPG",
