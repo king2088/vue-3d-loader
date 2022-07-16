@@ -40148,14 +40148,6 @@ function getLoader(filePath) {
         loader: new GLTFLoader(manager),
         getObject: (gltf) => {
           const object = gltf.scene;
-          object.traverse((child) => {
-            if (child.isMesh) {
-              child.frustumCulled = false;
-              child.castShadow = true;
-              child.material.emissive = child.material.color;
-              child.material.emissiveMap = child.material.map;
-            }
-          });
           return object;
         }
       };
@@ -40244,7 +40236,7 @@ const _sfc_main = defineComponent({
     crossOrigin: { default: "anonymous" },
     requestHeader: null,
     outputEncoding: { default: () => {
-      return LinearEncoding;
+      return "linear";
     } },
     webGLRendererOptions: { default: () => {
       return {};
@@ -40347,6 +40339,7 @@ const _sfc_main = defineComponent({
         isMultipleModels.value = true;
       }
       const el = containerElement.value;
+      setContainerElementStyle(el);
       onResize();
       const WEB_GL_OPTIONS = { antialias: true, alpha: true };
       const options = Object.assign({}, WEB_GL_OPTIONS, webGLRendererOptions, {
@@ -40354,7 +40347,8 @@ const _sfc_main = defineComponent({
       });
       renderer = new WebGLRenderer(options);
       renderer.shadowMap.enabled = true;
-      renderer.outputEncoding = outputEncoding;
+      const encoding = outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
+      renderer.outputEncoding = encoding;
       controls = new OrbitControls(camera, el);
       scene.add(wrapper);
       loadModelSelect();
@@ -40385,6 +40379,15 @@ const _sfc_main = defineComponent({
       el.removeEventListener("dblclick", onDblclick, false);
       window.removeEventListener("resize", onResize, false);
     });
+    function setContainerElementStyle(el) {
+      const { width, height } = props;
+      if (width) {
+        el.style.width = `${width}px`;
+      }
+      if (height) {
+        el.style.height = `${height}px`;
+      }
+    }
     function onResize() {
       const { width, height } = props;
       if (!width || !height) {
@@ -40837,7 +40840,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-e09d0ab6"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-d244ffea"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

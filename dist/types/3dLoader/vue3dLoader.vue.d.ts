@@ -1,10 +1,11 @@
 import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, Clock, Light } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-export interface Coordinates {
+export interface coordinates {
     x: number;
     y: number;
     z: number;
 }
+declare type encode = "linear" | "sRGB";
 declare const _default: import("vue").DefineComponent<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
@@ -94,9 +95,9 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
     };
     outputEncoding: {
-        type: NumberConstructor;
+        type: StringConstructor;
         required: false;
-        default: () => import("three").TextureEncoding;
+        default: () => string;
     };
     webGLRendererOptions: {
         type: ObjectConstructor;
@@ -138,20 +139,20 @@ declare const _default: import("vue").DefineComponent<{
         filePath: string | string[];
         width?: number | undefined;
         height?: number | undefined;
-        position?: Coordinates | undefined;
-        rotation?: Coordinates | undefined;
-        scale?: Coordinates | undefined;
+        position?: coordinates | undefined;
+        rotation?: coordinates | undefined;
+        scale?: coordinates | undefined;
         lights: object[];
-        cameraPosition: Coordinates;
-        cameraRotation?: Coordinates | undefined;
-        cameraUp?: Coordinates | undefined;
-        cameraLookAt?: Coordinates | undefined;
+        cameraPosition: coordinates;
+        cameraRotation?: coordinates | undefined;
+        cameraUp?: coordinates | undefined;
+        cameraLookAt?: coordinates | undefined;
         backgroundColor: number | string;
         backgroundAlpha: number;
         controlsOptions?: object | undefined;
         crossOrigin: string;
         requestHeader?: object | undefined;
-        outputEncoding: number;
+        outputEncoding: encode;
         webGLRendererOptions: object;
         mtlPath: string | string[];
         showFps: boolean;
@@ -187,6 +188,7 @@ declare const _default: import("vue").DefineComponent<{
     containerElement: import("vue").Ref<null>;
     canvasElement: import("vue").Ref<null>;
     emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
+    setContainerElementStyle: (el: any) => void;
     onResize: () => void;
     onMouseDown: (event: MouseEvent) => void;
     onMouseMove: (event: MouseEvent) => void;
@@ -306,9 +308,9 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
     };
     outputEncoding: {
-        type: NumberConstructor;
+        type: StringConstructor;
         required: false;
-        default: () => import("three").TextureEncoding;
+        default: () => string;
     };
     webGLRendererOptions: {
         type: ObjectConstructor;
@@ -360,7 +362,7 @@ declare const _default: import("vue").DefineComponent<{
     backgroundColor: string | number;
     backgroundAlpha: number;
     crossOrigin: string;
-    outputEncoding: number;
+    outputEncoding: string;
     webGLRendererOptions: Record<string, any>;
     mtlPath: string | unknown[];
     showFps: boolean;

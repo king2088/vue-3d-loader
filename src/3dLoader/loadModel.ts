@@ -69,15 +69,6 @@ function getLoader(filePath: string) {
         loader: new GLTFLoader(manager),
         getObject: (gltf: any) => {
           const object = gltf.scene
-          // solve GLTF dim light problem
-          object.traverse((child: any) => {
-            if (child.isMesh) {
-              child.frustumCulled = false;
-              child.castShadow = true;
-              child.material.emissive = child.material.color;
-              child.material.emissiveMap = child.material.map;
-            }
-          })
           return object;
         },
       };
