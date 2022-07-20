@@ -35,10 +35,10 @@ export default {
     filePath: { type: [String, Array] }, // supports one or more filePath
     width: Number,
     height: Number,
-    position: Object,
-    rotation: Object,
+    position: { type: [Object, Array] },
+    rotation: { type: [Object, Array] },
     scale: {
-      type: Object,
+      type: [Object, Array],
       default: () => {
         return { x: 1, y: 1, z: 1 };
       },
@@ -90,7 +90,7 @@ export default {
     },
     outputEncoding: {
       type: String,
-      default: 'linear',
+      default: "linear",
     },
     webGLRendererOptions: Object,
     mtlPath: {
@@ -171,7 +171,8 @@ export default {
     this.renderer = new WebGLRenderer(options);
     this.renderer.hadowMapEnabled = true;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.outputEncoding = this.outputEncoding === 'linear' ? LinearEncoding : sRGBEncoding;
+    this.renderer.outputEncoding =
+      this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
 
     this.controls = new OrbitControls(this.camera, el);
     this.scene.add(this.wrapper);
@@ -338,15 +339,59 @@ export default {
     updateModel() {
       const { object, position, rotation, scale } = this;
       if (!object) return;
+      const isArray = (arg) => {
+        return arg instanceof Array;
+      };
+      const index = this.isMultipleModels ? this.getObjectIndex(object) : null;
       if (position) {
-        object.position.set(position.x, position.y, position.z);
+        if (isArray(position)) {
+          // position value is array
+          if (position[index]) {
+            object.position.set(position[index].x, position[index].y, position[index].z);
+          } else {
+            object.position.set(0, 0, 0);
+          }
+        } else {
+          // position value is object
+          object.position.set(position.x, position.y, position.z);
+        }
       }
       if (rotation) {
-        object.rotation.set(rotation.x, rotation.y, rotation.z);
+        if (isArray(rotation)) {
+          // rotation value is array
+          if (rotation[index]) {
+            object.rotation.set(rotation[index].x, rotation[index].y, rotation[index].z);
+          } else {
+            object.rotation.set(0, 0, 0);
+          }
+        } else {
+          // rotation value is object
+          object.rotation.set(rotation.x, rotation.y, rotation.z);
+        }
       }
       if (scale) {
-        object.scale.set(scale.x, scale.y, scale.z);
+        if (isArray(scale)) {
+          // scale value is array
+          if (scale[index]) {
+            object.scale.set(scale[index].x, scale[index].y, scale[index].z);
+          } else {
+            object.scale.set(1, 1, 1);
+          }
+        } else {
+          // scale value is object
+          object.scale.set(scale.x, scale.y, scale.z);
+        }
       }
+    },
+    // get index for current object
+    getObjectIndex(object) {
+      return this.filePath
+        .map((item, index) => {
+          if (item.indexOf(object.fileName) > -1) {
+            return index;
+          }
+        })
+        .filter((i) => i != undefined)[0];
     },
     updateRenderer() {
       const { renderer, size, backgroundAlpha, backgroundColor } = this;
@@ -604,8 +649,8 @@ export default {
       this.object.fileName = fileName;
       this.wrapper.add(object);
       if (object.isMesh) {
-        this.update()
-        return
+        this.update();
+        return;
       }
       this.updateCamera();
       this.updateModel();
@@ -683,6 +728,18 @@ export default {
     setObjectAttr(type, val) {
       let obj = this.returnObject();
       if (!obj) return;
+      if (this.isMultipleModels) {
+        obj.children.forEach((item) => {
+          const index = this.getObjectIndex(item);
+          if (val[index]) {
+            item[type].set(val[index].x, val[index].y, val[index].z);
+          } else {
+            const v = type == 'scale' ? 1 : 0
+            item[type].set(v, v, v);
+          }
+        });
+        return;
+      }
       obj[type].set(val.x, val.y, val.z);
     },
     returnObject() {

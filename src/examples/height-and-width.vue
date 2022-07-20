@@ -4,6 +4,7 @@
     backgroundColor="#00ffff"
     :height="600"
     :width="600"
+    :outputEncoding="'sRGB'"
   />
 </template>
 <script>
