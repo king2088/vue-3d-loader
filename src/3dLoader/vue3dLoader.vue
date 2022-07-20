@@ -24,6 +24,7 @@ import {
   Clock,
   Sprite,
   SpriteMaterial,
+  sRGBEncoding,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -88,8 +89,8 @@ export default {
       default: () => {},
     },
     outputEncoding: {
-      type: Number,
-      default: LinearEncoding,
+      type: String,
+      default: 'linear',
     },
     webGLRendererOptions: Object,
     mtlPath: {
@@ -170,7 +171,7 @@ export default {
     this.renderer = new WebGLRenderer(options);
     this.renderer.hadowMapEnabled = true;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.outputEncoding = this.outputEncoding;
+    this.renderer.outputEncoding = this.outputEncoding === 'linear' ? LinearEncoding : sRGBEncoding;
 
     this.controls = new OrbitControls(this.camera, el);
     this.scene.add(this.wrapper);

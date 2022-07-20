@@ -70,14 +70,14 @@ function getLoader(filePath) {
         getObject: (gltf) => {
           const object = gltf.scene
           // solve GLTF dim light problem
-          object.traverse((child) => {
-            if(child.isMesh) {
-              child.frustumCulled = false;
-              child.castShadow = true;
-              child.material.emissive = child.material.color;
-              child.material.emissiveMap = child.material.map;
-            }
-          })
+          // object.traverse((child) => {
+          //   if(child.isMesh) {
+          //     child.frustumCulled = false;
+          //     child.castShadow = true;
+          //     child.material.emissive = child.material.color;
+          //     child.material.emissiveMap = child.material.map;
+          //   }
+          // })
           return object;
         }
       };
