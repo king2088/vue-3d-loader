@@ -9,6 +9,7 @@
         :mtlPath="item.mtlPath"
         :textureImage="item.textureImage"
         :backgroundColor="item.backgroundColor"
+        :outputEncoding="item.outputEncoding"
       />
     </div>
   </div>
@@ -30,6 +31,7 @@ export default {
           mtlPath: "/models/obj/male02.mtl",
           showFps: false,
           height: 400,
+          outputEncoding: 'sRGB'
         },
         {
           title: "FBX+JPG",
