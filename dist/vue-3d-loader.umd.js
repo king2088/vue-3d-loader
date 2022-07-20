@@ -2709,7 +2709,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=039e89b9&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=8505325c&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21102,15 +21102,15 @@ function getLoader(filePath) {
         loader: new GLTFLoader(manager),
         getObject: gltf => {
           const object = gltf.scene; // solve GLTF dim light problem
+          // object.traverse((child) => {
+          //   if(child.isMesh) {
+          //     child.frustumCulled = false;
+          //     child.castShadow = true;
+          //     child.material.emissive = child.material.color;
+          //     child.material.emissiveMap = child.material.map;
+          //   }
+          // })
 
-          object.traverse(child => {
-            if (child.isMesh) {
-              child.frustumCulled = false;
-              child.castShadow = true;
-              child.material.emissive = child.material.color;
-              child.material.emissiveMap = child.material.map;
-            }
-          });
           return object;
         }
       };
@@ -21178,10 +21178,14 @@ function getMTLLoader() {
     // supports one or more filePath
     width: Number,
     height: Number,
-    position: Object,
-    rotation: Object,
+    position: {
+      type: [Object, Array]
+    },
+    rotation: {
+      type: [Object, Array]
+    },
     scale: {
-      type: Object,
+      type: [Object, Array],
       default: () => {
         return {
           x: 1,
@@ -21241,8 +21245,8 @@ function getMTLLoader() {
       default: () => {}
     },
     outputEncoding: {
-      type: Number,
-      default: LinearEncoding
+      type: String,
+      default: "linear"
     },
     webGLRendererOptions: Object,
     mtlPath: {
@@ -21323,7 +21327,7 @@ function getMTLLoader() {
     this.renderer = new WebGLRenderer(options);
     this.renderer.hadowMapEnabled = true;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.outputEncoding = this.outputEncoding;
+    this.renderer.outputEncoding = this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
     this.controls = new OrbitControls(this.camera, el);
     this.scene.add(this.wrapper);
     this.loadModelSelect();
@@ -21528,17 +21532,62 @@ function getMTLLoader() {
       } = this;
       if (!object) return;
 
+      const isArray = arg => {
+        return arg instanceof Array;
+      };
+
+      const index = this.isMultipleModels ? this.getObjectIndex(object) : null;
+
       if (position) {
-        object.position.set(position.x, position.y, position.z);
+        if (isArray(position)) {
+          // position value is array
+          if (position[index]) {
+            object.position.set(position[index].x, position[index].y, position[index].z);
+          } else {
+            object.position.set(0, 0, 0);
+          }
+        } else {
+          // position value is object
+          object.position.set(position.x, position.y, position.z);
+        }
       }
 
       if (rotation) {
-        object.rotation.set(rotation.x, rotation.y, rotation.z);
+        if (isArray(rotation)) {
+          // rotation value is array
+          if (rotation[index]) {
+            object.rotation.set(rotation[index].x, rotation[index].y, rotation[index].z);
+          } else {
+            object.rotation.set(0, 0, 0);
+          }
+        } else {
+          // rotation value is object
+          object.rotation.set(rotation.x, rotation.y, rotation.z);
+        }
       }
 
       if (scale) {
-        object.scale.set(scale.x, scale.y, scale.z);
+        if (isArray(scale)) {
+          // scale value is array
+          if (scale[index]) {
+            object.scale.set(scale[index].x, scale[index].y, scale[index].z);
+          } else {
+            object.scale.set(1, 1, 1);
+          }
+        } else {
+          // scale value is object
+          object.scale.set(scale.x, scale.y, scale.z);
+        }
       }
+    },
+
+    // get index for current object
+    getObjectIndex(object) {
+      return this.filePath.map((item, index) => {
+        if (item.indexOf(object.fileName) > -1) {
+          return index;
+        }
+      }).filter(i => i != undefined)[0];
     },
 
     updateRenderer() {
@@ -21874,6 +21923,21 @@ function getMTLLoader() {
     setObjectAttr(type, val) {
       let obj = this.returnObject();
       if (!obj) return;
+
+      if (this.isMultipleModels) {
+        obj.children.forEach(item => {
+          const index = this.getObjectIndex(item);
+
+          if (val[index]) {
+            item[type].set(val[index].x, val[index].y, val[index].z);
+          } else {
+            const v = type == 'scale' ? 1 : 0;
+            item[type].set(v, v, v);
+          }
+        });
+        return;
+      }
+
       obj[type].set(val.x, val.y, val.z);
     },
 
