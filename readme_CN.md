@@ -638,7 +638,7 @@ function change(event: any, type: string) {
       <button @click="enableZoom = !enableZoom">
         {{ enableZoom ? "disable" : "enable" }} zoom
       </button>
-      <!-- 禁止缩放 -->
+      <!-- 禁止旋转 -->
       <button @click="enableRotate = !enableRotate">
         {{ enableRotate ? "disable" : "enable" }} rotation
       </button>
