@@ -10,6 +10,7 @@
         :textureImage="item.textureImage"
         :backgroundColor="item.backgroundColor"
         :outputEncoding="item.outputEncoding"
+        :cameraPosition="item.cameraPosition"
       />
     </div>
   </div>
@@ -28,6 +29,7 @@ loaderList.value = [
     height: 400,
     backgroundColor: "#f2f2f2",
     outputEncoding: "sRGB",
+    cameraPosition: { x: -100, y: 100, z: 200 }
   },
   {
     title: "FBX+JPG",

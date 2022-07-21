@@ -18,15 +18,15 @@ declare const _default: {
             required: false;
         };
         position: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         rotation: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         scale: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         lights: {
@@ -137,9 +137,9 @@ declare const _default: {
             filePath: string | string[];
             width?: number | undefined;
             height?: number | undefined;
-            position?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
-            rotation?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
-            scale?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
+            position?: import("./3dLoader/vue3dLoader.vue").coordinates | import("./3dLoader/vue3dLoader.vue").coordinates[] | undefined;
+            rotation?: import("./3dLoader/vue3dLoader.vue").coordinates | import("./3dLoader/vue3dLoader.vue").coordinates[] | undefined;
+            scale?: import("./3dLoader/vue3dLoader.vue").coordinates | import("./3dLoader/vue3dLoader.vue").coordinates[] | undefined;
             lights: object[];
             cameraPosition: import("./3dLoader/vue3dLoader.vue").coordinates;
             cameraRotation?: import("./3dLoader/vue3dLoader.vue").coordinates | undefined;
@@ -217,6 +217,7 @@ declare const _default: {
         setLabel: () => void;
         setSpriteLabel: () => void;
         generateCanvas: (text: string, style: any) => HTMLCanvasElement;
+        getObjectIndex: (object: any) => any;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];
@@ -231,15 +232,15 @@ declare const _default: {
             required: false;
         };
         position: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         rotation: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         scale: {
-            type: ObjectConstructor;
+            type: (ArrayConstructor | ObjectConstructor)[];
             required: false;
         };
         lights: {

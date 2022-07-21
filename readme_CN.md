@@ -181,34 +181,44 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   <td>
   position
   </td>
-  <td>object</td>
-  <td>-</td>
+  <td>object | array</td>
+  <td>{x:0, y:0, z:0}</td>
   <td style="font-size: 12px">
   
   ```js
   const position = {x:0, y:0, z:0}
+  // or
+  const position = [
+    {x:10, y:10, z:10},
+    {x:50, y:50, z:50}
+  ]
   ```
 
   </td>
   <td>
-  模型位置坐标
+  模型位置坐标，filePath类型为array时可用array
   </td>
 </tr>
 <tr>
   <td>
   rotation
   </td>
-  <td>object</td>
-  <td>-</td>
+  <td>object | array</td>
+  <td>{x:0, y:0, z:0}</td>
   <td style="font-size: 12px">
   
   ```js
   const rotation = {x:0, y:0, z:0}
+  // or
+  const rotation = [
+    {x: 10, y:20, z:30},
+    {x: 0, y: 16, z: 20}
+  ]
   ```
 
   </td>
   <td>
-  模型旋转坐标
+  模型旋转坐标，filePath类型为array时可用array
   </td>
 </tr>
 <tr>
@@ -249,17 +259,22 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   <td>
   scale
   </td>
-  <td>object</td>
+  <td>object | array</td>
   <td>{x:1, y:1, z:1}</td>
   <td style="font-size: 12px">
   
   ```js
   const scale = {x:1, y:2, z:1}
+  // or
+  const scale = [
+    {x:1, y:2, z:1},
+    {x:0.5, y:0.5, z:0.5}
+  ]
   ```
 
   </td>
   <td>
-  模型比例
+  模型比例，filePath类型为array时可用array
   </td>
 </tr>
 <tr>
@@ -518,21 +533,79 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 #### 2. 同一个场景中加载多个模型
 
 ```vue
-<!-- 可同时加载多个不同种类的模型 -->
+<!-- 
+    可同时加载多个不同种类的模型,
+    支持单独设置每一个模型的位置/缩放/旋转
+-->
 <template>
+  <div class="check-box">
+    <input type="checkbox" @change="change($event, 'position')" checked /> Set
+    position
+    <input type="checkbox" @change="change($event, 'rotation')" checked /> Set
+    rotation
+    <input type="checkbox" @change="change($event, 'scale')" checked /> Set
+    scale
+  </div>
   <vue3dLoader
     :filePath="filePath"
-    :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
-    :cameraPosition="{ x: 100, y: 200, z: 30 }"
+    :position="position"
+    :rotation="rotation"
+    :scale="scale"
+    :cameraPosition="{ x: -0, y: 0, z: -500 }"
   />
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
-  const filePath = ref();
-  filePath.value = [
-    "/models/fbx/Samba Dancing.fbx",
-    "models/collada/pump/pump.dae",
-  ];
+import { ref } from "vue";
+const filePath = ref();
+filePath.value = [
+  "/models/fbx/Samba Dancing.fbx",
+  "/models/collada/pump/pump.dae",
+];
+const position = ref();
+position.value = [
+  { x: 0, y: 0, z: 0 },
+  { x: 100, y: 100, z: 100 },
+];
+const rotation = ref();
+rotation.value = [
+  { x: 0, y: 0, z: 0 },
+  { x: 10, y: 1, z: 1 },
+];
+const scale = ref();
+scale.value = [
+  { x: 0.4, y: 0.4, z: 0.4 },
+  { x: 0.8, y: 0.8, z: 0.8 },
+];
+
+function change(event: any, type: string) {
+  const value = event.target.checked;
+  switch (type) {
+    case "position":
+      value
+        ? (position.value = [
+            { x: 0, y: 0, z: 0 },
+            { x: 100, y: 100, z: 100 },
+          ])
+        : (position.value = []);
+      break;
+    case "rotation":
+      value
+        ? (rotation.value = [
+            { x: 0, y: 0, z: 0 },
+            { x: 10, y: 1, z: 1 },
+          ])
+        : (rotation.value = []);
+      break;
+    case "scale":
+      value
+        ? (scale.value = [
+            { x: 0.4, y: 0.4, z: 0.4 },
+            { x: 0.8, y: 0.8, z: 0.8 },
+          ])
+        : (scale.value = []);
+      break;
+  }
+}
 </script>
 ```
 
