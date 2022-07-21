@@ -637,15 +637,15 @@ function change(event: any, type: string) {
 <template>
   <div class="controls">
     <div class="buttons">
-      <!-- 禁止右键拖动 -->
+      <!-- Disable right-click drag -->
       <button @click="enablePan = !enablePan">
         {{ enablePan ? "disable" : "enable" }} translation
       </button>
-      <!-- 禁止缩放 -->
+      <!-- Disable zoom -->
       <button @click="enableZoom = !enableZoom">
         {{ enableZoom ? "disable" : "enable" }} zoom
       </button>
-      <!-- 禁止缩放 -->
+      <!-- Disable rotation -->
       <button @click="enableRotate = !enableRotate">
         {{ enableRotate ? "disable" : "enable" }} rotation
       </button>
