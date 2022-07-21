@@ -2,7 +2,7 @@
   <vue3dLoader
     filePath="/models/collada/elf/elf.dae"
     :lights="lights"
-    :cameraPosition="{ x: 0, y: -10, z: 10 }"
+    :cameraPosition="{ x: 0, y: 10, z: 10 }"
   />
 </template>
 <script setup lang="ts">

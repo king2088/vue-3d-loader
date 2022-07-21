@@ -40455,14 +40455,15 @@ const _sfc_main = defineComponent({
       const { position, rotation, scale } = props;
       if (!object)
         return;
+      const index2 = isMultipleModels.value ? getObjectIndex(object) : null;
       if (position) {
-        object.position.set(position.x, position.y, position.z);
+        position instanceof Array ? index2 != null ? object.position.set(position[index2].x, position[index2].y, position[index2].z) : object.position.set(0, 0, 0) : object.position.set(position.x, position.y, position.z);
       }
       if (rotation) {
-        object.rotation.set(rotation.x, rotation.y, rotation.z);
+        rotation instanceof Array ? index2 != null ? object.rotation.set(rotation[index2].x, rotation[index2].y, rotation[index2].z) : object.rotation.set(0, 0, 0) : object.rotation.set(rotation.x, rotation.y, rotation.z);
       }
       if (scale) {
-        object.scale.set(scale.x, scale.y, scale.z);
+        scale instanceof Array ? index2 != null ? object.scale.set(scale[index2].x, scale[index2].y, scale[index2].z) : object.scale.set(0, 0, 0) : object.scale.set(scale.x, scale.y, scale.z);
       }
     }
     function updateRenderer() {
@@ -40730,6 +40731,14 @@ const _sfc_main = defineComponent({
       const obj = getAllObject();
       if (!obj)
         return;
+      if (isMultipleModels.value) {
+        obj.children.forEach((item) => {
+          const index2 = getObjectIndex(item);
+          const v = type === "scale" ? 1 : 0;
+          val[index2] ? item[type].set(val[index2].x, val[index2].y, val[index2].z) : item[type].set(v, v, v);
+        });
+        return;
+      }
       obj[type].set(val.x, val.y, val.z);
     }
     function getAllObject() {
@@ -40825,6 +40834,18 @@ const _sfc_main = defineComponent({
       }
       return canvas;
     }
+    function getObjectIndex(object2) {
+      const { filePath } = props;
+      let objIndex;
+      if (filePath instanceof Array) {
+        objIndex = filePath.map((item, index2) => {
+          if (item.indexOf(object2.fileName) > -1) {
+            return index2;
+          }
+        }).filter((i) => i != void 0)[0];
+      }
+      return objIndex;
+    }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
         ref_key: "containerElement",
@@ -40840,7 +40861,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-d244ffea"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-4f87bc73"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

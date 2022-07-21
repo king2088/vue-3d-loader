@@ -181,34 +181,44 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>
   position
   </td>
-  <td>object</td>
-  <td>-</td>
+  <td>object | array</td>
+  <td>{x:0, y:0, z:0}</td>
   <td>
   
   ```js
   const position = {x:0, y:0, z:0}
+  // or
+  const position = [
+    {x:10, y:10, z:10},
+    {x:50, y:50, z:50}
+  ]
   ```
 
   </td>
   <td>
-  Model position coordinates
+  Model position coordinates, position use array type when filePath is an array
   </td>
 </tr>
 <tr>
   <td>
   rotation
   </td>
-  <td>object</td>
-  <td>-</td>
+  <td>object | array</td>
+  <td>{x:0, y:0, z:0}</td>
   <td>
   
   ```js
   const rotation = {x:0, y:0, z:0}
+  // or
+  const rotation = [
+    {x: 10, y:20, z:30},
+    {x: 0, y: 16, z: 20}
+  ]
   ```
 
   </td>
   <td>
-  Model rotation coordinates
+  Model rotation coordinates, rotation use array type when filePath is an array
   </td>
 </tr>
 <tr>
@@ -249,17 +259,22 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>
   scale
   </td>
-  <td>object</td>
+  <td>object | array</td>
   <td>{x:1, y:1, z:1}</td>
   <td>
   
   ```js
   const scale = {x:1, y:2, z:1}
+  // or
+  const scale = [
+    {x:1, y:2, z:1},
+    {x:0.5, y:0.5, z:0.5}
+  ]
   ```
 
   </td>
   <td>
-  Model scale
+  Model scale, scale use array type when filePath is an array
   </td>
 </tr>
 <tr>
@@ -520,21 +535,80 @@ supports dae/fbx/gltf(glb)/obj/ply/stl models
 #### 2. Loading multiple models in the same scene
 
 ```vue
-<!-- Load multiple models of different type -->
+<!-- 
+    Load multiple models of different type,
+    support for setting position, scale,
+    and rotation for each model
+-->
 <template>
+  <div class="check-box">
+    <input type="checkbox" @change="change($event, 'position')" checked /> Set
+    position
+    <input type="checkbox" @change="change($event, 'rotation')" checked /> Set
+    rotation
+    <input type="checkbox" @change="change($event, 'scale')" checked /> Set
+    scale
+  </div>
   <vue3dLoader
     :filePath="filePath"
-    :scale="{ x: 0.4, y: 0.4, z: 0.4 }"
-    :cameraPosition="{ x: 100, y: 200, z: 30 }"
+    :position="position"
+    :rotation="rotation"
+    :scale="scale"
+    :cameraPosition="{ x: -0, y: 0, z: -500 }"
   />
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
-  const filePath = ref();
-  filePath.value = [
-    "/models/fbx/Samba Dancing.fbx",
-    "models/collada/pump/pump.dae",
-  ];
+import { ref } from "vue";
+const filePath = ref();
+filePath.value = [
+  "/models/fbx/Samba Dancing.fbx",
+  "/models/collada/pump/pump.dae",
+];
+const position = ref();
+position.value = [
+  { x: 0, y: 0, z: 0 },
+  { x: 100, y: 100, z: 100 },
+];
+const rotation = ref();
+rotation.value = [
+  { x: 0, y: 0, z: 0 },
+  { x: 10, y: 1, z: 1 },
+];
+const scale = ref();
+scale.value = [
+  { x: 0.4, y: 0.4, z: 0.4 },
+  { x: 0.8, y: 0.8, z: 0.8 },
+];
+
+function change(event: any, type: string) {
+  const value = event.target.checked;
+  switch (type) {
+    case "position":
+      value
+        ? (position.value = [
+            { x: 0, y: 0, z: 0 },
+            { x: 100, y: 100, z: 100 },
+          ])
+        : (position.value = []);
+      break;
+    case "rotation":
+      value
+        ? (rotation.value = [
+            { x: 0, y: 0, z: 0 },
+            { x: 10, y: 1, z: 1 },
+          ])
+        : (rotation.value = []);
+      break;
+    case "scale":
+      value
+        ? (scale.value = [
+            { x: 0.4, y: 0.4, z: 0.4 },
+            { x: 0.8, y: 0.8, z: 0.8 },
+          ])
+        : (scale.value = []);
+      break;
+  }
+}
 </script>
 ```
 

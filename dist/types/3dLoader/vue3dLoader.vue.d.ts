@@ -20,15 +20,15 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
     };
     position: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     rotation: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     scale: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     lights: {
@@ -139,9 +139,9 @@ declare const _default: import("vue").DefineComponent<{
         filePath: string | string[];
         width?: number | undefined;
         height?: number | undefined;
-        position?: coordinates | undefined;
-        rotation?: coordinates | undefined;
-        scale?: coordinates | undefined;
+        position?: coordinates | coordinates[] | undefined;
+        rotation?: coordinates | coordinates[] | undefined;
+        scale?: coordinates | coordinates[] | undefined;
         lights: object[];
         cameraPosition: coordinates;
         cameraRotation?: coordinates | undefined;
@@ -219,6 +219,7 @@ declare const _default: import("vue").DefineComponent<{
     setLabel: () => void;
     setSpriteLabel: () => void;
     generateCanvas: (text: string, style: any) => HTMLCanvasElement;
+    getObjectIndex: (object: any) => any;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
@@ -233,15 +234,15 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
     };
     position: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     rotation: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     scale: {
-        type: ObjectConstructor;
+        type: (ArrayConstructor | ObjectConstructor)[];
         required: false;
     };
     lights: {

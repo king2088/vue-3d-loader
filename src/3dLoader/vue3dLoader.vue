@@ -52,9 +52,9 @@ interface Props {
   filePath: string | string[];
   width?: number;
   height?: number;
-  position?: coordinates;
-  rotation?: coordinates;
-  scale?: coordinates;
+  position?: coordinates | coordinates[];
+  rotation?: coordinates | coordinates[];
+  scale?: coordinates | coordinates[];
   lights?: object[];
   cameraPosition?: coordinates;
   cameraRotation?: coordinates;
@@ -366,14 +366,35 @@ function update(isResize = false) {
 function updateModel() {
   const { position, rotation, scale } = props;
   if (!object) return;
+  const index = isMultipleModels.value ? getObjectIndex(object) : null;
   if (position) {
-    object.position.set(position.x, position.y, position.z);
+    position instanceof Array
+      ? index != null
+        ? object.position.set(
+            position[index].x,
+            position[index].y,
+            position[index].z
+          )
+        : object.position.set(0, 0, 0)
+      : object.position.set(position.x, position.y, position.z);
   }
   if (rotation) {
-    object.rotation.set(rotation.x, rotation.y, rotation.z);
+    rotation instanceof Array
+      ? index != null
+        ? object.rotation.set(
+            rotation[index].x,
+            rotation[index].y,
+            rotation[index].z
+          )
+        : object.rotation.set(0, 0, 0)
+      : object.rotation.set(rotation.x, rotation.y, rotation.z);
   }
   if (scale) {
-    object.scale.set(scale.x, scale.y, scale.z);
+    scale instanceof Array
+      ? index != null
+        ? object.scale.set(scale[index].x, scale[index].y, scale[index].z)
+        : object.scale.set(0, 0, 0)
+      : object.scale.set(scale.x, scale.y, scale.z);
   }
 }
 function updateRenderer() {
@@ -681,6 +702,16 @@ function clearSceneWrapper() {
 function setObjectAttribute(type: string, val: any) {
   const obj = getAllObject();
   if (!obj) return;
+  if (isMultipleModels.value) {
+    obj.children.forEach((item: any) => {
+      const index = getObjectIndex(item);
+      const v = type === "scale" ? 1 : 0;
+      val[index]
+        ? item[type].set(val[index].x, val[index].y, val[index].z)
+        : item[type].set(v, v, v);
+    });
+    return;
+  }
   obj[type].set(val.x, val.y, val.z);
 }
 function getAllObject() {
@@ -800,6 +831,21 @@ function generateCanvas(text: string, style: any) {
     context.fillText(text, borderWidth, fontSize + borderWidth);
   }
   return canvas;
+}
+// Get object index
+function getObjectIndex(object: any) {
+  const { filePath } = props;
+  let objIndex: any;
+  if (filePath instanceof Array) {
+    objIndex = filePath
+      .map((item, index) => {
+        if (item.indexOf(object.fileName) > -1) {
+          return index;
+        }
+      })
+      .filter((i) => i != undefined)[0];
+  }
+  return objIndex;
 }
 </script>
 <style scoped>
