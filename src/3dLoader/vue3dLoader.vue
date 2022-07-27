@@ -136,7 +136,6 @@ let textureLoader: any = null;
 // responsive variable
 const size = ref({ width: props.width || 0, height: props.height || 0 });
 const loaderIndex = ref(0);
-// const timer = ref();
 const objectPositionHasSet = ref(false);
 const mouseMoveTimer = ref(null);
 const isMultipleModels = ref(false);
