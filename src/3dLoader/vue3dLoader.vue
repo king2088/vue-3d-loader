@@ -173,18 +173,14 @@ watch(
     () => props.lights,
   ],
   (valueArray) => {
-    if (valueArray[0]) {
-      setObjectAttribute("rotation", valueArray[0]);
-    }
-    if (valueArray[1]) {
-      setObjectAttribute("position", valueArray[1]);
-    }
-    if (valueArray[2]) {
-      setObjectAttribute("scale", valueArray[2]);
-    }
-    if (valueArray[3]) {
-      updateLights();
-    }
+    const attr = ["rotation", "position", "scale"]
+    valueArray.forEach((item, index) => {
+      if (index < 3 && item) {
+        setObjectAttribute(attr[index], item);
+      } else {
+        updateLights();
+      }
+    })
   },
   { deep: true }
 );
@@ -204,19 +200,19 @@ watch(
   { deep: true }
 );
 watch(
-  [() => props.cameraRotation],
+  [() => props.cameraRotation, () => props.cameraPosition],
   () => {
     updateCamera();
   },
   { deep: true }
 );
-watch(
-  [() => props.cameraPosition],
-  () => {
-    updateCamera();
-  },
-  { deep: true }
-);
+// watch(
+//   [() => props.cameraPosition],
+//   () => {
+//     updateCamera();
+//   },
+//   { deep: true }
+// );
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -309,7 +305,6 @@ function onResize() {
         width: width || el.offsetWidth,
         height: height || el.offsetHeight,
       };
-      // update(true);
     });
   }
 }
@@ -346,8 +341,7 @@ function onDblclick(event: MouseEvent) {
 }
 function pick(x: number, y: number) {
   const obj = getAllObject();
-  if (!obj) return null;
-  if (!containerElement.value) return;
+  if (!obj || !containerElement.value) return null;
   const rect = (containerElement.value as HTMLElement).getBoundingClientRect();
   x -= rect.left;
   y -= rect.top;
@@ -357,16 +351,16 @@ function pick(x: number, y: number) {
   const intersects = raycaster.intersectObject(obj, true);
   return (intersects && intersects.length) > 0 ? intersects[0] : null;
 }
-function update(isResize = false) {
+function update() {
   updateRenderer();
-  updateCamera(isResize);
+  updateCamera();
   updateLights();
   updateControls();
 }
 function updateModel() {
-  const { position, rotation, scale } = props;
   if (!object) return;
   const index = isMultipleModels.value ? getObjectIndex(object) : null;
+  const { position, rotation, scale } = props;
   if (position) {
     position instanceof Array
       ? index != null
@@ -448,7 +442,8 @@ function updateLights() {
       const intensity =
         item.intensity === 0 ? item.intensity : item.intensity || 1;
       light = new AmbientLight(color, intensity);
-    } else if (type === "point" || type === "pointlight") {
+    }
+    if (type === "point" || type === "pointlight") {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0xffffff;
       const intensity =
@@ -459,7 +454,8 @@ function updateLights() {
       if (item.position) {
         light.position.copy(item.position);
       }
-    } else if (type === "directional" || type === "directionallight") {
+    }
+    if (type === "directional" || type === "directionallight") {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0xffffff;
       const intensity =
@@ -474,7 +470,8 @@ function updateLights() {
       if (item.target) {
         light.target.copy(item.target);
       }
-    } else if (type === "hemisphere" || type === "hemispherelight") {
+    }
+    if (type === "hemisphere" || type === "hemispherelight") {
       const skyColor =
         item.skyColor === 0x000000 ? item.skyColor : item.skyColor || 0xffffff;
       const groundColor =
@@ -504,7 +501,7 @@ function updateControls() {
 }
 function loadModelSelect() {
   const { filePath, parallelLoad } = props;
-  // parallel load
+  // If enable parallel load
   if (parallelLoad && isMultipleModels) {
     (filePath as any).forEach((path: string, index: number) => {
       load(index);
@@ -537,8 +534,8 @@ function load(fileIndex?: number) {
   }
   if (mtlPath) {
     // load materials
-    const isMultipleMTL = typeof mtlPath === "string";
-    if (isMultipleMTL) {
+    const isMultipleMTL = typeof mtlPath === "object";
+    if (!isMultipleMTL) {
       // single material
       loadMtl(filePathStrng, getObjectFun, index);
     } else {
@@ -563,6 +560,7 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
       object = obj;
       addObject(object, filePath);
       mixer = new AnimationMixer(object);
+      // auto play animations
       if (object.animations) {
         object.animations.forEach((clip: AnimationClip) => {
           const action = mixer.clipAction(clip);
@@ -587,8 +585,8 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
       const modelIndex = loaderIndex.value + 1;
       emit("process", event, modelIndex);
     },
-    (event: ErrorEvent) => {
-      emit("error", event);
+    (error: ErrorEvent) => {
+      emit("error", error);
     }
   );
 }
@@ -601,10 +599,10 @@ function loadMtl(filePath: string, getObject: any, index: number) {
   if (requestHeader) {
     mtlLoader.setRequestHeader(requestHeader as any);
   }
-  const _mtl = typeof mtlPath === "string" ? mtlPath : mtlPath[index];
-  const returnPathArray: any = /^(.*\/)([^/]*)$/.exec(_mtl);
-  const path = returnPathArray[1];
-  const file = returnPathArray[2];
+  const mtl = typeof mtlPath === "string" ? mtlPath : mtlPath[index];
+  const mtlPathArray: any = /^(.*\/)([^/]*)$/.exec(mtl);
+  const path = mtlPathArray[1];
+  const file = mtlPathArray[2];
   mtlLoader.setPath(path).load(file, (materials) => {
     materials.preload();
     loader.setMaterials(materials);
@@ -667,13 +665,13 @@ function onProcess(xhr: ProgressEvent) {
     }
   };
   // local webpack environment http response headers no content-length, the xhr.total is 0, so process === Infinity
-  if (process === Infinity) {
-    clearTimeout(timer.value);
-    timer.value = setTimeout(() => {
-      process = 100;
-      next();
-    }, 200);
-  }
+  // if (process === Infinity) {
+  //   clearTimeout(timer.value);
+  //   timer.value = setTimeout(() => {
+  //     process = 100;
+  //     next();
+  //   }, 200);
+  // }
   next();
 }
 function addTexture(object: Object3D, texture: any) {
@@ -772,7 +770,6 @@ function setSpriteLabel() {
   });
 }
 function generateCanvas(text: string, style: any) {
-  if (style === undefined) style = {};
   const roundRect = (
     ctx: any,
     x: number,
@@ -825,7 +822,6 @@ function generateCanvas(text: string, style: any) {
       fontSize * 1.4 + borderWidth,
       borderRadius
     );
-    // 1.4 is extra height factor for text below baseline: g,j,p,q.
     // text color
     context.fillStyle = fontColor;
     context.fillText(text, borderWidth, fontSize + borderWidth);
