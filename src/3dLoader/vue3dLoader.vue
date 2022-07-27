@@ -136,7 +136,7 @@ let textureLoader: any = null;
 // responsive variable
 const size = ref({ width: props.width || 0, height: props.height || 0 });
 const loaderIndex = ref(0);
-const timer = ref();
+// const timer = ref();
 const objectPositionHasSet = ref(false);
 const mouseMoveTimer = ref(null);
 const isMultipleModels = ref(false);
@@ -206,13 +206,6 @@ watch(
   },
   { deep: true }
 );
-// watch(
-//   [() => props.cameraPosition],
-//   () => {
-//     updateCamera();
-//   },
-//   { deep: true }
-// );
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -647,32 +640,21 @@ function updateStats() {
 function onProcess(xhr: ProgressEvent) {
   const { filePath } = props;
   let process = Math.floor((xhr.loaded / xhr.total) * 100);
-  const next = () => {
-    if (process === 100) {
-      if (isMultipleModels.value && filePath.length > loaderIndex.value) {
-        // Load completed
-        nextTick(() => {
-          loaderIndex.value++;
-          if (loaderIndex.value === filePath.length) {
-            loaderIndex.value = 0;
-            return;
-          }
-          load();
-        });
-      } else {
-        loaderIndex.value = 0;
-      }
+  if (process === 100) {
+    if (isMultipleModels.value && filePath.length > loaderIndex.value) {
+      // Load completed
+      nextTick(() => {
+        loaderIndex.value++;
+        if (loaderIndex.value === filePath.length) {
+          loaderIndex.value = 0;
+          return;
+        }
+        load();
+      });
+    } else {
+      loaderIndex.value = 0;
     }
-  };
-  // local webpack environment http response headers no content-length, the xhr.total is 0, so process === Infinity
-  // if (process === Infinity) {
-  //   clearTimeout(timer.value);
-  //   timer.value = setTimeout(() => {
-  //     process = 100;
-  //     next();
-  //   }, 200);
-  // }
-  next();
+  }
 }
 function addTexture(object: Object3D, texture: any) {
   if (!textureLoader) {
