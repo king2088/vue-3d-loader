@@ -179,7 +179,6 @@ declare const _default: {
             height: number;
         }>;
         loaderIndex: import("vue").Ref<number>;
-        timer: import("vue").Ref<any>;
         objectPositionHasSet: import("vue").Ref<boolean>;
         mouseMoveTimer: import("vue").Ref<null>;
         isMultipleModels: import("vue").Ref<boolean>;
@@ -193,8 +192,8 @@ declare const _default: {
         onMouseUp: (event: MouseEvent) => void;
         onClick: (event: MouseEvent) => void;
         onDblclick: (event: MouseEvent) => void;
-        pick: (x: number, y: number) => Three.Intersection<Three.Object3D<Three.Event>> | null | undefined;
-        update: (isResize?: boolean) => void;
+        pick: (x: number, y: number) => Three.Intersection<Three.Object3D<Three.Event>> | null;
+        update: () => void;
         updateModel: () => void;
         updateRenderer: () => void;
         updateCamera: (isResize?: boolean | undefined) => void;

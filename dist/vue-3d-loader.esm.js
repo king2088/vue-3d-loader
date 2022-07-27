@@ -40279,7 +40279,6 @@ const _sfc_main = defineComponent({
     let textureLoader = null;
     const size = ref({ width: props.width || 0, height: props.height || 0 });
     const loaderIndex = ref(0);
-    const timer = ref();
     const objectPositionHasSet = ref(false);
     const mouseMoveTimer = ref(null);
     const isMultipleModels = ref(false);
@@ -40307,18 +40306,14 @@ const _sfc_main = defineComponent({
       () => props.scale,
       () => props.lights
     ], (valueArray) => {
-      if (valueArray[0]) {
-        setObjectAttribute("rotation", valueArray[0]);
-      }
-      if (valueArray[1]) {
-        setObjectAttribute("position", valueArray[1]);
-      }
-      if (valueArray[2]) {
-        setObjectAttribute("scale", valueArray[2]);
-      }
-      if (valueArray[3]) {
-        updateLights();
-      }
+      const attr = ["rotation", "position", "scale"];
+      valueArray.forEach((item, index2) => {
+        if (index2 < 3 && item) {
+          setObjectAttribute(attr[index2], item);
+        } else {
+          updateLights();
+        }
+      });
     }, { deep: true });
     watch([() => size], () => {
       updateCamera(true);
@@ -40327,10 +40322,7 @@ const _sfc_main = defineComponent({
     watch([() => props.controlsOptions], () => {
       updateControls();
     }, { deep: true });
-    watch([() => props.cameraRotation], () => {
-      updateCamera();
-    }, { deep: true });
-    watch([() => props.cameraPosition], () => {
+    watch([() => props.cameraRotation, () => props.cameraPosition], () => {
       updateCamera();
     }, { deep: true });
     onMounted(() => {
@@ -40432,10 +40424,8 @@ const _sfc_main = defineComponent({
     }
     function pick(x, y) {
       const obj = getAllObject();
-      if (!obj)
+      if (!obj || !containerElement.value)
         return null;
-      if (!containerElement.value)
-        return;
       const rect = containerElement.value.getBoundingClientRect();
       x -= rect.left;
       y -= rect.top;
@@ -40445,17 +40435,17 @@ const _sfc_main = defineComponent({
       const intersects2 = raycaster.intersectObject(obj, true);
       return (intersects2 && intersects2.length) > 0 ? intersects2[0] : null;
     }
-    function update(isResize = false) {
+    function update() {
       updateRenderer();
-      updateCamera(isResize);
+      updateCamera();
       updateLights();
       updateControls();
     }
     function updateModel() {
-      const { position, rotation, scale } = props;
       if (!object)
         return;
       const index2 = isMultipleModels.value ? getObjectIndex(object) : null;
+      const { position, rotation, scale } = props;
       if (position) {
         position instanceof Array ? index2 != null ? object.position.set(position[index2].x, position[index2].y, position[index2].z) : object.position.set(0, 0, 0) : object.position.set(position.x, position.y, position.z);
       }
@@ -40513,7 +40503,8 @@ const _sfc_main = defineComponent({
           const color = item.color === 0 ? item.color : item.color || 4210752;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new AmbientLight(color, intensity);
-        } else if (type === "point" || type === "pointlight") {
+        }
+        if (type === "point" || type === "pointlight") {
           const color = item.color === 0 ? item.color : item.color || 16777215;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           const distance = item.distance || 0;
@@ -40522,7 +40513,8 @@ const _sfc_main = defineComponent({
           if (item.position) {
             light.position.copy(item.position);
           }
-        } else if (type === "directional" || type === "directionallight") {
+        }
+        if (type === "directional" || type === "directionallight") {
           const color = item.color === 0 ? item.color : item.color || 16777215;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new DirectionalLight(color, intensity);
@@ -40532,7 +40524,8 @@ const _sfc_main = defineComponent({
           if (item.target) {
             light.target.copy(item.target);
           }
-        } else if (type === "hemisphere" || type === "hemispherelight") {
+        }
+        if (type === "hemisphere" || type === "hemispherelight") {
           const skyColor = item.skyColor === 0 ? item.skyColor : item.skyColor || 16777215;
           const groundColor = item.groundColor === 0 ? item.groundColor : item.groundColor || 16777215;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
@@ -40582,8 +40575,8 @@ const _sfc_main = defineComponent({
         loader.setCrossOrigin(crossOrigin);
       }
       if (mtlPath) {
-        const isMultipleMTL = typeof mtlPath === "string";
-        if (isMultipleMTL) {
+        const isMultipleMTL = typeof mtlPath === "object";
+        if (!isMultipleMTL) {
           loadMtl(filePathStrng, getObjectFun, index2);
         } else {
           if (!mtlPath[index2]) {
@@ -40623,8 +40616,8 @@ const _sfc_main = defineComponent({
         }
         const modelIndex = loaderIndex.value + 1;
         emit("process", event, modelIndex);
-      }, (event) => {
-        emit("error", event);
+      }, (error) => {
+        emit("error", error);
       });
     }
     function loadMtl(filePath, getObject2, index2) {
@@ -40636,10 +40629,10 @@ const _sfc_main = defineComponent({
       if (requestHeader) {
         mtlLoader.setRequestHeader(requestHeader);
       }
-      const _mtl = typeof mtlPath === "string" ? mtlPath : mtlPath[index2];
-      const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
-      const path = returnPathArray[1];
-      const file = returnPathArray[2];
+      const mtl = typeof mtlPath === "string" ? mtlPath : mtlPath[index2];
+      const mtlPathArray = /^(.*\/)([^/]*)$/.exec(mtl);
+      const path = mtlPathArray[1];
+      const file = mtlPathArray[2];
       mtlLoader.setPath(path).load(file, (materials) => {
         materials.preload();
         loader.setMaterials(materials);
@@ -40683,30 +40676,20 @@ const _sfc_main = defineComponent({
     function onProcess(xhr) {
       const { filePath } = props;
       let process = Math.floor(xhr.loaded / xhr.total * 100);
-      const next = () => {
-        if (process === 100) {
-          if (isMultipleModels.value && filePath.length > loaderIndex.value) {
-            nextTick(() => {
-              loaderIndex.value++;
-              if (loaderIndex.value === filePath.length) {
-                loaderIndex.value = 0;
-                return;
-              }
-              load();
-            });
-          } else {
-            loaderIndex.value = 0;
-          }
+      if (process === 100) {
+        if (isMultipleModels.value && filePath.length > loaderIndex.value) {
+          nextTick(() => {
+            loaderIndex.value++;
+            if (loaderIndex.value === filePath.length) {
+              loaderIndex.value = 0;
+              return;
+            }
+            load();
+          });
+        } else {
+          loaderIndex.value = 0;
         }
-      };
-      if (process === Infinity) {
-        clearTimeout(timer.value);
-        timer.value = setTimeout(() => {
-          process = 100;
-          next();
-        }, 200);
       }
-      next();
     }
     function addTexture(object2, texture) {
       if (!textureLoader) {
@@ -40794,8 +40777,6 @@ const _sfc_main = defineComponent({
       });
     }
     function generateCanvas(text, style) {
-      if (style === void 0)
-        style = {};
       const roundRect = (ctx, x, y, w, h, r) => {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -40861,7 +40842,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-29f70b62"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-165364e8"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
