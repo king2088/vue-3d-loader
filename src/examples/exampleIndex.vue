@@ -27,6 +27,7 @@
     <parallelLoadModelsVue v-if="currentMenuId === 13" />
     <addLabelVue v-if="currentMenuId === 14" />
     <loadJsonModelVue v-if="currentMenuId === 15" />
+    <disableAnimationsVue v-if="currentMenuId === 16" />
   </div>
 </template>
 <script setup lang="ts">
@@ -45,6 +46,7 @@ import processBarVue from "./progress-bar.vue";
 import parallelLoadModelsVue from "./parallel-load-models.vue";
 import addLabelVue from "./add-label.vue";
 import loadJsonModelVue from "./load-json-model.vue";
+import disableAnimationsVue from "./disable-animations.vue";
 import { ref } from "vue";
 const menu = ref();
 menu.value = [
@@ -63,6 +65,7 @@ menu.value = [
   { id: 13, name_CN: "并行加载多模型", name_EN: "Parallel load" },
   { id: 14, name_CN: "标注", name_EN: "Add label" },
   { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model" },
+  { id: 16, name_CN: "禁止自动播放动画", name_EN: "Disable animations" },
 ];
 const currentMenuId = ref(1);
 

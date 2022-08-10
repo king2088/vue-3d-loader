@@ -73,6 +73,7 @@ interface Props {
   clearScene?: boolean;
   parallelLoad?: boolean;
   labels?: object[];
+  autoPlay?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -114,6 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
   labels: () => {
     return [];
   },
+  autoPlay: true,
 });
 
 // Non responsive variable
@@ -544,7 +546,7 @@ function load(fileIndex?: number) {
   }
 }
 function loadFilePath(filePath: string, getObject: any, index: number) {
-  const { textureImage, parallelLoad } = props;
+  const { textureImage, parallelLoad, autoPlay } = props;
   loader.load(
     filePath,
     (...args: any) => {
@@ -553,7 +555,7 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
       addObject(object, filePath);
       mixer = new AnimationMixer(object);
       // auto play animations
-      if (object.animations) {
+      if (autoPlay && object.animations) {
         object.animations.forEach((clip: AnimationClip) => {
           const action = mixer.clipAction(clip);
           action.play();

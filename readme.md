@@ -503,6 +503,17 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   Add an image/text label and set image to display the image label. Set text to display text labels. Text styles can be set using textStyle. For examples, see the [examples/add-label.vue](./src/examples/add-label.vue) file
   </td>
 </tr>
+<tr>
+  <td>
+  autoPlay
+  </td>
+  <td>boolean</td>
+  <td>true</td>
+  <td>-</td>
+  <td>
+  auto pay the 3d model animations
+  </td>
+</tr>
 </table>
 
 ### Events
