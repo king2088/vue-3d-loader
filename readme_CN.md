@@ -503,6 +503,17 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   添加图片/文字标签，设置image则显示图片标签。设置text显示文字标签，文字样式通过textStyle进行设置，样例可以查看[examples/add-label.vue](./src/examples/add-label.vue)文件
   </td>
 </tr>
+<tr>
+  <td>
+  autoPlay
+  </td>
+  <td>boolean</td>
+  <td>true</td>
+  <td>-</td>
+  <td>
+  自动播放动画
+  </td>
+</tr>
 </table>
 
 ### 事件
