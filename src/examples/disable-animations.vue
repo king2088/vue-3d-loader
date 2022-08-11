@@ -4,31 +4,23 @@
   </div>
   <vue3dLoader
     filePath="/models/collada/stormtrooper/stormtrooper.dae"
-    :cameraPosition="{ x: 10, y: 0, z: -10}"
+    :cameraPosition="{ x: 20, y: 0, z: -10 }"
     :autoPlay="autoPlay"
-    v-if="!refresh"
   />
 </template>
 <script setup lang="ts">
-  import { nextTick, ref } from "vue";
-  const autoPlay = ref(true)
-  const refresh = ref(false)
-  function change() {
-    autoPlay.value = !autoPlay.value
-    refreshLoader()
-  }
-  function refreshLoader () {
-    refresh.value = true
-    nextTick(() => {
-      refresh.value = false
-    })
-  }
+import { ref } from "vue";
+const autoPlay = ref(true);
+function change() {
+  autoPlay.value = !autoPlay.value;
+}
 </script>
 <style>
 .check-box {
   position: absolute;
   top: 5px;
-  left: 5px;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: rgb(13, 6, 103);
   padding: 2px 4px;
   z-index: 100;
