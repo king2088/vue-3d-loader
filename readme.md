@@ -4,7 +4,7 @@ vueJS + threeJS 3d viewer component.
 
 support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same scene to import multiple different 3D models, support mtl materials and texture
 
-[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![Downloads](https://img.shields.io/npm/dt/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) 
+[![Version](https://img.shields.io/npm/v/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![License](https://img.shields.io/npm/l/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader) [![Downloads](https://img.shields.io/npm/dt/vue-3d-loader.svg)](https://www.npmjs.com/package/vue-3d-loader)
 
 [简体中文](./readme_CN.md)
 
@@ -511,7 +511,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>true</td>
   <td>-</td>
   <td>
-  auto pay the 3d model animations
+  Play/stop the 3d model animations
   </td>
 </tr>
 </table>

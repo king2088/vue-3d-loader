@@ -151,7 +151,6 @@ watch(
     () => props.clearScene,
     () => props.backgroundAlpha,
     () => props.backgroundColor,
-    () => props.autoPlay,
   ],
   (valueArray) => {
     if (valueArray[0]) {
@@ -161,10 +160,6 @@ watch(
       clearSceneWrapper();
     }
     if (valueArray[2] || valueArray[3]) {
-      updateRenderer();
-    }
-    if (valueArray[4]) {
-      playAnimations();
       updateRenderer();
     }
   }
@@ -212,6 +207,9 @@ watch(
   },
   { deep: true }
 );
+watch([() => props.autoPlay], () => {
+  playAnimations();
+});
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -552,7 +550,7 @@ function load(fileIndex?: number) {
   }
 }
 function loadFilePath(filePath: string, getObject: any, index: number) {
-  const { textureImage, parallelLoad, autoPlay } = props;
+  const { textureImage, parallelLoad } = props;
   loader.load(
     filePath,
     (...args: any) => {
@@ -829,14 +827,18 @@ function getObjectIndex(object: any) {
 function playAnimations() {
   const { autoPlay } = props;
   const obj = getAllObject();
-  if (!obj || !autoPlay) return;
+  if (!obj) return;
   const play = (item: Object3D) => {
     mixer = new AnimationMixer(obj);
     if (item.animations) {
       item.animations.forEach((clip: AnimationClip) => {
         if (clip) {
           const action = mixer.clipAction(clip);
-          action.play();
+          if (autoPlay) {
+            action.play();
+          } else {
+            action.stop();
+          }
         }
       });
     }

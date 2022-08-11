@@ -1,6 +1,7 @@
 <template>
   <div class="check-box">
-    <input type="checkbox" @change="change()" checked /> autoPlay
+    <input type="checkbox" @change="change()" checked />
+    {{ autoPlay ? "Play" : "Stop" }}
   </div>
   <vue3dLoader
     filePath="/models/collada/stormtrooper/stormtrooper.dae"
@@ -12,7 +13,11 @@
 import { ref } from "vue";
 const autoPlay = ref(true);
 function change() {
-  autoPlay.value = !autoPlay.value;
+  if (autoPlay.value) {
+    autoPlay.value = false;
+  } else {
+    autoPlay.value = true;
+  }
 }
 </script>
 <style>
