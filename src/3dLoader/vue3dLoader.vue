@@ -124,11 +124,11 @@ const raycaster = new Raycaster();
 const mouse = new Vector2();
 const camera = new PerspectiveCamera(45, 1, 1, 100000);
 const scene = new Scene();
-const wrapper = new Object3D();
+const clock = new Clock();
+let wrapper = new Object3D();
 let renderer: WebGLRenderer = null as any;
 let controls: OrbitControls = {} as any;
 let allLights: Light[] = [];
-const clock = new Clock();
 let loader: any = null;
 let requestAnimationId: number = 0;
 let stats: any = null;
@@ -151,6 +151,7 @@ watch(
     () => props.clearScene,
     () => props.backgroundAlpha,
     () => props.backgroundColor,
+    () => props.autoPlay,
   ],
   (valueArray) => {
     if (valueArray[0]) {
@@ -160,6 +161,10 @@ watch(
       clearSceneWrapper();
     }
     if (valueArray[2] || valueArray[3]) {
+      updateRenderer();
+    }
+    if (valueArray[4]) {
+      playAnimations();
       updateRenderer();
     }
   }
@@ -174,14 +179,14 @@ watch(
     () => props.lights,
   ],
   (valueArray) => {
-    const attr = ["rotation", "position", "scale"]
+    const attr = ["rotation", "position", "scale"];
     valueArray.forEach((item, index) => {
       if (index < 3 && item) {
         setObjectAttribute(attr[index], item);
       } else {
         updateLights();
       }
-    })
+    });
   },
   { deep: true }
 );
@@ -276,8 +281,9 @@ onBeforeUnmount(() => {
   el.removeEventListener("mouseup", onMouseUp, false);
   el.removeEventListener("click", onClick, false);
   el.removeEventListener("dblclick", onDblclick, false);
-
   window.removeEventListener("resize", onResize, false);
+  object = null;
+  wrapper = null as any;
 });
 
 function setContainerElementStyle(el: any) {
@@ -553,14 +559,6 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
       const obj = getObject(...args);
       object = obj;
       addObject(object, filePath);
-      mixer = new AnimationMixer(object);
-      // auto play animations
-      if (autoPlay && object.animations) {
-        object.animations.forEach((clip: AnimationClip) => {
-          const action = mixer.clipAction(clip);
-          action.play();
-        });
-      }
       // set texture
       if (textureImage) {
         const _texture =
@@ -621,6 +619,7 @@ function addObject(obj: Object3D, filePath: string) {
   wrapper.add(object);
   updateCamera();
   updateModel();
+  playAnimations();
 }
 function animate() {
   requestAnimationId = requestAnimationFrame(animate);
@@ -825,6 +824,30 @@ function getObjectIndex(object: any) {
       .filter((i) => i != undefined)[0];
   }
   return objIndex;
+}
+// play animations
+function playAnimations() {
+  const { autoPlay } = props;
+  const obj = getAllObject();
+  if (!obj || !autoPlay) return;
+  const play = (item: Object3D) => {
+    mixer = new AnimationMixer(obj);
+    if (item.animations) {
+      item.animations.forEach((clip: AnimationClip) => {
+        if (clip) {
+          const action = mixer.clipAction(clip);
+          action.play();
+        }
+      });
+    }
+  };
+  if (isMultipleModels.value) {
+    obj.children.forEach((item: any) => {
+      play(item);
+    });
+    return;
+  }
+  play(obj);
 }
 </script>
 <style scoped>
