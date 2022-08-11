@@ -134,6 +134,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: () => never[];
     };
+    autoPlay: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -160,17 +165,18 @@ declare const _default: import("vue").DefineComponent<{
         clearScene: boolean;
         parallelLoad: boolean;
         labels: object[];
+        autoPlay: boolean;
     };
     object: any;
     raycaster: Raycaster;
     mouse: Vector2;
     camera: PerspectiveCamera;
     scene: Scene;
+    clock: Clock;
     wrapper: Object3D<import("three").Event>;
     renderer: WebGLRenderer;
     controls: OrbitControls;
     allLights: Light[];
-    clock: Clock;
     loader: any;
     requestAnimationId: number;
     stats: any;
@@ -219,6 +225,7 @@ declare const _default: import("vue").DefineComponent<{
     setSpriteLabel: () => void;
     generateCanvas: (text: string, style: any) => HTMLCanvasElement;
     getObjectIndex: (object: any) => any;
+    playAnimations: () => void;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
@@ -347,6 +354,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: () => never[];
     };
+    autoPlay: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -370,5 +382,6 @@ declare const _default: import("vue").DefineComponent<{
     clearScene: boolean;
     parallelLoad: boolean;
     labels: unknown[];
+    autoPlay: boolean;
 }>;
 export default _default;

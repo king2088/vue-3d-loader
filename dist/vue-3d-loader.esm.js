@@ -40248,7 +40248,8 @@ const _sfc_main = defineComponent({
     parallelLoad: { type: Boolean, default: false },
     labels: { default: () => {
       return [];
-    } }
+    } },
+    autoPlay: { type: Boolean, default: true }
   },
   emits: [
     "mousedown",
@@ -40267,11 +40268,11 @@ const _sfc_main = defineComponent({
     const mouse = new Vector2();
     const camera = new PerspectiveCamera(45, 1, 1, 1e5);
     const scene = new Scene();
-    const wrapper = new Object3D();
+    const clock = new Clock();
+    let wrapper = new Object3D();
     let renderer = null;
     let controls = {};
     let allLights = [];
-    const clock = new Clock();
     let loader = null;
     let requestAnimationId = 0;
     let stats = null;
@@ -40325,6 +40326,9 @@ const _sfc_main = defineComponent({
     watch([() => props.cameraRotation, () => props.cameraPosition], () => {
       updateCamera();
     }, { deep: true });
+    watch([() => props.autoPlay], () => {
+      playAnimations();
+    });
     onMounted(() => {
       const { filePath, outputEncoding, webGLRendererOptions, showFps } = props;
       if (filePath && typeof filePath === "object") {
@@ -40370,6 +40374,8 @@ const _sfc_main = defineComponent({
       el.removeEventListener("click", onClick, false);
       el.removeEventListener("dblclick", onDblclick, false);
       window.removeEventListener("resize", onResize, false);
+      object = null;
+      wrapper = null;
     });
     function setContainerElementStyle(el) {
       const { width, height } = props;
@@ -40595,13 +40601,6 @@ const _sfc_main = defineComponent({
         const obj = getObject2(...args);
         object = obj;
         addObject(object, filePath);
-        mixer = new AnimationMixer(object);
-        if (object.animations) {
-          object.animations.forEach((clip) => {
-            const action = mixer.clipAction(clip);
-            action.play();
-          });
-        }
         if (textureImage) {
           const _texture = typeof textureImage === "string" ? textureImage : textureImage[index2];
           if (_texture) {
@@ -40655,6 +40654,7 @@ const _sfc_main = defineComponent({
       wrapper.add(object);
       updateCamera();
       updateModel();
+      playAnimations();
     }
     function animate() {
       requestAnimationId = requestAnimationFrame(animate);
@@ -40827,6 +40827,34 @@ const _sfc_main = defineComponent({
       }
       return objIndex;
     }
+    function playAnimations() {
+      const { autoPlay } = props;
+      const obj = getAllObject();
+      if (!obj)
+        return;
+      const play = (item) => {
+        mixer = new AnimationMixer(obj);
+        if (item.animations) {
+          item.animations.forEach((clip) => {
+            if (clip) {
+              const action = mixer.clipAction(clip);
+              if (autoPlay) {
+                action.play();
+              } else {
+                action.stop();
+              }
+            }
+          });
+        }
+      };
+      if (isMultipleModels.value) {
+        obj.children.forEach((item) => {
+          play(item);
+        });
+        return;
+      }
+      play(obj);
+    }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
         ref_key: "containerElement",
@@ -40842,7 +40870,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-c3b855f0"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-cd125bf2"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

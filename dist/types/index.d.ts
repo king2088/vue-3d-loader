@@ -132,6 +132,11 @@ declare const _default: {
             required: false;
             default: () => never[];
         };
+        autoPlay: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -158,17 +163,18 @@ declare const _default: {
             clearScene: boolean;
             parallelLoad: boolean;
             labels: object[];
+            autoPlay: boolean;
         };
         object: any;
         raycaster: Three.Raycaster;
         mouse: Three.Vector2;
         camera: Three.PerspectiveCamera;
         scene: Three.Scene;
+        clock: Three.Clock;
         wrapper: Three.Object3D<Three.Event>;
         renderer: Three.WebGLRenderer;
         controls: import("three/examples/jsm/controls/OrbitControls").OrbitControls;
         allLights: Three.Light[];
-        clock: Three.Clock;
         loader: any;
         requestAnimationId: number;
         stats: any;
@@ -217,6 +223,7 @@ declare const _default: {
         setSpriteLabel: () => void;
         generateCanvas: (text: string, style: any) => HTMLCanvasElement;
         getObjectIndex: (object: any) => any;
+        playAnimations: () => void;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];
@@ -345,6 +352,11 @@ declare const _default: {
             required: false;
             default: () => never[];
         };
+        autoPlay: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -368,6 +380,7 @@ declare const _default: {
         clearScene: boolean;
         parallelLoad: boolean;
         labels: unknown[];
+        autoPlay: boolean;
     }>;
 };
 export default _default;
