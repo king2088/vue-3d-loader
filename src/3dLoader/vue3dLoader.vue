@@ -116,6 +116,12 @@ export default {
       },
     },
     labels: Array,
+    autoPlay: {
+      type: Boolean,
+      default: () => {
+        return true;
+      },
+    },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -272,6 +278,9 @@ export default {
         this.clearSceneWrapper();
       }
     },
+    autoPlay() {
+      this.playAnimations();
+    },
   },
   methods: {
     onResize() {
@@ -347,7 +356,11 @@ export default {
         if (isArray(position)) {
           // position value is array
           if (position[index]) {
-            object.position.set(position[index].x, position[index].y, position[index].z);
+            object.position.set(
+              position[index].x,
+              position[index].y,
+              position[index].z
+            );
           } else {
             object.position.set(0, 0, 0);
           }
@@ -360,7 +373,11 @@ export default {
         if (isArray(rotation)) {
           // rotation value is array
           if (rotation[index]) {
-            object.rotation.set(rotation[index].x, rotation[index].y, rotation[index].z);
+            object.rotation.set(
+              rotation[index].x,
+              rotation[index].y,
+              rotation[index].z
+            );
           } else {
             object.rotation.set(0, 0, 0);
           }
@@ -581,13 +598,6 @@ export default {
           const object = getObject(...args);
           this.object = object;
           this.addObject(object, filePath);
-          this.mixer = new AnimationMixer(object);
-          if (object.animations) {
-            object.animations.forEach((clip) => {
-              const action = this.mixer.clipAction(clip);
-              action.play();
-            });
-          }
           // set texture
           if (this.textureImage) {
             let _texture =
@@ -654,6 +664,7 @@ export default {
       }
       this.updateCamera();
       this.updateModel();
+      this.playAnimations();
     },
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
@@ -734,7 +745,7 @@ export default {
           if (val[index]) {
             item[type].set(val[index].x, val[index].y, val[index].z);
           } else {
-            const v = type == 'scale' ? 1 : 0
+            const v = type == "scale" ? 1 : 0;
             item[type].set(v, v, v);
           }
         });
@@ -855,14 +866,36 @@ export default {
         fontSize * 1.4 + borderWidth,
         borderRadius
       );
-      // 1.4 is extra height factor for text below baseline: g,j,p,q.
-
       // text color
       context.fillStyle = fontColor;
 
       context.fillText(text, borderWidth, fontSize + borderWidth);
 
       return canvas;
+    },
+    playAnimations() {
+      const play = (item) => {
+        this.mixer = new AnimationMixer(this.wrapper);
+        if (item.animations) {
+          item.animations.forEach((clip) => {
+            if (clip) {
+              const action = this.mixer.clipAction(clip);
+              if (!this.autoPlay) {
+                action.stop();
+              } else {
+                action.play();
+              }
+            }
+          });
+        }
+      };
+      if (this.isMultipleModels) {
+        this.wrapper.children.forEach((item) => {
+          play(item);
+        });
+        return;
+      }
+      play(this.object);
     },
   },
 };

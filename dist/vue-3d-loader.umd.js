@@ -2709,7 +2709,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=8505325c&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=6e9f96d8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21271,7 +21271,13 @@ function getMTLLoader() {
         return false;
       }
     },
-    labels: Array
+    labels: Array,
+    autoPlay: {
+      type: Boolean,
+      default: () => {
+        return true;
+      }
+    }
   },
 
   data() {
@@ -21448,6 +21454,10 @@ function getMTLLoader() {
       if (val) {
         this.clearSceneWrapper();
       }
+    },
+
+    autoPlay() {
+      this.playAnimations();
     }
 
   },
@@ -21762,16 +21772,7 @@ function getMTLLoader() {
       this.loader.load(filePath, (...args) => {
         const object = getObject(...args);
         this.object = object;
-        this.addObject(object, filePath);
-        this.mixer = new AnimationMixer(object);
-
-        if (object.animations) {
-          object.animations.forEach(clip => {
-            const action = this.mixer.clipAction(clip);
-            action.play();
-          });
-        } // set texture
-
+        this.addObject(object, filePath); // set texture
 
         if (this.textureImage) {
           let _texture = typeof this.textureImage === "string" ? this.textureImage : this.textureImage[index];
@@ -21844,6 +21845,7 @@ function getMTLLoader() {
 
       this.updateCamera();
       this.updateModel();
+      this.playAnimations();
     },
 
     animate() {
@@ -21931,7 +21933,7 @@ function getMTLLoader() {
           if (val[index]) {
             item[type].set(val[index].x, val[index].y, val[index].z);
           } else {
-            const v = type == 'scale' ? 1 : 0;
+            const v = type == "scale" ? 1 : 0;
             item[type].set(v, v, v);
           }
         });
@@ -22041,12 +22043,40 @@ function getMTLLoader() {
 
       context.strokeStyle = borderColor;
       context.lineWidth = borderWidth;
-      roundRect(context, borderWidth / 2, borderWidth / 2, textWidth + borderWidth, fontSize * 1.4 + borderWidth, borderRadius); // 1.4 is extra height factor for text below baseline: g,j,p,q.
-      // text color
+      roundRect(context, borderWidth / 2, borderWidth / 2, textWidth + borderWidth, fontSize * 1.4 + borderWidth, borderRadius); // text color
 
       context.fillStyle = fontColor;
       context.fillText(text, borderWidth, fontSize + borderWidth);
       return canvas;
+    },
+
+    playAnimations() {
+      const play = item => {
+        this.mixer = new AnimationMixer(this.wrapper);
+
+        if (item.animations) {
+          item.animations.forEach(clip => {
+            if (clip) {
+              const action = this.mixer.clipAction(clip);
+
+              if (!this.autoPlay) {
+                action.stop();
+              } else {
+                action.play();
+              }
+            }
+          });
+        }
+      };
+
+      if (this.isMultipleModels) {
+        this.wrapper.children.forEach(item => {
+          play(item);
+        });
+        return;
+      }
+
+      play(this.object);
     }
 
   }
