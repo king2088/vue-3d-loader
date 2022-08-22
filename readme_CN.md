@@ -523,7 +523,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   <td>-</td>
   <td>
 
-  加载Gltf draco模型需开启draco解密，开启后需要下载draco解密库放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数<i>dracoDir</i>。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  加载Gltf draco模型需开启draco解密，开启后需要[下载draco解密库](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z)放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数<i>dracoDir</i>。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
   </td>
 </tr>
 <tr>
@@ -759,7 +759,7 @@ function change(event: any, type: string) {
 
 #### 8. 加载draco模型
 
-此功能需要先下载draco库存储与本地项目的静态文件夹内，才可以正常加载，下载地址：
+此功能需要先下载draco库存储与本地项目的静态文件夹内，才可以正常加载，下载地址：<https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
 <vue3dLoader

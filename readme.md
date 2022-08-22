@@ -523,7 +523,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>-</td>
   <td>
 
-  Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to download Draco decryption library and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to [download Draco decryption library](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z) and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
   </td>
 </tr>
 <tr>
@@ -765,6 +765,8 @@ function change(event: any, type: string) {
 ```
 
 #### 8. Loader draco model
+
+Need to download Draco repository storage with local static folder of your project, download url: <https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
 <vue3dLoader
