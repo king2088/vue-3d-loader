@@ -74,7 +74,9 @@ interface Props {
   parallelLoad?: boolean;
   labels?: object[];
   autoPlay?: boolean;
-  isDraco?: boolean;
+  enableDraco?: boolean;
+  dracoDir?: string;
+  enableMousemove?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -117,7 +119,8 @@ const props = withDefaults(defineProps<Props>(), {
     return [];
   },
   autoPlay: true,
-  isDraco: false,
+  enableDraco: false,
+  enableMousemove: false,
 });
 
 // Non responsive variable
@@ -212,6 +215,10 @@ watch(
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
+// enable mousemove
+watch([() => props.enableMousemove], (valueArray) => {
+  enableMousemoveEvent(valueArray[0]);
+});
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -254,9 +261,9 @@ onMounted(() => {
 
   loadModelSelect();
   update();
-
+  // enable mouse move
+  enableMousemoveEvent(props.enableMousemove);
   el.addEventListener("mousedown", onMouseDown, false);
-  el.addEventListener("mousemove", onMouseMove, false);
   el.addEventListener("mouseup", onMouseUp, false);
   el.addEventListener("click", onClick, false);
   el.addEventListener("dblclick", onDblclick, false);
@@ -295,7 +302,14 @@ function setContainerElementStyle(el: any) {
     el.style.height = `${height}px`;
   }
 }
-
+function enableMousemoveEvent(enable: boolean) {
+  const el: any = containerElement.value;
+  if (enable) {
+    el.addEventListener("mousemove", onMouseMove, false);
+  } else {
+    el.removeEventListener("mousemove", onMouseMove, false);
+  }
+}
 function onResize() {
   const { width, height } = props;
   if (!width || !height) {
@@ -309,10 +323,13 @@ function onResize() {
   }
 }
 function onMouseDown(event: MouseEvent) {
+  console.log("mouseDown");
   const intersected = pick(event.clientX, event.clientY);
   emit("mousedown", event, intersected);
 }
 function onMouseMove(event: MouseEvent) {
+  console.log("moseMove");
+
   const emitFun = () => {
     const intersected = pick(event.clientX, event.clientY);
     emit("mousemove", event, intersected);
@@ -511,14 +528,21 @@ function loadModelSelect() {
   }
 }
 function load(fileIndex?: number) {
-  const { filePath, crossOrigin, requestHeader, mtlPath, isDraco } = props;
+  const {
+    filePath,
+    crossOrigin,
+    requestHeader,
+    mtlPath,
+    enableDraco,
+    dracoDir,
+  } = props;
   if (!filePath) return;
   const index = fileIndex || loaderIndex.value;
   // if multiple files
   const filePathStrng: any = !isMultipleModels.value
     ? filePath
     : filePath[index];
-  const loaderObject3d: any = getLoader(filePathStrng, isDraco); // {loader, getObject, mtlLoader}
+  const loaderObject3d: any = getLoader(filePathStrng, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject

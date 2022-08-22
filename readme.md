@@ -514,6 +514,41 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   Play/stop the 3d model animations
   </td>
 </tr>
+<tr>
+  <td>
+  enableDraco
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to download Draco decryption library and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  </td>
+</tr>
+<tr>
+  <td>
+  dracoDir
+  </td>
+  <td>string</td>
+  <td>assets/draco/gltf/</td>
+  <td>-</td>
+  <td>
+  Draco decryption library default directory, you can modified it.
+  </td>
+</tr>
+<tr>
+  <td>
+  enableMousemove
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Enable mousemove event. **Use mousemove events with caution. Mousemove events may cause performance problems.**
+  </td>
+</tr>
 </table>
 
 ### Events
@@ -729,7 +764,19 @@ function change(event: any, type: string) {
 </script>
 ```
 
-#### 8. More demos code
+#### 8. Loader draco model
+
+```vue
+<vue3dLoader
+  filePath="/models/gltf/LittlestTokyo.glb"
+  :cameraPosition="{ x: 10, y: 700, z: 1000 }"
+  :isDraco="true"
+  dracoDir="/draco/"
+  outputEncoding="sRGB"
+/>
+```
+
+#### 9. More demos code
 
 [Click here to see more demo code](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 

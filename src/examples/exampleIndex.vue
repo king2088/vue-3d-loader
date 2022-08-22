@@ -28,7 +28,7 @@
     <addLabelVue v-if="currentMenuId === 14" />
     <loadJsonModelVue v-if="currentMenuId === 15" />
     <disableAnimationsVue v-if="currentMenuId === 16" />
-    <loaderDracoModelVue v-if="currentMenuId === 17" />
+    <loaderDracoModelVue v-if="currentMenuId === 17" :lang="lang" />
   </div>
 </template>
 <script setup lang="ts">
@@ -51,6 +51,7 @@ import disableAnimationsVue from "./disable-animations.vue";
 import loaderDracoModelVue from "./loader-draco-model.vue";
 import { ref } from "vue";
 const menu = ref();
+const lang = ref();
 menu.value = [
   { id: 1, name_CN: "加载一个模型", name_EN: "Load a model" },
   { id: 2, name_CN: "加载多个模型", name_EN: "Load multiple models" },
@@ -72,14 +73,11 @@ menu.value = [
 ];
 const currentMenuId = ref(1);
 
-function getLocal() {
-  let lang = navigator.language.substring(0, 2) || "zh";
-  return lang;
-}
+lang.value = navigator.language.substring(0, 2) || "en";
+
 function getCurrentLanguageName(id: number) {
   let menuItem = menu.value.filter((item: any) => item.id === id)[0];
-  let lang = getLocal();
-  if (lang === "zh") {
+  if (lang.value === "zh") {
     return menuItem.name_CN;
   } else {
     return menuItem.name_EN;

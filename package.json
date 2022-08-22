@@ -13,8 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/three": "^0.142.0",
-    "three": "^0.142.0",
+    "@types/three": "^0.143.0",
+    "three": "^0.143.0",
     "vue": "^3.2.25"
   },
   "devDependencies": {

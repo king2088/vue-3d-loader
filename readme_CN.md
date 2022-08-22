@@ -514,6 +514,41 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   播放/停止动画
   </td>
 </tr>
+<tr>
+  <td>
+  enableDraco
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  加载Gltf draco模型需开启draco解密，开启后需要下载draco解密库放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数<i>dracoDir</i>。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  </td>
+</tr>
+<tr>
+  <td>
+  dracoDir
+  </td>
+  <td>string</td>
+  <td>assets/draco/gltf/</td>
+  <td>-</td>
+  <td>
+  draco解密库默认目录，可自行修改
+  </td>
+</tr>
+<tr>
+  <td>
+  enableMousemove
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  是否开启mousemove事件。**慎用mousemove事件，mousemove事件可能会导致性能问题。**
+  </td>
+</tr>
 </table>
 
 ### 事件
@@ -722,7 +757,21 @@ function change(event: any, type: string) {
 </script>
 ```
 
-#### 8. 更多演示
+#### 8. 加载draco模型
+
+此功能需要先下载draco库存储与本地项目的静态文件夹内，才可以正常加载，下载地址：
+
+```vue
+<vue3dLoader
+  filePath="/models/gltf/LittlestTokyo.glb"
+  :cameraPosition="{ x: 10, y: 700, z: 1000 }"
+  :isDraco="true"
+  dracoDir="/draco/"
+  outputEncoding="sRGB"
+/>
+```
+
+#### 9. 更多演示
 
 [点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 

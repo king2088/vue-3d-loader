@@ -45,7 +45,7 @@ function getExtension(str: string) {
 }
 
 // auto select model loader
-function getLoader(filePath: string, isDraco: boolean) {
+function getLoader(filePath: string, isDraco: boolean, dracoDir?: string) {
   // Get file extension
   let fileExtension = getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
@@ -78,7 +78,7 @@ function getLoader(filePath: string, isDraco: boolean) {
           return object;
         },
       };
-      enableDraco(isDraco, obj)
+      enableDraco(isDraco, obj, dracoDir)
       break;
     case "obj":
       obj = {
@@ -116,11 +116,11 @@ function getMTLLoader() {
   return mtlLoader;
 }
 
-function enableDraco(isDraco: boolean, obj: loaderObj) {
+function enableDraco(isDraco: boolean, obj: loaderObj, dir?: string) {
   // draco loader
   if (isDraco) {
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath("draco/gltf/");
+    dracoLoader.setDecoderPath(dir || "assets/draco/gltf/");
     dracoLoader.setDecoderConfig({ type: "js" });
     obj.loader.setDRACOLoader(dracoLoader);
   }
