@@ -46,6 +46,8 @@ function getExtension(str: string) {
 
 // auto select model loader
 function getLoader(filePath: string, isDraco: boolean, dracoDir?: string) {
+  console.log(filePath, isDraco, dracoDir);
+
   // Get file extension
   let fileExtension = getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf

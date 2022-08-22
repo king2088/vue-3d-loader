@@ -323,13 +323,10 @@ function onResize() {
   }
 }
 function onMouseDown(event: MouseEvent) {
-  console.log("mouseDown");
   const intersected = pick(event.clientX, event.clientY);
   emit("mousedown", event, intersected);
 }
 function onMouseMove(event: MouseEvent) {
-  console.log("moseMove");
-
   const emitFun = () => {
     const intersected = pick(event.clientX, event.clientY);
     emit("mousemove", event, intersected);
