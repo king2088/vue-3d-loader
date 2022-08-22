@@ -1,17 +1,23 @@
 <template>
   <div class="draco-demo" v-if="props.lang === 'zh'">
-    使用此功能需要下载<a href="./assets/draco.7z">draco解码器</a
+    使用此功能需要下载<a
+      href="https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z"
+      >draco解码器</a
     >，并解压放到本地项目assets目录中，draco路径应为：“assets/draco/gltf/”
   </div>
   <div class="draco-demo" v-if="props.lang != 'zh'">
     Use this feature, you need to download the
-    <a href="./assets/draco.7z"> Draco decoder</a>, and unzip it to the assets
-    directory of the local project. Draco directory is: 'assets/Draco/GLTF/'
+    <a
+      href="https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z"
+    >
+      Draco decoder</a
+    >, and unzip it to the assets directory of the local project. Draco
+    directory is: 'assets/Draco/GLTF/'
   </div>
   <vue3dLoader
     filePath="/models/gltf/LittlestTokyo.glb"
     :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-    :isDraco="true"
+    :enableDraco="true"
     outputEncoding="sRGB"
   />
 </template>
