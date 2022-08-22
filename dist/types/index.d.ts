@@ -137,6 +137,11 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        isDraco: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -164,6 +169,7 @@ declare const _default: {
             parallelLoad: boolean;
             labels: object[];
             autoPlay: boolean;
+            isDraco: boolean;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -357,6 +363,11 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        isDraco: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -381,6 +392,7 @@ declare const _default: {
         parallelLoad: boolean;
         labels: unknown[];
         autoPlay: boolean;
+        isDraco: boolean;
     }>;
 };
 export default _default;

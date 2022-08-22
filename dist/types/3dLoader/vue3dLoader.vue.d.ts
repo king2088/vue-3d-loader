@@ -139,6 +139,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    isDraco: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -166,6 +171,7 @@ declare const _default: import("vue").DefineComponent<{
         parallelLoad: boolean;
         labels: object[];
         autoPlay: boolean;
+        isDraco: boolean;
     };
     object: any;
     raycaster: Raycaster;
@@ -359,6 +365,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    isDraco: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -383,5 +394,6 @@ declare const _default: import("vue").DefineComponent<{
     parallelLoad: boolean;
     labels: unknown[];
     autoPlay: boolean;
+    isDraco: boolean;
 }>;
 export default _default;
