@@ -9,11 +9,17 @@ import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 const box: Box3 = new Box3();
 const manager: LoadingManager = new LoadingManager();
 manager.addHandler(/\.dds$/i, new DDSLoader());
 manager.addHandler(/\.tga$/i, new TGALoader());
+
+interface loaderObj {
+  loader: any;
+  getObject?: any;
+}
 
 // get box size
 function getSize(obj: Object3D) {
@@ -39,14 +45,14 @@ function getExtension(str: string) {
 }
 
 // auto select model loader
-function getLoader(filePath: string) {
+function getLoader(filePath: string, isDraco: boolean) {
   // Get file extension
   let fileExtension = getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
   if (fileExtension === "glb") {
     fileExtension = "gltf";
   }
-  let obj: object = {
+  let obj: loaderObj = {
     loader: null,
     getObject: null
   } // obj {loader, getObject}
@@ -72,6 +78,7 @@ function getLoader(filePath: string) {
           return object;
         },
       };
+      enableDraco(isDraco, obj)
       break;
     case "obj":
       obj = {
@@ -107,6 +114,16 @@ function getLoader(filePath: string) {
 function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager);
   return mtlLoader;
+}
+
+function enableDraco(isDraco: boolean, obj: loaderObj) {
+  // draco loader
+  if (isDraco) {
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath("draco/gltf/");
+    dracoLoader.setDecoderConfig({ type: "js" });
+    obj.loader.setDRACOLoader(dracoLoader);
+  }
 }
 
 export {

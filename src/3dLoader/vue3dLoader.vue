@@ -74,6 +74,7 @@ interface Props {
   parallelLoad?: boolean;
   labels?: object[];
   autoPlay?: boolean;
+  isDraco?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -116,6 +117,7 @@ const props = withDefaults(defineProps<Props>(), {
     return [];
   },
   autoPlay: true,
+  isDraco: false,
 });
 
 // Non responsive variable
@@ -509,14 +511,14 @@ function loadModelSelect() {
   }
 }
 function load(fileIndex?: number) {
-  const { filePath, crossOrigin, requestHeader, mtlPath } = props;
+  const { filePath, crossOrigin, requestHeader, mtlPath, isDraco } = props;
   if (!filePath) return;
   const index = fileIndex || loaderIndex.value;
   // if multiple files
   const filePathStrng: any = !isMultipleModels.value
     ? filePath
     : filePath[index];
-  const loaderObject3d: any = getLoader(filePathStrng); // {loader, getObject, mtlLoader}
+  const loaderObject3d: any = getLoader(filePathStrng, isDraco); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject
