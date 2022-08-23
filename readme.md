@@ -773,7 +773,7 @@ Need to download Draco repository storage with local static folder of your proje
 <vue3dLoader
   filePath="/models/gltf/LittlestTokyo.glb"
   :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :isDraco="true"
+  :enableDraco="true"
   dracoDir="/draco/"
   outputEncoding="sRGB"
 />

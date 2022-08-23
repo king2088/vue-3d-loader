@@ -766,7 +766,7 @@ function change(event: any, type: string) {
 <vue3dLoader
   filePath="/models/gltf/LittlestTokyo.glb"
   :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :isDraco="true"
+  :enableDraco="true"
   dracoDir="/draco/"
   outputEncoding="sRGB"
 />
