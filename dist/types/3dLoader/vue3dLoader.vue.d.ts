@@ -139,6 +139,20 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    enableDraco: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
+    dracoDir: {
+        type: StringConstructor;
+        required: false;
+    };
+    enableMousemove: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -166,6 +180,9 @@ declare const _default: import("vue").DefineComponent<{
         parallelLoad: boolean;
         labels: object[];
         autoPlay: boolean;
+        enableDraco: boolean;
+        dracoDir?: string | undefined;
+        enableMousemove: boolean;
     };
     object: any;
     raycaster: Raycaster;
@@ -194,6 +211,7 @@ declare const _default: import("vue").DefineComponent<{
     canvasElement: import("vue").Ref<null>;
     emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
     setContainerElementStyle: (el: any) => void;
+    enableMousemoveEvent: (enable: boolean) => void;
     onResize: () => void;
     onMouseDown: (event: MouseEvent) => void;
     onMouseMove: (event: MouseEvent) => void;
@@ -359,6 +377,20 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    enableDraco: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
+    dracoDir: {
+        type: StringConstructor;
+        required: false;
+    };
+    enableMousemove: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -383,5 +415,7 @@ declare const _default: import("vue").DefineComponent<{
     parallelLoad: boolean;
     labels: unknown[];
     autoPlay: boolean;
+    enableDraco: boolean;
+    enableMousemove: boolean;
 }>;
 export default _default;
