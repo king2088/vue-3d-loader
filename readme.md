@@ -21,6 +21,7 @@ Vue3 please install **2.0.0** or later, vue2 please install **1.x.x** version
 - Load a single 3D model
 - Load multiple 3D models simultaneously
 - Load multiple 3D models of different types simultaneously
+- Load Draco gltf models(See API)
 - Set scene width and height
 - Set up materials and textures
 - Interactive control
