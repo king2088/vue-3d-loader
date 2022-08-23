@@ -216,8 +216,8 @@ watch([() => props.autoPlay], () => {
   playAnimations();
 });
 // enable mousemove
-watch([() => props.enableMousemove], (valueArray) => {
-  enableMousemoveEvent(valueArray[0]);
+watch([() => props.enableMousemove], ([value]) => {
+  enableMousemoveEvent(value);
 });
 // emit
 const emit = defineEmits([
@@ -302,6 +302,7 @@ function setContainerElementStyle(el: any) {
     el.style.height = `${height}px`;
   }
 }
+// mouse move event listener
 function enableMousemoveEvent(enable: boolean) {
   const el: any = containerElement.value;
   if (enable) {
@@ -331,15 +332,11 @@ function onMouseMove(event: MouseEvent) {
     const intersected = pick(event.clientX, event.clientY);
     emit("mousemove", event, intersected);
   };
-  if (!isMultipleModels.value) {
+  // debounce 200ms
+  clearTimeout(mouseMoveTimer.value as any);
+  mouseMoveTimer.value = setTimeout(() => {
     emitFun();
-  } else {
-    // throttle
-    clearTimeout(mouseMoveTimer.value as any);
-    mouseMoveTimer.value = setTimeout(() => {
-      emitFun();
-    }, 200) as any;
-  }
+  }, 200) as any;
 }
 function onMouseUp(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
