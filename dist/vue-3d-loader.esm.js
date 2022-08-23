@@ -40655,7 +40655,7 @@ function getExtension(str) {
     return extension;
   }
 }
-function getLoader(filePath, isDraco) {
+function getLoader(filePath, isDraco, dracoDir) {
   let fileExtension = getExtension(filePath);
   if (fileExtension === "glb") {
     fileExtension = "gltf";
@@ -40686,7 +40686,7 @@ function getLoader(filePath, isDraco) {
           return object;
         }
       };
-      enableDraco(isDraco, obj);
+      enableDraco(isDraco, obj, dracoDir);
       break;
     case "obj":
       obj = {
@@ -40722,10 +40722,10 @@ function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager);
   return mtlLoader;
 }
-function enableDraco(isDraco, obj) {
+function enableDraco(isDraco, obj, dir) {
   if (isDraco) {
     const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath("assets/draco/gltf/");
+    dracoLoader.setDecoderPath(dir || "assets/draco/gltf/");
     dracoLoader.setDecoderConfig({ type: "js" });
     obj.loader.setDRACOLoader(dracoLoader);
   }
@@ -40794,7 +40794,9 @@ const _sfc_main = defineComponent({
       return [];
     } },
     autoPlay: { type: Boolean, default: true },
-    isDraco: { type: Boolean, default: false }
+    enableDraco: { type: Boolean, default: false },
+    dracoDir: null,
+    enableMousemove: { type: Boolean, default: false }
   },
   emits: [
     "mousedown",
@@ -40874,6 +40876,9 @@ const _sfc_main = defineComponent({
     watch([() => props.autoPlay], () => {
       playAnimations();
     });
+    watch([() => props.enableMousemove], ([value]) => {
+      enableMousemoveEvent(value);
+    });
     onMounted(() => {
       const { filePath, outputEncoding, webGLRendererOptions, showFps } = props;
       if (filePath && typeof filePath === "object") {
@@ -40894,8 +40899,8 @@ const _sfc_main = defineComponent({
       scene.add(wrapper);
       loadModelSelect();
       update();
+      enableMousemoveEvent(props.enableMousemove);
       el.addEventListener("mousedown", onMouseDown, false);
-      el.addEventListener("mousemove", onMouseMove, false);
       el.addEventListener("mouseup", onMouseUp, false);
       el.addEventListener("click", onClick, false);
       el.addEventListener("dblclick", onDblclick, false);
@@ -40931,6 +40936,14 @@ const _sfc_main = defineComponent({
         el.style.height = `${height}px`;
       }
     }
+    function enableMousemoveEvent(enable) {
+      const el = containerElement.value;
+      if (enable) {
+        el.addEventListener("mousemove", onMouseMove, false);
+      } else {
+        el.removeEventListener("mousemove", onMouseMove, false);
+      }
+    }
     function onResize() {
       const { width, height } = props;
       if (!width || !height) {
@@ -40944,24 +40957,18 @@ const _sfc_main = defineComponent({
       }
     }
     function onMouseDown(event) {
-      console.log("mouseDown");
       const intersected = pick(event.clientX, event.clientY);
       emit("mousedown", event, intersected);
     }
     function onMouseMove(event) {
-      console.log("moseMove");
       const emitFun = () => {
         const intersected = pick(event.clientX, event.clientY);
         emit("mousemove", event, intersected);
       };
-      if (!isMultipleModels.value) {
+      clearTimeout(mouseMoveTimer.value);
+      mouseMoveTimer.value = setTimeout(() => {
         emitFun();
-      } else {
-        clearTimeout(mouseMoveTimer.value);
-        mouseMoveTimer.value = setTimeout(() => {
-          emitFun();
-        }, 200);
-      }
+      }, 200);
     }
     function onMouseUp(event) {
       const intersected = pick(event.clientX, event.clientY);
@@ -41110,12 +41117,19 @@ const _sfc_main = defineComponent({
       }
     }
     function load(fileIndex) {
-      const { filePath, crossOrigin, requestHeader, mtlPath, isDraco } = props;
+      const {
+        filePath,
+        crossOrigin,
+        requestHeader,
+        mtlPath,
+        enableDraco: enableDraco2,
+        dracoDir
+      } = props;
       if (!filePath)
         return;
       const index2 = fileIndex || loaderIndex.value;
       const filePathStrng = !isMultipleModels.value ? filePath : filePath[index2];
-      const loaderObject3d = getLoader(filePathStrng, isDraco);
+      const loaderObject3d = getLoader(filePathStrng, enableDraco2, dracoDir);
       loader = loaderObject3d.loader;
       const getObjectFun = loaderObject3d.getObject ? loaderObject3d.getObject : getObject;
       if (object && index2 === 0) {
@@ -41417,7 +41431,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-528fdf6b"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-3bab81c9"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
