@@ -6,6 +6,8 @@ examples-demo/
 public/
 node_modules/
 src/
+dist/assets/
+dist/models/
 
 
 # Ignore files

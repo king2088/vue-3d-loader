@@ -23,3 +23,5 @@ pnpm-debug.log*
 # model directories
 public/models
 examples-demo
+dist/assets/
+dist/models/

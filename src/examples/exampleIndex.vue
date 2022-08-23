@@ -24,9 +24,11 @@
     <showFpsVue v-if="currentMenuId === 10" />
     <cameraPositionAndRotateVue v-if="currentMenuId === 11" />
     <processBarVue v-if="currentMenuId === 12" />
-    <parallelLoadModelsVue v-if="currentMenuId === 13 "/>
+    <parallelLoadModelsVue v-if="currentMenuId === 13" />
     <addLabelVue v-if="currentMenuId === 14" />
     <loadJsonModelVue v-if="currentMenuId === 15" />
+    <disableAnimationsVue v-if="currentMenuId === 16" />
+    <loaderDracoModelVue v-if="currentMenuId === 17" />
   </div>
 </template>
 <script>
@@ -43,8 +45,10 @@ import lightModelVue from "./light-model.vue";
 import showFpsVue from "./show-fps.vue";
 import processBarVue from "./progress-bar.vue";
 import parallelLoadModelsVue from "./parallel-load-models.vue";
-import addLabelVue from './add-label.vue';
+import addLabelVue from "./add-label.vue";
 import loadJsonModelVue from "./load-json-model.vue";
+import disableAnimationsVue from "./disable-animations.vue";
+import loaderDracoModelVue from "./load-draco-model.vue";
 export default {
   components: {
     loadAModelVue,
@@ -61,8 +65,10 @@ export default {
     processBarVue,
     parallelLoadModelsVue,
     addLabelVue,
-    loadJsonModelVue
-},
+    loadJsonModelVue,
+    disableAnimationsVue,
+    loaderDracoModelVue,
+  },
   data() {
     return {
       menu: [
@@ -79,8 +85,10 @@ export default {
         { id: 11, name_CN: "相机位置及旋转", name_EN: "Camera" },
         { id: 12, name_CN: "加载进度", name_EN: "Progress bar" },
         { id: 13, name_CN: "并行加载多模型", name_EN: "Parallel load" },
-        { id: 14, name_CN: "标注", name_EN: "Add label"},
-        { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model"},
+        { id: 14, name_CN: "标注", name_EN: "Add label" },
+        { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model" },
+        { id: 16, name_CN: "播放/停止动画", name_EN: "Play/Stop animations" },
+        { id: 17, name_CN: "加载Draco压缩模型", name_EN: "Loader draco model" },
       ],
       currentMenuId: 1,
     };
