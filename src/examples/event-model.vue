@@ -1,5 +1,5 @@
 <template>
-  <vue3dLoader filePath="/models/ply/Lucy100k.ply" @mousemove="onMouseMove" />
+  <vue3dLoader filePath="/models/ply/Lucy100k.ply" @mousemove="onMouseMove" :enableMousemove="true" />
 </template>
 <script>
 export default {

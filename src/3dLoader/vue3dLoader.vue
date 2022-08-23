@@ -122,6 +122,19 @@ export default {
         return true;
       },
     },
+    enableDraco: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
+    dracoDir: String,
+    enableMousemove: {
+      type: Boolean,
+      default: () => {
+        return false;
+      },
+    },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -187,7 +200,8 @@ export default {
     this.update();
 
     el.addEventListener("mousedown", this.onMouseDown, false);
-    el.addEventListener("mousemove", this.onMouseMove, false);
+    // el.addEventListener("mousemove", this.onMouseMove, false);
+    this.enableMousemoveEvent(this.enableMousemove)
     el.addEventListener("mouseup", this.onMouseUp, false);
     el.addEventListener("click", this.onClick, false);
     el.addEventListener("dblclick", this.onDblclick, false);
@@ -281,6 +295,9 @@ export default {
     autoPlay() {
       this.playAnimations();
     },
+    enableMousemove(val) {
+      this.enableMousemoveEvent(val);
+    },
   },
   methods: {
     onResize() {
@@ -295,6 +312,15 @@ export default {
         });
       }
     },
+    // mouse move event listener
+    enableMousemoveEvent(enable) {
+      const el = this.$refs.container;
+      if (enable) {
+        el.addEventListener("mousemove", this.onMouseMove, false);
+      } else {
+        el.removeEventListener("mousemove", this.onMouseMove, false);
+      }
+    },
     onMouseDown(event) {
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousedown", event, intersected);
@@ -304,15 +330,11 @@ export default {
         const intersected = this.pick(event.clientX, event.clientY);
         this.$emit("mousemove", event, intersected);
       };
-      if (!this.isMultipleModels) {
+      // debounce 200ms
+      clearTimeout(this.mouseMoveTimer);
+      this.mouseMoveTimer = setTimeout(() => {
         emit();
-      } else {
-        // throttle
-        clearTimeout(this.mouseMoveTimer);
-        this.mouseMoveTimer = setTimeout(() => {
-          emit();
-        }, 200);
-      }
+      }, 200);
     },
     onMouseUp(event) {
       const intersected = this.pick(event.clientX, event.clientY);
@@ -558,7 +580,7 @@ export default {
       const _filePath = !this.isMultipleModels
         ? this.filePath
         : this.filePath[index];
-      const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
+      const loaderObj = getLoader(_filePath, this.enableDraco, this.dracoDir); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject

@@ -9,6 +9,7 @@ import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 const box = new Box3();
 const manager = new LoadingManager();
@@ -39,7 +40,7 @@ function getExtension(str) {
 }
 
 // auto select model loader
-function getLoader(filePath) {
+function getLoader(filePath, isDraco, dracoDir = '') {
   // Get file extension
   let fileExtension = getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
@@ -69,18 +70,10 @@ function getLoader(filePath) {
         loader: new GLTFLoader(manager),
         getObject: (gltf) => {
           const object = gltf.scene
-          // solve GLTF dim light problem
-          // object.traverse((child) => {
-          //   if(child.isMesh) {
-          //     child.frustumCulled = false;
-          //     child.castShadow = true;
-          //     child.material.emissive = child.material.color;
-          //     child.material.emissiveMap = child.material.map;
-          //   }
-          // })
           return object;
         }
       };
+      enableDraco(isDraco, obj, dracoDir)
       break;
     case "obj":
       obj = {
@@ -116,6 +109,16 @@ function getLoader(filePath) {
 function getMTLLoader() {
   const mtlLoader = new MTLLoader(manager);
   return mtlLoader;
+}
+
+function enableDraco(isDraco, obj, dir = '') {
+  // draco loader
+  if (isDraco) {
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath(dir || "assets/draco/gltf/");
+    dracoLoader.setDecoderConfig({ type: "js" });
+    obj.loader.setDRACOLoader(dracoLoader);
+  }
 }
 
 export {
