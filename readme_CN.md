@@ -99,9 +99,9 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 | parallelLoad         | boolean          | false                                                                                                                               | 开启/关闭并行加载模型（仅在多模型下有效）**注意：使用此属性后，load进度process事件将不可预测**                                                                                                     |
 | labels               | object           | {image: "", text: "", textStyle: { fontFamily: "Arial", fontSize: 18, fontWeight: "normal", lineHeight: 1, color: "#ffffff", borderWidth: 8, borderRadius: 4, borderColor: "rgba(0,0,0,1)",backgroundColor: "rgba(0, 0, 0, 1)"  }, position: {x:0, y:0, z:0}, scale:{x:1, y:1, z:0}, sid: null} | 添加图片/文字标签，设置image则显示图片标签。设置text显示文字标签，文字样式通过textStyle进行设置，样例可以查看[examples/add-label.vue](./src/examples/add-label.vue)文件                            |
 | autoPlay | boolean | true | 是否开启动画 |
-| enableDraco |	boolean |	false	| 加载Gltf draco模型需开启draco解密，开启后需要[下载draco解密库](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z)放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数dracoDir。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
+| enableDraco | boolean | false | 加载Gltf draco模型需开启draco解密，开启后需要[下载draco解密库](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z)放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数dracoDir。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
 | dracoDir | string | assets/draco/gltf/ | draco解密库默认目录，可自行修改|
-| enableMousemove | boolean |	false |	是否开启mousemove事件。**慎用mousemove事件，mousemove事件可能会导致性能问题。** |
+| enableMousemove | boolean | false | 是否开启mousemove事件。**慎用mousemove事件，mousemove事件可能会导致性能问题。** |
 
 ### 事件
 
@@ -352,7 +352,7 @@ export default {
 <vue3dLoader
   filePath="/models/gltf/LittlestTokyo.glb"
   :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :isDraco="true"
+  :enableDraco="true"
   dracoDir="/draco/"
   outputEncoding="sRGB"
 />

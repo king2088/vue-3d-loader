@@ -99,9 +99,9 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 | parallelLoad         | boolean          | false                                                                                                                                                                                                                                                                                           | enable/disable parallel load models (useful only for multi-model loading). **Use this attribute, the process event will be unpredictable**                                                                                                              |
 | labels               | object           | {image: "", text: "", textStyle: { fontFamily: "Arial", fontSize: 18, fontWeight: "normal", lineHeight: 1, color: "#ffffff", borderWidth: 8, borderRadius: 4, borderColor: "rgba(0,0,0,1)",backgroundColor: "rgba(0, 0, 0, 1)"  }, position: {x:0, y:0, z:0}, scale:{x:1, y:1, z:0}, sid: null} | Add an image/text label and set image to display the image label. Set text to display text labels. Text styles can be set using textStyle. For examples, see the [examples/add-label.vue](./src/examples/add-label.vue) file                            |
 | autoPlay | boolean | true | auto paly animations |
-| enableDraco |	boolean |	false	| Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to [download Draco decryption library](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z) and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use dracoDir parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
+| enableDraco | boolean | false | Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to [download Draco decryption library](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z) and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use dracoDir parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
 | dracoDir | string | assets/draco/gltf/ | Draco decryption library default directory, you can modified it. |
-| enableMousemove | boolean |	false |	Enable mousemove event. Use mousemove events with caution. Mousemove events may cause performance problems. |
+| enableMousemove | boolean | false | Enable mousemove event. Use mousemove events with caution. Mousemove events may cause performance problems. |
 
 ### Events
 
@@ -343,14 +343,16 @@ export default {
 };
 </script>
 ```
+
 #### 8. Loader draco model
-Need to download Draco repository storage with local static folder of your project, download url: https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z
+
+Need to download Draco repository storage with local static folder of your project, download url: <https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
 <vue3dLoader
   filePath="/models/gltf/LittlestTokyo.glb"
   :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :isDraco="true"
+  :enableDraco="true"
   dracoDir="/draco/"
   outputEncoding="sRGB"
 />
