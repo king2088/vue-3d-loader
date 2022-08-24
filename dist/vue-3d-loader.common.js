@@ -2699,7 +2699,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=7c376605&
+;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=35e731c2&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21733,7 +21733,7 @@ function enableDraco(isDraco, obj, dir = '') {
       }
     },
     dracoDir: String,
-    enableMousemove: {
+    intersectRecursive: {
       type: Boolean,
       default: () => {
         return false;
@@ -21771,7 +21771,6 @@ function enableDraco(isDraco, obj, dir = '') {
       loaderIndex: 0,
       timer: null,
       objectPositionHasSet: false,
-      mouseMoveTimer: null,
       isMultipleModels: false
     };
   },
@@ -21824,6 +21823,7 @@ function enableDraco(isDraco, obj, dir = '') {
     }
 
     const el = this.$refs.container;
+    this.enableMousemoveEvent(true);
     el.removeEventListener("mousedown", this.onMouseDown, false);
     el.removeEventListener("mousemove", this.onMouseMove, false);
     el.removeEventListener("mouseup", this.onMouseUp, false);
@@ -21920,10 +21920,6 @@ function enableDraco(isDraco, obj, dir = '') {
 
     autoPlay() {
       this.playAnimations();
-    },
-
-    enableMousemove(val) {
-      this.enableMousemoveEvent(val);
     }
 
   },
@@ -21953,26 +21949,20 @@ function enableDraco(isDraco, obj, dir = '') {
     },
 
     onMouseDown(event) {
+      this.enableMousemoveEvent(false);
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousedown", event, intersected);
     },
 
     onMouseMove(event) {
-      const emit = () => {
-        const intersected = this.pick(event.clientX, event.clientY);
-        this.$emit("mousemove", event, intersected);
-      }; // debounce 200ms
-
-
-      clearTimeout(this.mouseMoveTimer);
-      this.mouseMoveTimer = setTimeout(() => {
-        emit();
-      }, 200);
+      const intersected = this.pick(event.clientX, event.clientY);
+      this.$emit("mousemove", event, intersected);
     },
 
     onMouseUp(event) {
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mouseup", event, intersected);
+      this.enableMousemoveEvent(true);
     },
 
     onClick(event) {
@@ -21992,10 +21982,11 @@ function enableDraco(isDraco, obj, dir = '') {
       const rect = this.$refs.container.getBoundingClientRect();
       x -= rect.left;
       y -= rect.top;
-      this.mouse.x = x / this.size.width * 2 - 1;
-      this.mouse.y = -(y / this.size.height) * 2 + 1;
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(obj, true);
+      const mouse = new Vector2(0, 0);
+      mouse.x = x / this.size.width * 2 - 1;
+      mouse.y = -(y / this.size.height) * 2 + 1;
+      this.raycaster.setFromCamera(mouse, this.camera);
+      const intersects = this.raycaster.intersectObject(obj, this.intersectRecursive);
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
 
