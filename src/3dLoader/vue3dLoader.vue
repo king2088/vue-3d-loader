@@ -129,7 +129,7 @@ export default {
       },
     },
     dracoDir: String,
-    enableMousemove: {
+    intersectRecursive: {
       type: Boolean,
       default: () => {
         return false;
@@ -166,7 +166,6 @@ export default {
       loaderIndex: 0,
       timer: null,
       objectPositionHasSet: false,
-      mouseMoveTimer: null,
       isMultipleModels: false,
     };
   },
@@ -201,7 +200,7 @@ export default {
 
     el.addEventListener("mousedown", this.onMouseDown, false);
     // el.addEventListener("mousemove", this.onMouseMove, false);
-    this.enableMousemoveEvent(this.enableMousemove)
+    this.enableMousemoveEvent(this.enableMousemove);
     el.addEventListener("mouseup", this.onMouseUp, false);
     el.addEventListener("click", this.onClick, false);
     el.addEventListener("dblclick", this.onDblclick, false);
@@ -220,6 +219,7 @@ export default {
       this.controls.dispose();
     }
     const el = this.$refs.container;
+    this.enableMousemoveEvent(true);
     el.removeEventListener("mousedown", this.onMouseDown, false);
     el.removeEventListener("mousemove", this.onMouseMove, false);
     el.removeEventListener("mouseup", this.onMouseUp, false);
@@ -295,9 +295,6 @@ export default {
     autoPlay() {
       this.playAnimations();
     },
-    enableMousemove(val) {
-      this.enableMousemoveEvent(val);
-    },
   },
   methods: {
     onResize() {
@@ -322,23 +319,18 @@ export default {
       }
     },
     onMouseDown(event) {
+      this.enableMousemoveEvent(false);
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousedown", event, intersected);
     },
     onMouseMove(event) {
-      const emit = () => {
-        const intersected = this.pick(event.clientX, event.clientY);
-        this.$emit("mousemove", event, intersected);
-      };
-      // debounce 200ms
-      clearTimeout(this.mouseMoveTimer);
-      this.mouseMoveTimer = setTimeout(() => {
-        emit();
-      }, 200);
+      const intersected = this.pick(event.clientX, event.clientY);
+      this.$emit("mousemove", event, intersected);
     },
     onMouseUp(event) {
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mouseup", event, intersected);
+      this.enableMousemoveEvent(true);
     },
     onClick(event) {
       const intersected = this.pick(event.clientX, event.clientY);
@@ -355,10 +347,14 @@ export default {
       const rect = this.$refs.container.getBoundingClientRect();
       x -= rect.left;
       y -= rect.top;
-      this.mouse.x = (x / this.size.width) * 2 - 1;
-      this.mouse.y = -(y / this.size.height) * 2 + 1;
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObject(obj, true);
+      const mouse = new Vector2(0, 0);
+      mouse.x = (x / this.size.width) * 2 - 1;
+      mouse.y = -(y / this.size.height) * 2 + 1;
+      this.raycaster.setFromCamera(mouse, this.camera);
+      const intersects = this.raycaster.intersectObject(
+        obj,
+        this.intersectRecursive
+      );
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
     update(isResize = false) {

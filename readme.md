@@ -349,13 +349,15 @@ export default {
 Need to download Draco repository storage with local static folder of your project, download url: <https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
-<vue3dLoader
-  filePath="/models/gltf/LittlestTokyo.glb"
-  :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :enableDraco="true"
-  dracoDir="/draco/"
-  outputEncoding="sRGB"
-/>
+<template>
+  <vue3dLoader
+    filePath="/models/gltf/LittlestTokyo.glb"
+    :cameraPosition="{ x: 10, y: 700, z: 1000 }"
+    :enableDraco="true"
+    dracoDir="/draco/"
+    outputEncoding="sRGB"
+  />
+</template>
 ```
 
 #### 9. More demos code

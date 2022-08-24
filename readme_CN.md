@@ -349,13 +349,15 @@ export default {
 此功能需要先下载draco库存储与本地项目的静态文件夹内，才可以正常加载，下载地址：<https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
-<vue3dLoader
-  filePath="/models/gltf/LittlestTokyo.glb"
-  :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :enableDraco="true"
-  dracoDir="/draco/"
-  outputEncoding="sRGB"
-/>
+<template>
+  <vue3dLoader
+    filePath="/models/gltf/LittlestTokyo.glb"
+    :cameraPosition="{ x: 10, y: 700, z: 1000 }"
+    :enableDraco="true"
+    dracoDir="/draco/"
+    outputEncoding="sRGB"
+  />
+</template>
 ```
 
 #### 9. 更多演示
