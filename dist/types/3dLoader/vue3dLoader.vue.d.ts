@@ -148,9 +148,9 @@ declare const _default: import("vue").DefineComponent<{
         type: StringConstructor;
         required: false;
     };
-    enableMousemove: {
+    intersectRecursive: {
         type: BooleanConstructor;
-        required: false;
+        required: true;
         default: boolean;
     };
 }, {
@@ -182,7 +182,7 @@ declare const _default: import("vue").DefineComponent<{
         autoPlay: boolean;
         enableDraco: boolean;
         dracoDir?: string | undefined;
-        enableMousemove: boolean;
+        intersectRecursive: boolean;
     };
     object: any;
     raycaster: Raycaster;
@@ -205,7 +205,6 @@ declare const _default: import("vue").DefineComponent<{
     }>;
     loaderIndex: import("vue").Ref<number>;
     objectPositionHasSet: import("vue").Ref<boolean>;
-    mouseMoveTimer: import("vue").Ref<null>;
     isMultipleModels: import("vue").Ref<boolean>;
     containerElement: import("vue").Ref<null>;
     canvasElement: import("vue").Ref<null>;
@@ -386,9 +385,9 @@ declare const _default: import("vue").DefineComponent<{
         type: StringConstructor;
         required: false;
     };
-    enableMousemove: {
+    intersectRecursive: {
         type: BooleanConstructor;
-        required: false;
+        required: true;
         default: boolean;
     };
 }>> & {
@@ -416,6 +415,5 @@ declare const _default: import("vue").DefineComponent<{
     labels: unknown[];
     autoPlay: boolean;
     enableDraco: boolean;
-    enableMousemove: boolean;
 }>;
 export default _default;

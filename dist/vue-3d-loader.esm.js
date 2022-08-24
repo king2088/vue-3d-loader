@@ -40796,7 +40796,7 @@ const _sfc_main = defineComponent({
     autoPlay: { type: Boolean, default: true },
     enableDraco: { type: Boolean, default: false },
     dracoDir: null,
-    enableMousemove: { type: Boolean, default: false }
+    intersectRecursive: { type: Boolean, default: false }
   },
   emits: [
     "mousedown",
@@ -40812,7 +40812,7 @@ const _sfc_main = defineComponent({
     const props = __props;
     let object = null;
     const raycaster = new Raycaster();
-    const mouse = new Vector2();
+    new Vector2();
     const camera = new PerspectiveCamera(45, 1, 1, 1e5);
     const scene = new Scene();
     const clock = new Clock();
@@ -40828,7 +40828,6 @@ const _sfc_main = defineComponent({
     const size = ref({ width: props.width || 0, height: props.height || 0 });
     const loaderIndex = ref(0);
     const objectPositionHasSet = ref(false);
-    const mouseMoveTimer = ref(null);
     const isMultipleModels = ref(false);
     const containerElement = ref(null);
     const canvasElement = ref(null);
@@ -40876,9 +40875,6 @@ const _sfc_main = defineComponent({
     watch([() => props.autoPlay], () => {
       playAnimations();
     });
-    watch([() => props.enableMousemove], ([value]) => {
-      enableMousemoveEvent(value);
-    });
     onMounted(() => {
       const { filePath, outputEncoding, webGLRendererOptions, showFps } = props;
       if (filePath && typeof filePath === "object") {
@@ -40899,7 +40895,7 @@ const _sfc_main = defineComponent({
       scene.add(wrapper);
       loadModelSelect();
       update();
-      enableMousemoveEvent(props.enableMousemove);
+      enableMousemoveEvent(true);
       el.addEventListener("mousedown", onMouseDown, false);
       el.addEventListener("mouseup", onMouseUp, false);
       el.addEventListener("click", onClick, false);
@@ -40959,20 +40955,16 @@ const _sfc_main = defineComponent({
     function onMouseDown(event) {
       const intersected = pick(event.clientX, event.clientY);
       emit("mousedown", event, intersected);
+      enableMousemoveEvent(false);
     }
     function onMouseMove(event) {
-      const emitFun = () => {
-        const intersected = pick(event.clientX, event.clientY);
-        emit("mousemove", event, intersected);
-      };
-      clearTimeout(mouseMoveTimer.value);
-      mouseMoveTimer.value = setTimeout(() => {
-        emitFun();
-      }, 200);
+      const intersected = pick(event.clientX, event.clientY);
+      emit("mousemove", event, intersected);
     }
     function onMouseUp(event) {
       const intersected = pick(event.clientX, event.clientY);
       emit("mouseup", event, intersected);
+      enableMousemoveEvent(true);
     }
     function onClick(event) {
       const intersected = pick(event.clientX, event.clientY);
@@ -40989,10 +40981,11 @@ const _sfc_main = defineComponent({
       const rect = containerElement.value.getBoundingClientRect();
       x -= rect.left;
       y -= rect.top;
-      mouse.x = x / size.value.width * 2 - 1;
-      mouse.y = -(y / size.value.height) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-      const intersects2 = raycaster.intersectObject(obj, true);
+      const mouse2 = new Vector2(0, 0);
+      mouse2.x = x / size.value.width * 2 - 1;
+      mouse2.y = -(y / size.value.height) * 2 + 1;
+      raycaster.setFromCamera(mouse2, camera);
+      const intersects2 = raycaster.intersectObject(obj, props.intersectRecursive);
       return (intersects2 && intersects2.length) > 0 ? intersects2[0] : null;
     }
     function update() {
@@ -41431,7 +41424,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-3bab81c9"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-430036ed"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

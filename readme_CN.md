@@ -540,14 +540,14 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 </tr>
 <tr>
   <td>
-  enableMousemove
+  intersectRecursive
   </td>
   <td>boolean</td>
   <td>false</td>
   <td>-</td>
   <td>
 
-  是否开启mousemove事件。**慎用mousemove事件，mousemove事件可能会导致性能问题。**
+  若为true，则同时也会检测所有物体的后代。否则将只会检测对象本身的相交部分。
   </td>
 </tr>
 </table>
@@ -763,13 +763,15 @@ function change(event: any, type: string) {
 此功能需要先下载draco库存储与本地项目的静态文件夹内，才可以正常加载，下载地址：<https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
 
 ```vue
-<vue3dLoader
-  filePath="/models/gltf/LittlestTokyo.glb"
-  :cameraPosition="{ x: 10, y: 700, z: 1000 }"
-  :enableDraco="true"
-  dracoDir="/draco/"
-  outputEncoding="sRGB"
-/>
+<template>
+  <vue3dLoader
+    filePath="/models/gltf/LittlestTokyo.glb"
+    :cameraPosition="{ x: 10, y: 700, z: 1000 }"
+    :enableDraco="true"
+    dracoDir="/draco/"
+    outputEncoding="sRGB"
+  />
+</template>
 ```
 
 #### 9. 更多演示
