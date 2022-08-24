@@ -26,7 +26,6 @@ import { defineProps } from "vue";
 const props = defineProps({
   lang: String,
 });
-console.log(props.lang);
 </script>
 <style>
 .draco-demo {

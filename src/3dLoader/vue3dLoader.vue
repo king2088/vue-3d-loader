@@ -76,7 +76,7 @@ interface Props {
   autoPlay?: boolean;
   enableDraco?: boolean;
   dracoDir?: string;
-  enableMousemove?: boolean;
+  intersectRecursive: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -120,7 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
   },
   autoPlay: true,
   enableDraco: false,
-  enableMousemove: false,
+  intersectRecursive: false,
 });
 
 // Non responsive variable
@@ -144,7 +144,6 @@ let textureLoader: any = null;
 const size = ref({ width: props.width || 0, height: props.height || 0 });
 const loaderIndex = ref(0);
 const objectPositionHasSet = ref(false);
-const mouseMoveTimer = ref(null);
 const isMultipleModels = ref(false);
 const containerElement = ref(null);
 const canvasElement = ref(null);
@@ -215,10 +214,6 @@ watch(
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
-// enable mousemove
-watch([() => props.enableMousemove], ([value]) => {
-  enableMousemoveEvent(value);
-});
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -262,7 +257,7 @@ onMounted(() => {
   loadModelSelect();
   update();
   // enable mouse move
-  enableMousemoveEvent(props.enableMousemove);
+  enableMousemoveEvent(true);
   el.addEventListener("mousedown", onMouseDown, false);
   el.addEventListener("mouseup", onMouseUp, false);
   el.addEventListener("click", onClick, false);
@@ -324,23 +319,18 @@ function onResize() {
   }
 }
 function onMouseDown(event: MouseEvent) {
+  enableMousemoveEvent(false);
   const intersected = pick(event.clientX, event.clientY);
   emit("mousedown", event, intersected);
 }
 function onMouseMove(event: MouseEvent) {
-  const emitFun = () => {
-    const intersected = pick(event.clientX, event.clientY);
-    emit("mousemove", event, intersected);
-  };
-  // debounce 200ms
-  clearTimeout(mouseMoveTimer.value as any);
-  mouseMoveTimer.value = setTimeout(() => {
-    emitFun();
-  }, 200) as any;
+  const intersected = pick(event.clientX, event.clientY);
+  emit("mousemove", event, intersected);
 }
 function onMouseUp(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
   emit("mouseup", event, intersected);
+  enableMousemoveEvent(true);
 }
 function onClick(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
@@ -356,10 +346,11 @@ function pick(x: number, y: number) {
   const rect = (containerElement.value as HTMLElement).getBoundingClientRect();
   x -= rect.left;
   y -= rect.top;
+  const mouse = new Vector2(0, 0);
   mouse.x = (x / size.value.width) * 2 - 1;
   mouse.y = -(y / size.value.height) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObject(obj, true);
+  const intersects = raycaster.intersectObject(obj, props.intersectRecursive);
   return (intersects && intersects.length) > 0 ? intersects[0] : null;
 }
 function update() {
