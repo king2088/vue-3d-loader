@@ -11,6 +11,10 @@ declare const _default: import("vue").DefineComponent<{
         type: (StringConstructor | ArrayConstructor)[];
         required: true;
     };
+    fileType: {
+        type: (StringConstructor | ArrayConstructor)[];
+        required: false;
+    };
     width: {
         type: NumberConstructor;
         required: false;
@@ -150,12 +154,13 @@ declare const _default: import("vue").DefineComponent<{
     };
     intersectRecursive: {
         type: BooleanConstructor;
-        required: true;
+        required: false;
         default: boolean;
     };
 }, {
     props: {
         filePath: string | string[];
+        fileType?: string | string[] | undefined;
         width?: number | undefined;
         height?: number | undefined;
         position?: coordinates | coordinates[] | undefined;
@@ -248,6 +253,10 @@ declare const _default: import("vue").DefineComponent<{
         type: (StringConstructor | ArrayConstructor)[];
         required: true;
     };
+    fileType: {
+        type: (StringConstructor | ArrayConstructor)[];
+        required: false;
+    };
     width: {
         type: NumberConstructor;
         required: false;
@@ -387,7 +396,7 @@ declare const _default: import("vue").DefineComponent<{
     };
     intersectRecursive: {
         type: BooleanConstructor;
-        required: true;
+        required: false;
         default: boolean;
     };
 }>> & {
@@ -415,5 +424,6 @@ declare const _default: import("vue").DefineComponent<{
     labels: unknown[];
     autoPlay: boolean;
     enableDraco: boolean;
+    intersectRecursive: boolean;
 }>;
 export default _default;
