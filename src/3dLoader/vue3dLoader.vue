@@ -33,6 +33,7 @@ export default {
   name: "vue3dLoader",
   props: {
     filePath: { type: [String, Array] }, // supports one or more filePath
+    fileType: { type: [String, Array] },
     width: Number,
     height: Number,
     position: { type: [Object, Array] },
@@ -145,7 +146,6 @@ export default {
       },
       object: null,
       raycaster: new Raycaster(),
-      mouse: new Vector2(),
       camera: new PerspectiveCamera(45, 1, 1, 100000),
       scene: new Scene(),
       wrapper: new Object3D(),
@@ -230,6 +230,9 @@ export default {
   },
   watch: {
     filePath() {
+      this.loadModelSelect();
+    },
+    fileType() {
       this.loadModelSelect();
     },
     rotation: {
@@ -576,7 +579,10 @@ export default {
       const _filePath = !this.isMultipleModels
         ? this.filePath
         : this.filePath[index];
-      const loaderObj = getLoader(_filePath, this.enableDraco, this.dracoDir); // {loader, getObject, mtlLoader}
+      const _fileType = typeof this.fileType === 'string'
+        ? this.fileType
+        : this.fileType ? this.fileType[index] : '';
+      const loaderObj = getLoader(_filePath, _fileType, this.enableDraco, this.dracoDir); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject
