@@ -9,6 +9,10 @@ declare const _default: {
             type: (StringConstructor | ArrayConstructor)[];
             required: true;
         };
+        fileType: {
+            type: (StringConstructor | ArrayConstructor)[];
+            required: false;
+        };
         width: {
             type: NumberConstructor;
             required: false;
@@ -148,12 +152,13 @@ declare const _default: {
         };
         intersectRecursive: {
             type: BooleanConstructor;
-            required: true;
+            required: false;
             default: boolean;
         };
     }, {
         props: {
             filePath: string | string[];
+            fileType?: string | string[] | undefined;
             width?: number | undefined;
             height?: number | undefined;
             position?: import("./3dLoader/vue3dLoader.vue").coordinates | import("./3dLoader/vue3dLoader.vue").coordinates[] | undefined;
@@ -246,6 +251,10 @@ declare const _default: {
             type: (StringConstructor | ArrayConstructor)[];
             required: true;
         };
+        fileType: {
+            type: (StringConstructor | ArrayConstructor)[];
+            required: false;
+        };
         width: {
             type: NumberConstructor;
             required: false;
@@ -385,7 +394,7 @@ declare const _default: {
         };
         intersectRecursive: {
             type: BooleanConstructor;
-            required: true;
+            required: false;
             default: boolean;
         };
     }>> & {
@@ -413,6 +422,7 @@ declare const _default: {
         labels: unknown[];
         autoPlay: boolean;
         enableDraco: boolean;
+        intersectRecursive: boolean;
     }>;
 };
 export default _default;
