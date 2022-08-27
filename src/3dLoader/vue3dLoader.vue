@@ -50,6 +50,8 @@ export interface coordinates {
 type encode = "linear" | "sRGB";
 interface Props {
   filePath: string | string[];
+  // file type is the 3d model(s) file extension, is used for filePath(remote url) without file name extensions
+  fileType?: string | string[];
   width?: number;
   height?: number;
   position?: coordinates | coordinates[];
@@ -76,7 +78,7 @@ interface Props {
   autoPlay?: boolean;
   enableDraco?: boolean;
   dracoDir?: string;
-  intersectRecursive: boolean;
+  intersectRecursive?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -152,18 +154,19 @@ const canvasElement = ref(null);
 watch(
   [
     () => props.filePath,
+    () => props.fileType,
     () => props.clearScene,
     () => props.backgroundAlpha,
     () => props.backgroundColor,
   ],
   (valueArray) => {
-    if (valueArray[0]) {
+    if (valueArray[0] || valueArray[1]) {
       loadModelSelect();
     }
-    if (valueArray[1]) {
+    if (valueArray[2]) {
       clearSceneWrapper();
     }
-    if (valueArray[2] || valueArray[3]) {
+    if (valueArray[3] || valueArray[4]) {
       updateRenderer();
     }
   }
@@ -346,7 +349,6 @@ function pick(x: number, y: number) {
   const rect = (containerElement.value as HTMLElement).getBoundingClientRect();
   x -= rect.left;
   y -= rect.top;
-  const mouse = new Vector2(0, 0);
   mouse.x = (x / size.value.width) * 2 - 1;
   mouse.y = -(y / size.value.height) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
@@ -515,6 +517,7 @@ function loadModelSelect() {
 function load(fileIndex?: number) {
   const {
     filePath,
+    fileType,
     crossOrigin,
     requestHeader,
     mtlPath,
@@ -527,7 +530,10 @@ function load(fileIndex?: number) {
   const filePathStrng: any = !isMultipleModels.value
     ? filePath
     : filePath[index];
-  const loaderObject3d: any = getLoader(filePathStrng, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
+  const fileTypeString: string = typeof fileType === 'string'
+    ? fileType
+    : fileType ? fileType[index] : ''
+  const loaderObject3d: any = getLoader(filePathStrng, fileTypeString, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject

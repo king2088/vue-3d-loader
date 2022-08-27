@@ -22,6 +22,7 @@ Vue3 please install **2.0.0** or later, vue2 please install **1.x.x** version
 - Load multiple 3D models simultaneously
 - Load multiple 3D models of different types simultaneously
 - Load Draco gltf models(See API)
+- Supports custom file type(for url without file extensions)
 - Set scene width and height
 - Set up materials and textures
 - Interactive control
@@ -107,6 +108,26 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>
   
   File path, supports multiple files to be loaded together, note: If each file corresponds to a material, you need to set the material **mtlPath** as an array. The same is true for image textures, which need to be set to **textureImage** as an array
+  </td>
+</tr>
+<tr>
+  <td>
+  fileType
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const fileType = 'obj'
+  /* or */
+  const fileType = ['obj', 'gltf']
+  ```
+
+  </td>
+  <td>
+  
+  File type is the 3d model(s) file extension, is used for filePath(http url) without file extensions. Is used together with filePath. If filePath is an array, this parameter must be an array.
   </td>
 </tr>
 <tr>
