@@ -22,6 +22,7 @@ vue3请安装**2.0.0**及以上版本，vue2请安装**1.x.x**版本
 - 同时加载多个3D模型
 - 同时加载多个不同类型3D模型
 - 加载Draco压缩gltf模型(使用方法请查看API)
+- 支持自定义文件类型（用于无文件后缀名url）
 - 设置场景宽高
 - 设置材质及纹理
 - 交互控制
@@ -107,6 +108,26 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   <td>
   
   文件路径，支持多个文件一起加载，注意：如果每个文件对应一个材质，需要将材质**mtlPath**设置为数组。图片纹理也一样需要设置**textureImage**为数组
+  </td>
+</tr>
+<tr>
+  <td>
+  fileType
+  </td>
+  <td>string | array</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const fileType = 'obj'
+  /* or */
+  const fileType = ['obj', 'gltf']
+  ```
+
+  </td>
+  <td>
+  
+  文件类型，主要用于无法判断3d模型文件后缀名的url地址，与filePath一起使用，当filePath为数组时，此选项必须为数组
   </td>
 </tr>
 <tr>
