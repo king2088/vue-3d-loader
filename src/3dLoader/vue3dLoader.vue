@@ -79,6 +79,8 @@ interface Props {
   enableDraco?: boolean;
   dracoDir?: string;
   intersectRecursive?: boolean;
+  enableDamping?: boolean;
+  dampingFactor?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -230,7 +232,7 @@ const emit = defineEmits([
 ]);
 
 onMounted(() => {
-  const { filePath, outputEncoding, webGLRendererOptions, showFps } = props;
+  const { filePath, outputEncoding, webGLRendererOptions, showFps, enableDamping, dampingFactor } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
   }
@@ -255,6 +257,12 @@ onMounted(() => {
   renderer.outputEncoding = encoding;
 
   controls = new OrbitControls(camera, el);
+  if (enableDamping) {
+    controls.enableDamping = true;
+    if (dampingFactor != undefined) {
+      controls.dampingFactor = dampingFactor;
+    }
+  }
   scene.add(wrapper);
 
   loadModelSelect();
