@@ -6,5 +6,3 @@
     :dampingFactor="0.05"
   />
 </template>
-  <script setup lang="ts">
-</script>
