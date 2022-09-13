@@ -571,6 +571,30 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   若为true，则同时也会检测所有物体的后代。否则将只会检测对象本身的相交部分。
   </td>
 </tr>
+<tr>
+  <td>
+  enableDamping
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  [enableDamping](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.enableDamping)设置为true以启用阻尼（惯性），这将给控制器带来重量感。
+  </td>
+</tr>
+<tr>
+  <td>
+  dampingFactor
+  </td>
+  <td>number</td>
+  <td>-</td>
+  <td>-</td>
+  <td>
+
+  enableDamping必须为true，此选项才有效。[dampingFactor](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.dampingFactor)用于设置阻尼惯性大小。
+  </td>
+</tr>
 </table>
 
 ### 事件

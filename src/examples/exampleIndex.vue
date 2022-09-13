@@ -29,6 +29,7 @@
     <loadJsonModelVue v-if="currentMenuId === 15" />
     <disableAnimationsVue v-if="currentMenuId === 16" />
     <loaderDracoModelVue v-if="currentMenuId === 17" :lang="lang" />
+    <enableDampingVue v-if="currentMenuId === 18" />
   </div>
 </template>
 <script setup lang="ts">
@@ -49,6 +50,7 @@ import addLabelVue from "./add-label.vue";
 import loadJsonModelVue from "./load-json-model.vue";
 import disableAnimationsVue from "./disable-animations.vue";
 import loaderDracoModelVue from "./loader-draco-model.vue";
+import enableDampingVue from "./enable-damping.vue";
 import { ref } from "vue";
 const menu = ref();
 const lang = ref();
@@ -70,6 +72,7 @@ menu.value = [
   { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model" },
   { id: 16, name_CN: "播放/停止动画", name_EN: "Play/Stop animations" },
   { id: 17, name_CN: "加载Draco压缩模型", name_EN: "Loader draco model" },
+  { id: 18, name_CN: "开启阻尼", name_EN: "Enable damping" },
 ];
 const currentMenuId = ref(1);
 

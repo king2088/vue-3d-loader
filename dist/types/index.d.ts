@@ -155,6 +155,14 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        enableDamping: {
+            type: BooleanConstructor;
+            required: false;
+        };
+        dampingFactor: {
+            type: NumberConstructor;
+            required: false;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -186,6 +194,8 @@ declare const _default: {
             enableDraco: boolean;
             dracoDir?: string | undefined;
             intersectRecursive: boolean;
+            enableDamping?: boolean | undefined;
+            dampingFactor?: number | undefined;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -397,6 +407,14 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        enableDamping: {
+            type: BooleanConstructor;
+            required: false;
+        };
+        dampingFactor: {
+            type: NumberConstructor;
+            required: false;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -423,6 +441,7 @@ declare const _default: {
         autoPlay: boolean;
         enableDraco: boolean;
         intersectRecursive: boolean;
+        enableDamping: boolean;
     }>;
 };
 export default _default;

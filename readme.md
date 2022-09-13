@@ -571,6 +571,30 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   If true, it also checks all descendants. Otherwise it only checks intersection with the object.
   </td>
 </tr>
+<tr>
+  <td>
+  enableDamping
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Set [enableDamping](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.enableDamping) to true to enable damping (inertia), which can be used to give a sense of weight to the controls.
+  </td>
+</tr>
+<tr>
+  <td>
+  dampingFactor
+  </td>
+  <td>number</td>
+  <td>-</td>
+  <td>-</td>
+  <td>
+
+  The damping inertia used if enableDamping is set to true. [dampingFactor](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.dampingFactor)
+  </td>
+</tr>
 </table>
 
 ### Events
