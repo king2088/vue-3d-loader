@@ -28,6 +28,9 @@ import {
   WebGLRendererParameters,
   AnimationClip,
   Light,
+  Mesh,
+  AnimationObjectGroup,
+  Group,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -852,10 +855,16 @@ function getObjectIndex(object: any) {
 function playAnimations() {
   const { autoPlay } = props;
   const obj = getAllObject();
+  console.log('obj2', obj);
+  
   if (!obj) return;
-  const play = (item: Object3D) => {
-    mixer = new AnimationMixer(obj);
-    if (item.animations) {
+  const animateGroup = new AnimationObjectGroup()
+  console.log('animateGroup', animateGroup);
+  
+  const play = (item: Object3D, group?: AnimationObjectGroup) => {
+    mixer = new AnimationMixer(group ? group : item);
+    if (item.animations && item.animations.length > 0) {
+      animateGroup.add(item)
       item.animations.forEach((clip: AnimationClip) => {
         if (clip) {
           const action = mixer.clipAction(clip);
@@ -868,9 +877,10 @@ function playAnimations() {
       });
     }
   };
+  console.log('obj', obj);
   if (isMultipleModels.value) {
     obj.children.forEach((item: any) => {
-      play(item);
+      play(item, animateGroup);
     });
     return;
   }
