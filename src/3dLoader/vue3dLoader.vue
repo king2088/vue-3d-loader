@@ -144,7 +144,7 @@ let allLights: Light[] = [];
 let loader: any = null;
 let requestAnimationId: number = 0;
 let stats: any = null;
-let mixer: any = null;
+let mixers: AnimationMixer | AnimationMixer[] = null as any;
 let textureLoader: any = null;
 
 // responsive variable
@@ -235,7 +235,14 @@ const emit = defineEmits([
 ]);
 
 onMounted(() => {
-  const { filePath, outputEncoding, webGLRendererOptions, showFps, enableDamping, dampingFactor } = props;
+  const {
+    filePath,
+    outputEncoding,
+    webGLRendererOptions,
+    showFps,
+    enableDamping,
+    dampingFactor,
+  } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
   }
@@ -538,13 +545,11 @@ function load(fileIndex?: number) {
   if (!filePath) return;
   const index = fileIndex || loaderIndex.value;
   // if multiple files
-  const filePathStrng: any = !isMultipleModels.value
+  const filePathString: any = !isMultipleModels.value
     ? filePath
     : filePath[index];
-  const fileTypeString: string = typeof fileType === 'string'
-    ? fileType
-    : fileType ? fileType[index] : ''
-  const loaderObject3d: any = getLoader(filePathStrng, fileTypeString, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
+  const fileTypeString: string = typeof fileType === "string" ? fileType : fileType ? fileType[index] : "";
+  const loaderObject3d: any = getLoader(filePathString, fileTypeString, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject
@@ -563,18 +568,18 @@ function load(fileIndex?: number) {
     const isMultipleMTL = typeof mtlPath === "object";
     if (!isMultipleMTL) {
       // single material
-      loadMtl(filePathStrng, getObjectFun, index);
+      loadMtl(filePathString, getObjectFun, index);
     } else {
       // load materials and model
       if (!mtlPath[index]) {
-        loadFilePath(filePathStrng, getObjectFun, index);
+        loadFilePath(filePathString, getObjectFun, index);
         return;
       }
-      loadMtl(filePathStrng, getObjectFun, index);
+      loadMtl(filePathString, getObjectFun, index);
     }
   } else {
     // don't load materials
-    loadFilePath(filePathStrng, getObjectFun, index);
+    loadFilePath(filePathString, getObjectFun, index);
   }
 }
 function loadFilePath(filePath: string, getObject: any, index: number) {
@@ -651,7 +656,15 @@ function animate() {
   requestAnimationId = requestAnimationFrame(animate);
   updateStats();
   const delta = clock.getDelta();
-  if (mixer) mixer.update(delta);
+  // update play animations
+  if (mixers && mixers instanceof AnimationMixer) {
+    mixers.update(delta);
+  }
+  if (mixers && mixers instanceof Array) {
+    mixers.forEach((m: any) => {
+      m.update(delta);
+    });
+  }
   render();
 }
 function render() {
@@ -855,19 +868,40 @@ function getObjectIndex(object: any) {
 function playAnimations() {
   const { autoPlay } = props;
   const obj = getAllObject();
-  console.log('obj2', obj);
-  
   if (!obj) return;
-  const animateGroup = new AnimationObjectGroup()
-  console.log('animateGroup', animateGroup);
-  
-  const play = (item: Object3D, group?: AnimationObjectGroup) => {
-    mixer = new AnimationMixer(group ? group : item);
+  if (isMultipleModels.value) {
+    playMultipleModels(obj);
+    return;
+  }
+  playSingleModel(obj);
+}
+// play a single model animation
+function playSingleModel(item: Object3D) {
+  const { autoPlay } = props;
+  mixers = new AnimationMixer(item);
+  if (item.animations && item.animations.length > 0) {
+    item.animations.forEach((clip: AnimationClip) => {
+      if (clip) {
+        const action = (mixers as AnimationMixer).clipAction(clip);
+        if (autoPlay) {
+          action.play();
+        } else {
+          action.stop();
+        }
+      }
+    });
+  }
+}
+// play multiple models animation
+function playMultipleModels(obj: Object3D) {
+  const { autoPlay } = props;
+  mixers = [];
+  obj.children.forEach((item: any, index: number) => {
+    (mixers as AnimationMixer[]).push(new AnimationMixer(item));
     if (item.animations && item.animations.length > 0) {
-      animateGroup.add(item)
       item.animations.forEach((clip: AnimationClip) => {
         if (clip) {
-          const action = mixer.clipAction(clip);
+          const action = (mixers as AnimationMixer[])[index].clipAction(clip);
           if (autoPlay) {
             action.play();
           } else {
@@ -876,15 +910,7 @@ function playAnimations() {
         }
       });
     }
-  };
-  console.log('obj', obj);
-  if (isMultipleModels.value) {
-    obj.children.forEach((item: any) => {
-      play(item, animateGroup);
-    });
-    return;
-  }
-  play(obj);
+  });
 }
 </script>
 <style scoped>
