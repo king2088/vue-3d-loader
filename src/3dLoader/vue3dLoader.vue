@@ -156,7 +156,7 @@ export default {
       loader: null,
       requestAnimationId: null,
       stats: null,
-      mixer: null,
+      mixers: null,
       textureLoader: null,
       css2DRenderer: null,
     };
@@ -694,7 +694,15 @@ export default {
       this.requestAnimationId = requestAnimationFrame(this.animate);
       this.updateStats();
       const delta = this.clock.getDelta();
-      if (this.mixer) this.mixer.update(delta);
+      // update play animations
+      if (this.mixers && !this.mixers.length) {
+        this.mixers.update(delta);
+      }
+      if (this.mixers && this.mixers.length > 0) {
+        this.mixers.forEach((m) => {
+          m.update(delta);
+        });
+      }
       this.render();
     },
     render() {
@@ -898,28 +906,47 @@ export default {
       return canvas;
     },
     playAnimations() {
-      const play = (item) => {
-        this.mixer = new AnimationMixer(this.wrapper);
-        if (item.animations) {
+      if (this.isMultipleModels) {
+        this.playMultipleModels(this.wrapper);
+        return;
+      }
+      this.playSingleModel(this.object);
+    },
+    // play a single model animation
+    playSingleModel(item) {
+      console.log('item', item, this.wrapper)
+      this.mixers = new AnimationMixer(item);
+      if (item.animations && item.animations.length > 0) {
+        item.animations.forEach((clip) => {
+          if (clip) {
+            const action = this.mixers.clipAction(clip);
+            if (this.autoPlay) {
+              action.play();
+            } else {
+              action.stop();
+            }
+          }
+        });
+      }
+    },
+    // play multiple models animation
+    playMultipleModels(obj) {
+      this.mixers = [];
+      obj.children.forEach((item, index) => {
+        this.mixers.push(new AnimationMixer(item));
+        if (item.animations && item.animations.length > 0) {
           item.animations.forEach((clip) => {
             if (clip) {
-              const action = this.mixer.clipAction(clip);
-              if (!this.autoPlay) {
-                action.stop();
-              } else {
+              const action = this.mixers[index].clipAction(clip);
+              if (this.autoPlay) {
                 action.play();
+              } else {
+                action.stop();
               }
             }
           });
         }
-      };
-      if (this.isMultipleModels) {
-        this.wrapper.children.forEach((item) => {
-          play(item);
-        });
-        return;
-      }
-      play(this.object);
+      });
     },
   },
 };

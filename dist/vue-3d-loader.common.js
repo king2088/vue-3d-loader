@@ -2699,7 +2699,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=143c23bd&
+;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=f59b4412&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21770,7 +21770,7 @@ function enableDraco(isDraco, obj, dir = '') {
       loader: null,
       requestAnimationId: null,
       stats: null,
-      mixer: null,
+      mixers: null,
       textureLoader: null,
       css2DRenderer: null
     };
@@ -22330,8 +22330,18 @@ function enableDraco(isDraco, obj, dir = '') {
     animate() {
       this.requestAnimationId = requestAnimationFrame(this.animate);
       this.updateStats();
-      const delta = this.clock.getDelta();
-      if (this.mixer) this.mixer.update(delta);
+      const delta = this.clock.getDelta(); // update play animations
+
+      if (this.mixers && !this.mixers.length) {
+        this.mixers.update(delta);
+      }
+
+      if (this.mixers && this.mixers.length > 0) {
+        this.mixers.forEach(m => {
+          m.update(delta);
+        });
+      }
+
       this.render();
     },
 
@@ -22530,42 +22540,64 @@ function enableDraco(isDraco, obj, dir = '') {
     },
 
     playAnimations() {
-      const play = item => {
-        this.mixer = new AnimationMixer(this.wrapper);
+      if (this.isMultipleModels) {
+        this.playMultipleModels(this.wrapper);
+        return;
+      }
 
-        if (item.animations) {
+      this.playSingleModel(this.object);
+    },
+
+    // play a single model animation
+    playSingleModel(item) {
+      console.log('item', item, this.wrapper);
+      this.mixers = new AnimationMixer(item);
+
+      if (item.animations && item.animations.length > 0) {
+        item.animations.forEach(clip => {
+          if (clip) {
+            const action = this.mixers.clipAction(clip);
+
+            if (this.autoPlay) {
+              action.play();
+            } else {
+              action.stop();
+            }
+          }
+        });
+      }
+    },
+
+    // play multiple models animation
+    playMultipleModels(obj) {
+      this.mixers = [];
+      obj.children.forEach((item, index) => {
+        this.mixers.push(new AnimationMixer(item));
+
+        if (item.animations && item.animations.length > 0) {
           item.animations.forEach(clip => {
             if (clip) {
-              const action = this.mixer.clipAction(clip);
+              const action = this.mixers[index].clipAction(clip);
 
-              if (!this.autoPlay) {
-                action.stop();
-              } else {
+              if (this.autoPlay) {
                 action.play();
+              } else {
+                action.stop();
               }
             }
           });
         }
-      };
-
-      if (this.isMultipleModels) {
-        this.wrapper.children.forEach(item => {
-          play(item);
-        });
-        return;
-      }
-
-      play(this.object);
+      });
     }
 
   }
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=143c23bd&prod&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=f59b4412&prod&lang=css&
 // extracted by mini-css-extract-plugin
 
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=143c23bd&prod&lang=css&
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=f59b4412&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
