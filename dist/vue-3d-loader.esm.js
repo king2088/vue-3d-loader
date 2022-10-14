@@ -40688,6 +40688,9 @@ function getLoader(filePath, fileType, isDraco, dracoDir) {
         loader: new GLTFLoader(manager),
         getObject: (gltf) => {
           const object = gltf.scene;
+          if (gltf.animations) {
+            object.animations = gltf.animations;
+          }
           return object;
         }
       };

@@ -81,6 +81,10 @@ function getLoader(filePath: string, fileType: string, isDraco: boolean, dracoDi
         loader: new GLTFLoader(manager),
         getObject: (gltf: any) => {
           const object = gltf.scene
+          // resolve gltf animations lose
+          if (gltf.animations) {
+            object.animations = gltf.animations;
+          }
           return object;
         },
       };
