@@ -914,7 +914,6 @@ export default {
     },
     // play a single model animation
     playSingleModel(item) {
-      console.log('item', item, this.wrapper)
       this.mixers = new AnimationMixer(item);
       if (item.animations && item.animations.length > 0) {
         item.animations.forEach((clip) => {

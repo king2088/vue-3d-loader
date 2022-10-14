@@ -75,6 +75,10 @@ function getLoader(filePath, fileType, isDraco, dracoDir = '') {
         loader: new GLTFLoader(manager),
         getObject: (gltf) => {
           const object = gltf.scene
+          // resolve the gltf animations
+          if (gltf.animations) {
+            object.animations = gltf.animations
+          }
           return object;
         }
       };
