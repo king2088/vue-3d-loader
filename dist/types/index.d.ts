@@ -210,7 +210,7 @@ declare const _default: {
         loader: any;
         requestAnimationId: number;
         stats: any;
-        mixer: any;
+        mixers: Three.AnimationMixer | Three.AnimationMixer[];
         textureLoader: any;
         size: import("vue").Ref<{
             width: number;
@@ -256,6 +256,8 @@ declare const _default: {
         generateCanvas: (text: string, style: any) => HTMLCanvasElement;
         getObjectIndex: (object: any) => any;
         playAnimations: () => void;
+        playSingleModel: (item: Three.Object3D<Three.Event>) => void;
+        playMultipleModels: (obj: Three.Object3D<Three.Event>) => void;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];

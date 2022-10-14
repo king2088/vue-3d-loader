@@ -40831,7 +40831,7 @@ const _sfc_main = defineComponent({
     let loader = null;
     let requestAnimationId = 0;
     let stats = null;
-    let mixer = null;
+    let mixers = null;
     let textureLoader = null;
     const size = ref({ width: props.width || 0, height: props.height || 0 });
     const loaderIndex = ref(0);
@@ -40885,7 +40885,14 @@ const _sfc_main = defineComponent({
       playAnimations();
     });
     onMounted(() => {
-      const { filePath, outputEncoding, webGLRendererOptions, showFps, enableDamping, dampingFactor } = props;
+      const {
+        filePath,
+        outputEncoding,
+        webGLRendererOptions,
+        showFps,
+        enableDamping,
+        dampingFactor
+      } = props;
       if (filePath && typeof filePath === "object") {
         isMultipleModels.value = true;
       }
@@ -41136,9 +41143,9 @@ const _sfc_main = defineComponent({
       if (!filePath)
         return;
       const index2 = fileIndex || loaderIndex.value;
-      const filePathStrng = !isMultipleModels.value ? filePath : filePath[index2];
+      const filePathString = !isMultipleModels.value ? filePath : filePath[index2];
       const fileTypeString = typeof fileType === "string" ? fileType : fileType ? fileType[index2] : "";
-      const loaderObject3d = getLoader(filePathStrng, fileTypeString, enableDraco2, dracoDir);
+      const loaderObject3d = getLoader(filePathString, fileTypeString, enableDraco2, dracoDir);
       loader = loaderObject3d.loader;
       const getObjectFun = loaderObject3d.getObject ? loaderObject3d.getObject : getObject;
       if (object && index2 === 0) {
@@ -41153,16 +41160,16 @@ const _sfc_main = defineComponent({
       if (mtlPath) {
         const isMultipleMTL = typeof mtlPath === "object";
         if (!isMultipleMTL) {
-          loadMtl(filePathStrng, getObjectFun, index2);
+          loadMtl(filePathString, getObjectFun, index2);
         } else {
           if (!mtlPath[index2]) {
-            loadFilePath(filePathStrng, getObjectFun, index2);
+            loadFilePath(filePathString, getObjectFun, index2);
             return;
           }
-          loadMtl(filePathStrng, getObjectFun, index2);
+          loadMtl(filePathString, getObjectFun, index2);
         }
       } else {
-        loadFilePath(filePathStrng, getObjectFun, index2);
+        loadFilePath(filePathString, getObjectFun, index2);
       }
     }
     function loadFilePath(filePath, getObject2, index2) {
@@ -41230,8 +41237,14 @@ const _sfc_main = defineComponent({
       requestAnimationId = requestAnimationFrame(animate);
       updateStats();
       const delta = clock.getDelta();
-      if (mixer)
-        mixer.update(delta);
+      if (mixers && mixers instanceof AnimationMixer) {
+        mixers.update(delta);
+      }
+      if (mixers && mixers instanceof Array) {
+        mixers.forEach((m) => {
+          m.update(delta);
+        });
+      }
       render();
     }
     function render() {
@@ -41398,16 +41411,40 @@ const _sfc_main = defineComponent({
       return objIndex;
     }
     function playAnimations() {
-      const { autoPlay } = props;
       const obj = getAllObject();
       if (!obj)
         return;
-      const play = (item) => {
-        mixer = new AnimationMixer(obj);
-        if (item.animations) {
+      if (isMultipleModels.value) {
+        playMultipleModels(obj);
+        return;
+      }
+      playSingleModel(obj);
+    }
+    function playSingleModel(item) {
+      const { autoPlay } = props;
+      mixers = new AnimationMixer(item);
+      if (item.animations && item.animations.length > 0) {
+        item.animations.forEach((clip) => {
+          if (clip) {
+            const action = mixers.clipAction(clip);
+            if (autoPlay) {
+              action.play();
+            } else {
+              action.stop();
+            }
+          }
+        });
+      }
+    }
+    function playMultipleModels(obj) {
+      const { autoPlay } = props;
+      mixers = [];
+      obj.children.forEach((item, index2) => {
+        mixers.push(new AnimationMixer(item));
+        if (item.animations && item.animations.length > 0) {
           item.animations.forEach((clip) => {
             if (clip) {
-              const action = mixer.clipAction(clip);
+              const action = mixers[index2].clipAction(clip);
               if (autoPlay) {
                 action.play();
               } else {
@@ -41416,14 +41453,7 @@ const _sfc_main = defineComponent({
             }
           });
         }
-      };
-      if (isMultipleModels.value) {
-        obj.children.forEach((item) => {
-          play(item);
-        });
-        return;
-      }
-      play(obj);
+      });
     }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
@@ -41440,7 +41470,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-07257ca0"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-04ca652e"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
