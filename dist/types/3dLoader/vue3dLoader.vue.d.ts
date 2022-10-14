@@ -1,4 +1,4 @@
-import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, Clock, Light } from "three";
+import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, AnimationMixer, Clock, Light } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface coordinates {
     x: number;
@@ -212,7 +212,7 @@ declare const _default: import("vue").DefineComponent<{
     loader: any;
     requestAnimationId: number;
     stats: any;
-    mixer: any;
+    mixers: AnimationMixer | AnimationMixer[];
     textureLoader: any;
     size: import("vue").Ref<{
         width: number;
@@ -258,6 +258,8 @@ declare const _default: import("vue").DefineComponent<{
     generateCanvas: (text: string, style: any) => HTMLCanvasElement;
     getObjectIndex: (object: any) => any;
     playAnimations: () => void;
+    playSingleModel: (item: Object3D) => void;
+    playMultipleModels: (obj: Object3D) => void;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
