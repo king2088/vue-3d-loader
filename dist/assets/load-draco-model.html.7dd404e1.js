@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-c5ca6358","path":"/guide/example/load-draco-model.html","title":"Loader draco model","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/load-draco-model.md"}');export{e as data};

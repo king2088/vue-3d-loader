@@ -1,0 +1,1 @@
+const a=JSON.parse('{"key":"v-45da614a","path":"/guide/example/camera-position-and-rotate.html","title":"Camera position and rotation","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/camera-position-and-rotate.md"}');export{a as data};
