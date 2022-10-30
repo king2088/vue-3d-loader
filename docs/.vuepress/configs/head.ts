@@ -7,7 +7,7 @@ export const head: HeadConfig[] = [
       rel: 'icon',
       type: 'image/png',
       sizes: '16x16',
-      href: `/16x16.ico`,
+      href: `/vue-3d-loader-docs/16x16.ico`,
     },
   ],
   [
@@ -16,7 +16,7 @@ export const head: HeadConfig[] = [
       rel: 'icon',
       type: 'image/png',
       sizes: '32x32',
-      href: `/32x32.ico`,
+      href: `/vue-3d-loader-docs/32x32.ico`,
     },
   ],
   ['meta', { name: 'application-name', content: 'vue-3d-loader' }],
