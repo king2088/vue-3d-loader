@@ -201,8 +201,8 @@ declare const _default: {
         raycaster: Three.Raycaster;
         mouse: Three.Vector2;
         camera: Three.PerspectiveCamera;
-        scene: Three.Scene;
         clock: Three.Clock;
+        scene: Three.Scene;
         wrapper: Three.Object3D<Three.Event>;
         renderer: Three.WebGLRenderer;
         controls: import("three/examples/jsm/controls/OrbitControls").OrbitControls;
@@ -222,6 +222,9 @@ declare const _default: {
         containerElement: import("vue").Ref<null>;
         canvasElement: import("vue").Ref<null>;
         emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
+        resetScene: () => void;
+        destroyScene: () => void;
+        init: () => void;
         setContainerElementStyle: (el: any) => void;
         enableMousemoveEvent: (enable: boolean) => void;
         onResize: () => void;

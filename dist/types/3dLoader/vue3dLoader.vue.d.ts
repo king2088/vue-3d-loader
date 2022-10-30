@@ -203,8 +203,8 @@ declare const _default: import("vue").DefineComponent<{
     raycaster: Raycaster;
     mouse: Vector2;
     camera: PerspectiveCamera;
-    scene: Scene;
     clock: Clock;
+    scene: Scene;
     wrapper: Object3D<import("three").Event>;
     renderer: WebGLRenderer;
     controls: OrbitControls;
@@ -224,6 +224,9 @@ declare const _default: import("vue").DefineComponent<{
     containerElement: import("vue").Ref<null>;
     canvasElement: import("vue").Ref<null>;
     emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
+    resetScene: () => void;
+    destroyScene: () => void;
+    init: () => void;
     setContainerElementStyle: (el: any) => void;
     enableMousemoveEvent: (enable: boolean) => void;
     onResize: () => void;
