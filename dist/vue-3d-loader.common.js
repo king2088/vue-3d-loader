@@ -2699,7 +2699,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=1b7b6df0&
+;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=09555344&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"viewer-container"},[_c('canvas',{ref:"canvas",staticClass:"viewer-canvas"})])}
 var staticRenderFns = []
 
@@ -21767,7 +21767,7 @@ function enableDraco(isDraco, obj, dir = '') {
       raycaster: new Raycaster(),
       camera: new PerspectiveCamera(45, 1, 1, 100000),
       scene: new Scene(),
-      wrapper: new Object3D(),
+      wrapper: null,
       renderer: null,
       controls: null,
       allLights: [],
@@ -21790,69 +21790,22 @@ function enableDraco(isDraco, obj, dir = '') {
   },
 
   mounted() {
-    if (this.filePath && typeof this.filePath === "object") {
-      this.isMultipleModels = true;
-    }
-
-    const el = this.$refs.container; // init canvas width and height
-
-    this.onResize();
-    const WEB_GL_OPTIONS = {
-      antialias: true,
-      alpha: true
-    };
-    const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
-      canvas: this.$refs.canvas
-    });
-    this.renderer = new WebGLRenderer(options);
-    this.renderer.hadowMapEnabled = true;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.outputEncoding = this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
-    this.controls = new OrbitControls(this.camera, el);
-    this.scene.add(this.wrapper);
-    this.loadModelSelect();
-    this.update();
-    el.addEventListener("mousedown", this.onMouseDown, false); // el.addEventListener("mousemove", this.onMouseMove, false);
-
-    this.enableMousemoveEvent(this.enableMousemove);
-    el.addEventListener("mouseup", this.onMouseUp, false);
-    el.addEventListener("click", this.onClick, false);
-    el.addEventListener("dblclick", this.onDblclick, false);
-    window.addEventListener("resize", this.onResize, false); // stats
-
-    if (this.showFps) {
-      this.stats = new stats_module();
-      el.appendChild(this.stats.dom);
-    }
-
-    this.animate();
+    this.init();
   },
 
   beforeDestroy() {
-    cancelAnimationFrame(this.requestAnimationId);
-    this.renderer.dispose();
-
-    if (this.controls) {
-      this.controls.dispose();
-    }
-
-    const el = this.$refs.container;
-    this.enableMousemoveEvent(true);
-    el.removeEventListener("mousedown", this.onMouseDown, false);
-    el.removeEventListener("mousemove", this.onMouseMove, false);
-    el.removeEventListener("mouseup", this.onMouseUp, false);
-    el.removeEventListener("click", this.onClick, false);
-    el.removeEventListener("dblclick", this.onDblclick, false);
-    window.removeEventListener("resize", this.onResize, false);
+    this.destroyScene();
   },
 
   watch: {
     filePath() {
-      this.loadModelSelect();
+      this.destroyScene();
+      this.init();
     },
 
     fileType() {
-      this.loadModelSelect();
+      this.destroyScene();
+      this.init();
     },
 
     rotation: {
@@ -21938,10 +21891,97 @@ function enableDraco(isDraco, obj, dir = '') {
 
     autoPlay() {
       this.playAnimations();
+    },
+
+    width(val) {
+      this.size.width = val;
+      this.updateRenderer();
+    },
+
+    height(val) {
+      this.size.height = val;
+      this.updateRenderer();
     }
 
   },
   methods: {
+    init() {
+      if (this.filePath && typeof this.filePath === "object") {
+        this.isMultipleModels = true;
+      }
+
+      const el = this.$refs.container; // init canvas width and height
+
+      this.onResize();
+      const WEB_GL_OPTIONS = {
+        antialias: true,
+        alpha: true
+      };
+      const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
+        canvas: this.$refs.canvas
+      });
+
+      if (!this.renderer) {
+        this.renderer = new WebGLRenderer(options);
+        this.renderer.hadowMapEnabled = true;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.outputEncoding = this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
+      }
+
+      if (!this.controls) {
+        this.controls = new OrbitControls(this.camera, el);
+      }
+
+      this.wrapper = new Object3D();
+      this.scene.add(this.wrapper);
+      this.loadModelSelect();
+      this.update();
+      el.addEventListener("mousedown", this.onMouseDown, false); // el.addEventListener("mousemove", this.onMouseMove, false);
+
+      this.enableMousemoveEvent(this.enableMousemove);
+      el.addEventListener("mouseup", this.onMouseUp, false);
+      el.addEventListener("click", this.onClick, false);
+      el.addEventListener("dblclick", this.onDblclick, false);
+      window.addEventListener("resize", this.onResize, false); // stats
+
+      if (this.showFps) {
+        this.stats = new stats_module();
+        el.appendChild(this.stats.dom);
+      }
+
+      this.animate();
+    },
+
+    destroyScene() {
+      if (this.requestAnimationId) {
+        cancelAnimationFrame(this.requestAnimationId);
+      }
+
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+
+      if (this.controls) {
+        this.controls.dispose();
+        this.controls = null;
+      }
+
+      const el = this.$refs.container;
+      this.enableMousemoveEvent(true);
+      el.removeEventListener("mousedown", this.onMouseDown, false);
+      el.removeEventListener("mousemove", this.onMouseMove, false);
+      el.removeEventListener("mouseup", this.onMouseUp, false);
+      el.removeEventListener("click", this.onClick, false);
+      el.removeEventListener("dblclick", this.onDblclick, false);
+      window.removeEventListener("resize", this.onResize, false);
+      this.wrapper = null;
+      this.object = null;
+
+      if (this.scene) {
+        this.scene.clear();
+      }
+    },
+
     onResize() {
       if (!this.width || !this.height) {
         this.$nextTick(() => {
@@ -22089,10 +22129,13 @@ function enableDraco(isDraco, obj, dir = '') {
         backgroundAlpha,
         backgroundColor
       } = this;
-      renderer.setSize(size.width, size.height);
-      renderer.setPixelRatio(window.devicePixelRatio || 1);
-      renderer.setClearColor(new Color(backgroundColor).getHex());
-      renderer.setClearAlpha(backgroundAlpha);
+
+      if (renderer) {
+        renderer.setSize(size.width, size.height);
+        renderer.setPixelRatio(window.devicePixelRatio || 1);
+        renderer.setClearColor(new Color(backgroundColor).getHex());
+        renderer.setClearAlpha(backgroundAlpha);
+      }
     },
 
     updateCamera(isResize = false) {
@@ -22210,7 +22253,7 @@ function enableDraco(isDraco, obj, dir = '') {
 
       const _filePath = !this.isMultipleModels ? this.filePath : this.filePath[index];
 
-      const _fileType = typeof this.fileType === 'string' ? this.fileType : this.fileType ? this.fileType[index] : '';
+      const _fileType = typeof this.fileType === "string" ? this.fileType : this.fileType ? this.fileType[index] : "";
 
       const loaderObj = getLoader(_filePath, _fileType, this.enableDraco, this.dracoDir); // {loader, getObject, mtlLoader}
 
@@ -22351,7 +22394,9 @@ function enableDraco(isDraco, obj, dir = '') {
     },
 
     render() {
-      this.renderer.render(this.scene, this.camera);
+      if (this.renderer) {
+        this.renderer.render(this.scene, this.camera);
+      }
     },
 
     updateStats() {
@@ -22598,10 +22643,10 @@ function enableDraco(isDraco, obj, dir = '') {
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=1b7b6df0&prod&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=09555344&prod&lang=css&
 // extracted by mini-css-extract-plugin
 
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=1b7b6df0&prod&lang=css&
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=09555344&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */

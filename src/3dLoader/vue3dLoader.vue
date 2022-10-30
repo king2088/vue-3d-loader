@@ -148,7 +148,7 @@ export default {
       raycaster: new Raycaster(),
       camera: new PerspectiveCamera(45, 1, 1, 100000),
       scene: new Scene(),
-      wrapper: new Object3D(),
+      wrapper: null,
       renderer: null,
       controls: null,
       allLights: [],
@@ -170,70 +170,19 @@ export default {
     };
   },
   mounted() {
-    if (this.filePath && typeof this.filePath === "object") {
-      this.isMultipleModels = true;
-    }
-    const el = this.$refs.container;
-    // init canvas width and height
-    this.onResize();
-    const WEB_GL_OPTIONS = { antialias: true, alpha: true };
-    const options = Object.assign(
-      {},
-      WEB_GL_OPTIONS,
-      this.webGLRendererOptions,
-      {
-        canvas: this.$refs.canvas,
-      }
-    );
-
-    this.renderer = new WebGLRenderer(options);
-    this.renderer.hadowMapEnabled = true;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.outputEncoding =
-      this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
-
-    this.controls = new OrbitControls(this.camera, el);
-    this.scene.add(this.wrapper);
-
-    this.loadModelSelect();
-    this.update();
-
-    el.addEventListener("mousedown", this.onMouseDown, false);
-    // el.addEventListener("mousemove", this.onMouseMove, false);
-    this.enableMousemoveEvent(this.enableMousemove);
-    el.addEventListener("mouseup", this.onMouseUp, false);
-    el.addEventListener("click", this.onClick, false);
-    el.addEventListener("dblclick", this.onDblclick, false);
-    window.addEventListener("resize", this.onResize, false);
-    // stats
-    if (this.showFps) {
-      this.stats = new Stats();
-      el.appendChild(this.stats.dom);
-    }
-    this.animate();
+    this.init();
   },
   beforeDestroy() {
-    cancelAnimationFrame(this.requestAnimationId);
-    this.renderer.dispose();
-    if (this.controls) {
-      this.controls.dispose();
-    }
-    const el = this.$refs.container;
-    this.enableMousemoveEvent(true);
-    el.removeEventListener("mousedown", this.onMouseDown, false);
-    el.removeEventListener("mousemove", this.onMouseMove, false);
-    el.removeEventListener("mouseup", this.onMouseUp, false);
-    el.removeEventListener("click", this.onClick, false);
-    el.removeEventListener("dblclick", this.onDblclick, false);
-
-    window.removeEventListener("resize", this.onResize, false);
+    this.destroyScene();
   },
   watch: {
     filePath() {
-      this.loadModelSelect();
+      this.destroyScene();
+      this.init();
     },
     fileType() {
-      this.loadModelSelect();
+      this.destroyScene();
+      this.init();
     },
     rotation: {
       deep: true,
@@ -298,8 +247,90 @@ export default {
     autoPlay() {
       this.playAnimations();
     },
+    width(val) {
+      this.size.width = val;
+      this.updateRenderer();
+    },
+    height(val) {
+      this.size.height = val;
+      this.updateRenderer();
+    },
   },
   methods: {
+    init() {
+      if (this.filePath && typeof this.filePath === "object") {
+        this.isMultipleModels = true;
+      }
+      const el = this.$refs.container;
+      // init canvas width and height
+      this.onResize();
+      const WEB_GL_OPTIONS = { antialias: true, alpha: true };
+      const options = Object.assign(
+        {},
+        WEB_GL_OPTIONS,
+        this.webGLRendererOptions,
+        {
+          canvas: this.$refs.canvas,
+        }
+      );
+
+      if (!this.renderer) {
+        this.renderer = new WebGLRenderer(options);
+        this.renderer.hadowMapEnabled = true;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.outputEncoding =
+          this.outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
+      }
+
+      if (!this.controls) {
+        this.controls = new OrbitControls(this.camera, el);
+      }
+
+      this.wrapper = new Object3D();
+      this.scene.add(this.wrapper);
+
+      this.loadModelSelect();
+      this.update();
+
+      el.addEventListener("mousedown", this.onMouseDown, false);
+      // el.addEventListener("mousemove", this.onMouseMove, false);
+      this.enableMousemoveEvent(this.enableMousemove);
+      el.addEventListener("mouseup", this.onMouseUp, false);
+      el.addEventListener("click", this.onClick, false);
+      el.addEventListener("dblclick", this.onDblclick, false);
+      window.addEventListener("resize", this.onResize, false);
+      // stats
+      if (this.showFps) {
+        this.stats = new Stats();
+        el.appendChild(this.stats.dom);
+      }
+      this.animate();
+    },
+    destroyScene() {
+      if (this.requestAnimationId) {
+        cancelAnimationFrame(this.requestAnimationId);
+      }
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+      if (this.controls) {
+        this.controls.dispose();
+        this.controls = null;
+      }
+      const el = this.$refs.container;
+      this.enableMousemoveEvent(true);
+      el.removeEventListener("mousedown", this.onMouseDown, false);
+      el.removeEventListener("mousemove", this.onMouseMove, false);
+      el.removeEventListener("mouseup", this.onMouseUp, false);
+      el.removeEventListener("click", this.onClick, false);
+      el.removeEventListener("dblclick", this.onDblclick, false);
+      window.removeEventListener("resize", this.onResize, false);
+      this.wrapper = null;
+      this.object = null;
+      if (this.scene) {
+        this.scene.clear();
+      }
+    },
     onResize() {
       if (!this.width || !this.height) {
         this.$nextTick(() => {
@@ -433,10 +464,12 @@ export default {
     },
     updateRenderer() {
       const { renderer, size, backgroundAlpha, backgroundColor } = this;
-      renderer.setSize(size.width, size.height);
-      renderer.setPixelRatio(window.devicePixelRatio || 1);
-      renderer.setClearColor(new Color(backgroundColor).getHex());
-      renderer.setClearAlpha(backgroundAlpha);
+      if (renderer) {
+        renderer.setSize(size.width, size.height);
+        renderer.setPixelRatio(window.devicePixelRatio || 1);
+        renderer.setClearColor(new Color(backgroundColor).getHex());
+        renderer.setClearAlpha(backgroundAlpha);
+      }
     },
     updateCamera(isResize = false) {
       const {
@@ -579,10 +612,18 @@ export default {
       const _filePath = !this.isMultipleModels
         ? this.filePath
         : this.filePath[index];
-      const _fileType = typeof this.fileType === 'string'
-        ? this.fileType
-        : this.fileType ? this.fileType[index] : '';
-      const loaderObj = getLoader(_filePath, _fileType, this.enableDraco, this.dracoDir); // {loader, getObject, mtlLoader}
+      const _fileType =
+        typeof this.fileType === "string"
+          ? this.fileType
+          : this.fileType
+          ? this.fileType[index]
+          : "";
+      const loaderObj = getLoader(
+        _filePath,
+        _fileType,
+        this.enableDraco,
+        this.dracoDir
+      ); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject
@@ -706,7 +747,9 @@ export default {
       this.render();
     },
     render() {
-      this.renderer.render(this.scene, this.camera);
+      if (this.renderer) {
+        this.renderer.render(this.scene, this.camera);
+      }
     },
     updateStats() {
       if (this.showFps) {
