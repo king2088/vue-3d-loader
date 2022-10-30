@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-ad6e6ee0","path":"/guide/example/enable-damping.html","title":"Enable damping","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/enable-damping.md"}');export{e as data};
