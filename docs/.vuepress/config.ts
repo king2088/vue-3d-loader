@@ -9,7 +9,7 @@ const __dirname = getDirname(import.meta.url)
 const isProd = process.env.NODE_ENV === 'production'
 
 export default defineUserConfig({
-  base: '/',
+  base: '/vue-3d-loader-docs/',
   head,
   locales: {
     '/': {
