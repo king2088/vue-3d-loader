@@ -135,9 +135,9 @@ let object: any = null;
 const raycaster = new Raycaster();
 const mouse = new Vector2();
 const camera = new PerspectiveCamera(45, 1, 1, 100000);
-const scene = new Scene();
 const clock = new Clock();
-let wrapper = new Object3D();
+let scene: Scene = new Scene();
+let wrapper: Object3D = null as any;
 let renderer: WebGLRenderer = null as any;
 let controls: OrbitControls = {} as any;
 let allLights: Light[] = [];
@@ -160,18 +160,22 @@ watch(
   [
     () => props.filePath,
     () => props.fileType,
+    () => props.mtlPath,
     () => props.clearScene,
     () => props.backgroundAlpha,
     () => props.backgroundColor,
   ],
   (valueArray) => {
     if (valueArray[0] || valueArray[1]) {
-      loadModelSelect();
+      resetScene();
     }
     if (valueArray[2]) {
+      loadModelSelect();
+    }
+    if (valueArray[3]) {
       clearSceneWrapper();
     }
-    if (valueArray[3] || valueArray[4]) {
+    if (valueArray[4] || valueArray[5]) {
       updateRenderer();
     }
   }
@@ -222,6 +226,12 @@ watch(
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
+watch([() => props.width, () => props.height], () => {
+  size.value = {
+    width: props.width || 0,
+    height: props.height || 0,
+  };
+});
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -235,6 +245,45 @@ const emit = defineEmits([
 ]);
 
 onMounted(() => {
+  init();
+});
+
+onBeforeUnmount(() => {
+  destroyScene();
+});
+
+// Dynamic reload filePath
+function resetScene() {
+  destroyScene();
+  init();
+}
+
+function destroyScene() {
+  if (requestAnimationId) {
+    cancelAnimationFrame(requestAnimationId);
+  }
+  if (renderer) {
+    renderer.dispose();
+  }
+  if (controls && Object.keys(controls).length > 0) {
+    controls.dispose();
+    controls = {} as any;
+  }
+  const el = containerElement.value as any;
+  el.removeEventListener("mousedown", onMouseDown, false);
+  el.removeEventListener("mousemove", onMouseMove, false);
+  el.removeEventListener("mouseup", onMouseUp, false);
+  el.removeEventListener("click", onClick, false);
+  el.removeEventListener("dblclick", onDblclick, false);
+  window.removeEventListener("resize", onResize, false);
+  object = null;
+  wrapper = null as any;
+  if (scene) {
+    scene.clear();
+  }
+}
+
+function init() {
   const {
     filePath,
     outputEncoding,
@@ -259,20 +308,26 @@ onMounted(() => {
       canvas: canvasElement.value as any,
     }
   );
+  if (!renderer) {
+    renderer = new WebGLRenderer(options);
+    // renderer.hadowMapEnabled = true
+    renderer.shadowMap.enabled = true;
+    const encoding =
+      outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
+    renderer.outputEncoding = encoding;
+  }
 
-  renderer = new WebGLRenderer(options);
-  // renderer.hadowMapEnabled = true
-  renderer.shadowMap.enabled = true;
-  const encoding = outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
-  renderer.outputEncoding = encoding;
-
-  controls = new OrbitControls(camera, el);
-  if (enableDamping) {
-    controls.enableDamping = true;
-    if (dampingFactor != undefined) {
-      controls.dampingFactor = dampingFactor;
+  if (!controls || Object.keys(controls).length <= 0) {
+    controls = new OrbitControls(camera, el);
+    if (enableDamping) {
+      controls.enableDamping = true;
+      if (dampingFactor != undefined) {
+        controls.dampingFactor = dampingFactor;
+      }
     }
   }
+
+  wrapper = new Object3D();
   scene.add(wrapper);
 
   loadModelSelect();
@@ -290,24 +345,7 @@ onMounted(() => {
     el.appendChild(stats.dom);
   }
   animate();
-});
-
-onBeforeUnmount(() => {
-  cancelAnimationFrame(requestAnimationId);
-  renderer.dispose();
-  if (controls) {
-    controls.dispose();
-  }
-  const el = containerElement.value as any;
-  el.removeEventListener("mousedown", onMouseDown, false);
-  el.removeEventListener("mousemove", onMouseMove, false);
-  el.removeEventListener("mouseup", onMouseUp, false);
-  el.removeEventListener("click", onClick, false);
-  el.removeEventListener("dblclick", onDblclick, false);
-  window.removeEventListener("resize", onResize, false);
-  object = null;
-  wrapper = null as any;
-});
+}
 
 function setContainerElementStyle(el: any) {
   const { width, height } = props;
@@ -409,7 +447,7 @@ function updateModel() {
     scale instanceof Array
       ? index != null
         ? object.scale.set(scale[index].x, scale[index].y, scale[index].z)
-        : object.scale.set(0, 0, 0)
+        : object.scale.set(1, 1, 1)
       : object.scale.set(scale.x, scale.y, scale.z);
   }
 }
@@ -548,8 +586,14 @@ function load(fileIndex?: number) {
   const filePathString: any = !isMultipleModels.value
     ? filePath
     : filePath[index];
-  const fileTypeString: string = typeof fileType === "string" ? fileType : fileType ? fileType[index] : "";
-  const loaderObject3d: any = getLoader(filePathString, fileTypeString, enableDraco, dracoDir); // {loader, getObject, mtlLoader}
+  const fileTypeString: string =
+    typeof fileType === "string" ? fileType : fileType ? fileType[index] : "";
+  const loaderObject3d: any = getLoader(
+    filePathString,
+    fileTypeString,
+    enableDraco,
+    dracoDir
+  ); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject
@@ -748,7 +792,7 @@ function setLabel() {
 }
 function setSpriteLabel() {
   const { labels } = props;
-  if (!labels) return;
+  if (!labels || labels.length <= 0) return;
   const obj = isMultipleModels.value ? wrapper : object;
   const spriteImageLabel = (image: any) => {
     if (!textureLoader) {
