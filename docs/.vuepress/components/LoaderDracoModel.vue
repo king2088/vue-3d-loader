@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/gltf/LittlestTokyo.glb"
+    filePath="/vue-3d-loader-docs/models/gltf/LittlestTokyo.glb"
     :cameraPosition="{ x: 10, y: 700, z: 1000 }"
     :enableDraco="true"
     outputEncoding="sRGB"

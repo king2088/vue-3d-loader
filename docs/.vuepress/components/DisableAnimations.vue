@@ -4,7 +4,7 @@
     {{ autoPlay ? "Play" : "Stop" }}
   </div>
   <vue3dLoader
-    filePath="/models/collada/stormtrooper/stormtrooper.dae"
+    filePath="/vue-3d-loader-docs/models/collada/stormtrooper/stormtrooper.dae"
     :cameraPosition="{ x: 20, y: 0, z: -10 }"
     :autoPlay="autoPlay"
     :height="350"

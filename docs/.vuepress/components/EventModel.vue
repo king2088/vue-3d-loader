@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/ply/Lucy100k.ply"
+    filePath="/vue-3d-loader-docs/models/ply/Lucy100k.ply"
     @mousemove="onMouseMove"
     :cameraPosition="{ x: 0, y: 0, z: -2500 }"
     :height="350"

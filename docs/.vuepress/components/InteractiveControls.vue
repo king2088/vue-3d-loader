@@ -15,7 +15,7 @@
       </button>
     </div>
     <vue3dLoader
-      :filePath="'/models/collada/elf/elf.dae'"
+      :filePath="'/vue-3d-loader-docs/models/collada/elf/elf.dae'"
       :controlsOptions="{
         enablePan,
         enableZoom,

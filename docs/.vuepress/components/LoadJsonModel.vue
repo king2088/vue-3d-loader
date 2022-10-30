@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/json/lightmap.json"
+    filePath="/vue-3d-loader-docs/models/json/lightmap.json"
     :height="350"
     backgroundColor="#F2F2F2"
   />
