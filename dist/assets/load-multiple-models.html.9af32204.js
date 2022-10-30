@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-eb49e1b0","path":"/guide/example/load-multiple-models.html","title":"Loading multiple models in the same scene","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/load-multiple-models.md"}');export{e as data};

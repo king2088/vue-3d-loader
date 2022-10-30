@@ -1,1 +1,0 @@
-const a=JSON.parse('{"key":"v-4d3e4fc9","path":"/guide/example/background-color-and-alpha.html","title":"Background color and transparency","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/background-color-and-alpha.md"}');export{a as data};

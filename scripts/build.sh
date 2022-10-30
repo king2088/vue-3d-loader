@@ -1,0 +1,1 @@
+rm -r ../html && mv ../docs/.vuepress/dist ../html

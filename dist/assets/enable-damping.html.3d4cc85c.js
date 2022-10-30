@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-9d7baf7e","path":"/zh/guide/example/enable-damping.html","title":"\u5F00\u542F\u963B\u5C3C","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/enable-damping.md"}');export{e as data};

@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-8c8043bc","path":"/zh/guide/example/rotate-model.html","title":"\u65CB\u8F6C\u6A21\u578B","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/rotate-model.md"}');export{e as data};

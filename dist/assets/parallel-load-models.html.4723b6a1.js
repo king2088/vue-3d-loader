@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-66605506","path":"/guide/example/parallel-load-models.html","title":"Load multiple models in parallel","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/parallel-load-models.md"}');export{e as data};
