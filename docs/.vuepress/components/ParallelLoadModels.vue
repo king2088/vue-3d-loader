@@ -15,9 +15,9 @@ import { vue3dLoader } from "vue-3d-loader";
 import { ref } from "vue";
 const filePath = ref();
 filePath.value = [
-  "/models/fbx/Samba Dancing.fbx",
-  "/models/collada/pump/pump.dae",
-  "/models/ply/Lucy100k.ply",
+  "/vue-3d-loader-docs/models/fbx/Samba Dancing.fbx",
+  "/vue-3d-loader-docs/models/collada/pump/pump.dae",
+  "/vue-3d-loader-docs/models/ply/Lucy100k.ply",
 ];
 const position = ref();
 position.value = [

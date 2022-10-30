@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/collada/stormtrooper/stormtrooper.dae"
+    filePath="/vue-3d-loader-docs/models/collada/stormtrooper/stormtrooper.dae"
     :cameraPosition="{ x: 1, y: -5, z: -20 }"
     :height="350"
     backgroundColor="#F2F2F2"

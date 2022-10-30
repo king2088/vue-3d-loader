@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/stl/colored.stl"
+    filePath="/vue-3d-loader-docs/models/stl/colored.stl"
     :height="350"
     backgroundColor="#F2F2F2"
     @load="onLoad"

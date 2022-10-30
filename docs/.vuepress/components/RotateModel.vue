@@ -2,7 +2,7 @@
   <vue3dLoader
     :rotation="rotation"
     @load="onLoad()"
-    filePath="/models/collada/elf/elf.dae"
+    filePath="/vue-3d-loader-docs/models/collada/elf/elf.dae"
     :height="350"
     backgroundColor="#F2F2F2"
   />

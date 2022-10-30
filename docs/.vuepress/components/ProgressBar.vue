@@ -17,7 +17,10 @@
 import { vue3dLoader } from "vue-3d-loader";
 import { ref } from "vue";
 const filePath = ref();
-filePath.value = ["/models/obj/male02.obj", "/models/fbx/Samba Dancing.fbx"];
+filePath.value = [
+  "/vue-3d-loader-docs/models/obj/male02.obj",
+  "/vue-3d-loader-docs/models/fbx/Samba Dancing.fbx",
+];
 const currentModelIndex = ref();
 const process = ref(0);
 function onProcess(event: any, index: number) {

@@ -1,6 +1,6 @@
 <template>
   <vue3dLoader
-    filePath="/models/obj/tree.obj"
+    filePath="/vue-3d-loader-docs/models/obj/tree.obj"
     :height="350"
     backgroundColor="#F2F2F2"
     :showFps="true"
