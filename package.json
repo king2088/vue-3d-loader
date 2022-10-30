@@ -1,13 +1,13 @@
 {
   "name": "vue-3d-loader-docs",
-  "version": "2.0.9",
+  "version": "1.0.0",
   "description": "vue-3d-loader documents",
   "main": "index.js",
   "author": "Tony Tao <king6180@gmail.com>",
   "license": "MIT",
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs && rd -r ./dist && move ./docs/.vuepress/dist ./"
+    "docs:build": "vuepress build docs && node ./scripts/build.js"
   },
   "devDependencies": {
     "@vuepress/plugin-register-components": "^2.0.0-beta.51",

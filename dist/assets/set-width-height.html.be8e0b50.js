@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-385d3d00","path":"/zh/guide/example/set-width-height.html","title":"\u8BBE\u7F6E\u573A\u666F\u9AD8\u5BBD","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/set-width-height.md"}');export{e as data};

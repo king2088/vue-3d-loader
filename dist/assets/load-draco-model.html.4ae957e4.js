@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-e789f476","path":"/zh/guide/example/load-draco-model.html","title":"\u52A0\u8F7DDraco\u538B\u7F29\u6A21\u578B","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/load-draco-model.md"}');export{e as data};

@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-9c87ce58","path":"/guide/example/load-materials-and-textures.html","title":"Material and texture","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/load-materials-and-textures.md"}');export{e as data};

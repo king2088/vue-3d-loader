@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-493d058f","path":"/guide/example/set-width-height.html","title":"Set width and height","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":1667135353000,"contributors":[{"name":"Tony Tao","email":"king6180@gmail.com","commits":1}]},"filePathRelative":"guide/example/set-width-height.md"}');export{e as data};

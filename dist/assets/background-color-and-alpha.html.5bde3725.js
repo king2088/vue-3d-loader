@@ -1,1 +1,0 @@
-const a=JSON.parse('{"key":"v-a08ea40c","path":"/zh/guide/example/background-color-and-alpha.html","title":"\u80CC\u666F\u989C\u8272\u53CA\u900F\u660E\u5EA6","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/background-color-and-alpha.md"}');export{a as data};

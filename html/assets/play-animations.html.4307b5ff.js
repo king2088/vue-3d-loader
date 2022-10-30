@@ -1,0 +1,1 @@
+const a=JSON.parse('{"key":"v-a2973abc","path":"/guide/example/play-animations.html","title":"Play/stop animation","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":1667135353000,"contributors":[{"name":"Tony Tao","email":"king6180@gmail.com","commits":1}]},"filePathRelative":"guide/example/play-animations.md"}');export{a as data};

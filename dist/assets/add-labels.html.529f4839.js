@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-b8767fa4","path":"/zh/guide/example/add-labels.html","title":"\u6807\u6CE8","lang":"zh-CN","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"zh/guide/example/add-labels.md"}');export{e as data};

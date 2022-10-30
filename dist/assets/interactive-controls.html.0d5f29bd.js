@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-70f2e067","path":"/guide/example/interactive-controls.html","title":"Interactive control","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/interactive-controls.md"}');export{e as data};

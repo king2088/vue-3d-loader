@@ -1,1 +1,0 @@
-const a=JSON.parse('{"key":"v-a2973abc","path":"/guide/example/play-animations.html","title":"Play/stop animation","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null,"contributors":[]},"filePathRelative":"guide/example/play-animations.md"}');export{a as data};
