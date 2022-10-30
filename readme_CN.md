@@ -8,7 +8,9 @@ vueJS + threeJS整合的一个3d展示组件。
 
 [English](./readme.md)
 
-[点击查看演示](https://king2088.github.io/vue-3d-loader/examples-demo/index.html)
+Api 文档：<https://king2088.github.io/vue-3d-loader-docs/zh/>
+
+演示：<https://king2088.github.io/vue-3d-loader/examples-demo/index.html>
 
 演示动画
 

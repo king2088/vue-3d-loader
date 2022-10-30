@@ -8,7 +8,9 @@ support .dae/.fbx/.gltf/.glb/.obj/.ply/.stl/.json models, and support the same s
 
 [简体中文](./readme_CN.md)
 
-[Click here view demo page](https://king2088.github.io/vue-3d-loader/examples-demo/index.html)
+Api document：<https://king2088.github.io/vue-3d-loader-docs/zh/>
+
+Demo ：<https://king2088.github.io/vue-3d-loader/examples-demo/index.html>
 
 demo gif
 
