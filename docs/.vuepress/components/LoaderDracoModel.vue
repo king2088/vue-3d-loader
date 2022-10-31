@@ -6,7 +6,7 @@
     outputEncoding="sRGB"
     :height="350"
     backgroundColor="#F2F2F2"
-    dracoDir="/assets/draco/gltf/"
+    dracoDir="/vue-3d-loader-docs/assets/draco/gltf/"
   />
 </template>
 <script lang="ts" setup>
