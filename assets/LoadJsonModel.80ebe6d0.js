@@ -1,0 +1,1 @@
+import{v as o}from"./vue-3d-loader.esm.ebbb1d24.js";import{f as e,o as a,q as s,h as n,_ as r}from"../app.5f40bd4d.mjs";const t=e({__name:"LoadJsonModel",setup(d){return(_,c)=>(a(),s(n(o),{filePath:"/vue-3d-loader-docs/models/json/lightmap.json",height:350,backgroundColor:"#F2F2F2"}))}}),p=r(t,[["__file","LoadJsonModel.vue"]]);export{p as default};
