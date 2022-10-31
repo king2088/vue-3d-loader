@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <div class="content">
       <div class="text">This text is on the back of the model</div>
       <div class="model">
@@ -19,6 +19,10 @@
 import { vue3dLoader } from "vue-3d-loader";
 </script>
 <style>
+.bg {
+  width: 600px;
+  margin: 0 auto;
+}
 .content {
   position: relative;
   height: 600px;
