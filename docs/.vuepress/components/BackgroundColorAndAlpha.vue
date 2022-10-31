@@ -1,15 +1,17 @@
 <template>
-  <div class="content">
-    <div class="text">This text is on the back of the model</div>
-    <div class="model">
-      <vue3dLoader
-        filePath="/vue-3d-loader-docs/models/gltf/DamagedHelmet.gltf"
-        :backgroundColor="'#00ffff'"
-        :backgroundAlpha="0.5"
-        :height="600"
-        :width="600"
-        outputEncoding="sRGB"
-      />
+  <div>
+    <div class="content">
+      <div class="text">This text is on the back of the model</div>
+      <div class="model">
+        <vue3dLoader
+          filePath="/vue-3d-loader-docs/models/gltf/DamagedHelmet.gltf"
+          :backgroundColor="'#00ffff'"
+          :backgroundAlpha="0.5"
+          :height="600"
+          :width="600"
+          outputEncoding="sRGB"
+        />
+      </div>
     </div>
   </div>
 </template>
