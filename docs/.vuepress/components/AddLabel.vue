@@ -15,13 +15,13 @@ const labels = ref();
 labels.value = [
   // image label
   {
-    image: "../../assets/label1.png",
+    image: "/vue-3d-loader-docs/assets/label1.png",
     position: { x: -0.5, y: 1, z: 0 },
     scale: { x: 0.6, y: 0.6, z: 0.6 },
     sid: 1, // custom id
   },
   {
-    image: "../../assets/label2.png",
+    image: "/vue-3d-loader-docs/assets/label2.png",
     position: { x: 0.5, y: 1.2, z: 0 },
     scale: { x: 1, y: 1, z: 1 },
     sid: 2,
