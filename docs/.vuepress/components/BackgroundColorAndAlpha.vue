@@ -20,7 +20,7 @@ import { vue3dLoader } from "vue-3d-loader";
 </script>
 <style>
 .bg {
-  width: 600px;
+  height: 600px;
   margin: 0 auto;
 }
 .content {
