@@ -9,6 +9,7 @@ export const sidebarZh: SidebarConfig = {
         '/zh/guide/getting-started.md',
         '/zh/guide/event.md',
         '/zh/guide/api.md',
+        '/zh/guide/pay.md'
       ],
     },
     {

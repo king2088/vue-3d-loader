@@ -9,6 +9,7 @@ export const sidebarEn: SidebarConfig = {
         '/guide/getting-started.md',
         '/guide/event.md',
         '/guide/api.md',
+        '/guide/pay.md'
       ],
     },
     {
