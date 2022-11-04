@@ -840,6 +840,12 @@ Need to download Draco repository storage with local static folder of your proje
 
 [issues](https://github.com/king2088/vue-3d-loader/issues)
 
+### Donate
+
+![wxPay](/images/wxpay.png)
+
+![aliPay](/images/alipay.png)
+
 ### Thanks
 
 This plugin is inseparable from [vue-3d-model](https://github.com/hujiulong/vue-3d-model)

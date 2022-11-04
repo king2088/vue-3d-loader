@@ -833,6 +833,12 @@ function change(event: any, type: string) {
 
 [issues](https://github.com/king2088/vue-3d-loader/issues)
 
+### 捐助
+
+![微信支付](/images/wxpay.png)
+
+![支付宝支付](/images/alipay.png)
+
 ### 感谢
 
 本插件参考[vue-3d-model](https://github.com/hujiulong/vue-3d-model)实现
