@@ -825,6 +825,13 @@ function change(event: any, type: string) {
 
 [点我查看更多演示代码](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 
+### Docker部署examples
+```shell
+  docker build -t vue/vue-3d-loader .
+  # 运行docker
+  docker run -p 8010:80 vue/vue-3d-loader
+```
+
 ### 即将到来
 
 - [x] 支持Vue3
