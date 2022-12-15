@@ -832,6 +832,13 @@ Need to download Draco repository storage with local static folder of your proje
 
 [Click here to see more demo code](https://github.com/king2088/vue-3d-loader/tree/master/src/examples)
 
+### Docker deploy examples
+```shell
+  docker build -t vue/vue-3d-loader .
+  # docker run
+  docker run -p 8010:80 vue/vue-3d-loader
+```
+
 ### Coming soon
 
 - [x] Supports Vue3

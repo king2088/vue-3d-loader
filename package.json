@@ -10,6 +10,7 @@
     "build": "vue-tsc --noEmit && vite build && npm run build:types",
     "build:types": "node scripts/build-types.js",
     "build:example": "vue-tsc --noEmit && vite build --mode examples",
+    "build:docker": "vue-tsc --noEmit && vite build --mode docker",
     "preview": "vite preview"
   },
   "dependencies": {
