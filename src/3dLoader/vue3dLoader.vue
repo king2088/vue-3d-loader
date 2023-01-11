@@ -25,6 +25,7 @@ import {
   Sprite,
   SpriteMaterial,
   sRGBEncoding,
+  Group
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -255,6 +256,13 @@ export default {
       this.size.height = val;
       this.updateRenderer();
     },
+    labels: {
+      deep: true,
+      handler() {
+        this.clearSprite();
+        this.setSpriteLabel();
+      }
+    }
   },
   methods: {
     init() {
@@ -890,6 +898,14 @@ export default {
         }
         obj.add(sprite);
       });
+    },
+    clearSprite() {
+      this.wrapper.children.forEach((item) => {
+        if(item instanceof Group) {
+          const notSpriteItem = item.children.filter(i => !(i instanceof Sprite) ? i : null)
+          item.children = notSpriteItem
+        }
+      })
     },
     generateCanvas(text, style) {
       if (style === undefined) style = {};
