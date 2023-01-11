@@ -256,6 +256,7 @@ declare const _default: {
         getAllObject: () => any;
         setLabel: () => void;
         setSpriteLabel: () => void;
+        clearSprite: () => void;
         generateCanvas: (text: string, style: any) => HTMLCanvasElement;
         getObjectIndex: (object: any) => any;
         playAnimations: () => void;
