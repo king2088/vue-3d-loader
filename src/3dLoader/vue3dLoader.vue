@@ -223,6 +223,14 @@ watch(
   },
   { deep: true }
 );
+watch(
+  [() => props.labels],
+  () => {
+    clearSprite();
+    setSpriteLabel();
+  },
+  { deep: true }
+);
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
@@ -833,6 +841,14 @@ function setSpriteLabel() {
     }
     obj.add(sprite);
   });
+}
+function clearSprite() {
+  wrapper.children.forEach((item) => {
+    if(item instanceof Group) {
+      const notSpriteItem:any = item.children.filter(i => !(i instanceof Sprite) ? i : null)
+      item.children = notSpriteItem
+    }
+  })
 }
 function generateCanvas(text: string, style: any) {
   const roundRect = (
