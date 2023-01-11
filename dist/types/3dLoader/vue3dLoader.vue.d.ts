@@ -258,6 +258,7 @@ declare const _default: import("vue").DefineComponent<{
     getAllObject: () => any;
     setLabel: () => void;
     setSpriteLabel: () => void;
+    clearSprite: () => void;
     generateCanvas: (text: string, style: any) => HTMLCanvasElement;
     getObjectIndex: (object: any) => any;
     playAnimations: () => void;
