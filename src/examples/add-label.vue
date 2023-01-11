@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="add-label-page">
     <div class="top">
       <button @click="changeLabelPosition">Change label position</button>
       <button @click="changeTextLabelName">Change text label name</button>
@@ -54,24 +54,29 @@ export default {
   },
   methods: {
     changeLabelPosition() {
-      this.labels.value[0].position = { x: -0.2, y: 2, z: 1 };
+      this.labels[0].position = { x: -0.2, y: 2, z: 1 };
     },
     changeTextLabelName() {
-      this.labels.value[2].text = "My name is change";
+      this.labels[2].text = "My name is change";
     },
     resetLabels() {
-      this.labels.value[0].position = { x: -0.5, y: 1, z: 0 };
-      this.labels.value[2].text = "I'm Text Label";
+      this.labels[0].position = { x: -0.5, y: 1, z: 0 };
+      this.labels[2].text = "I'm Text Label";
     },
   },
 };
 </script>
 <style>
+  .add-label-page{
+    width: 100%;
+    height: 100%;
+  }
   .top {
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 100;
   }
   .top button {
     margin: 0 2px;
