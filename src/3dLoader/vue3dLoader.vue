@@ -25,7 +25,7 @@ import {
   Sprite,
   SpriteMaterial,
   sRGBEncoding,
-  Group
+  Group,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -261,8 +261,8 @@ export default {
       handler() {
         this.clearSprite();
         this.setSpriteLabel();
-      }
-    }
+      },
+    },
   },
   methods: {
     init() {
@@ -841,7 +841,7 @@ export default {
     },
     setLabel() {
       if (this.isMultipleModels) {
-        if (this.loaderIndex === this.filePath.length) {
+        if (this.loaderIndex === this.filePath.length - 1) {
           this.setSpriteLabel();
         }
       } else {
@@ -901,11 +901,13 @@ export default {
     },
     clearSprite() {
       this.wrapper.children.forEach((item) => {
-        if(item instanceof Group) {
-          const notSpriteItem = item.children.filter(i => !(i instanceof Sprite) ? i : null)
-          item.children = notSpriteItem
+        if (item instanceof Group) {
+          const notSpriteItem = item.children.filter((i) =>
+            !(i instanceof Sprite) ? i : null
+          );
+          item.children = notSpriteItem;
         }
-      })
+      });
     },
     generateCanvas(text, style) {
       if (style === undefined) style = {};
