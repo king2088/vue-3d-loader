@@ -1830,7 +1830,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=e12d5c7c&
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=f75d4aac&
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -19440,7 +19440,7 @@ function enableDraco(isDraco, obj, dir = '') {
     },
     setLabel() {
       if (this.isMultipleModels) {
-        if (this.loaderIndex === this.filePath.length) {
+        if (this.loaderIndex === this.filePath.length - 1) {
           this.setSpriteLabel();
         }
       } else {
@@ -19585,10 +19585,10 @@ function enableDraco(isDraco, obj, dir = '') {
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=e12d5c7c&prod&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=f75d4aac&prod&lang=css&
 // extracted by mini-css-extract-plugin
 
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=e12d5c7c&prod&lang=css&
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=f75d4aac&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
