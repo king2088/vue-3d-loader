@@ -50,26 +50,26 @@ labels.value = [
 ];
 
 function changeLabelPosition() {
-  labels.value[0].position = { x: -0.2, y: 2, z: 1 }
+  labels.value[0].position = { x: -0.2, y: 2, z: 1 };
 }
 
 function changeTextLabelName() {
-  labels.value[2].text = "My name is change"
+  labels.value[2].text = "My name is change";
 }
 
 function resetLabels() {
-  labels.value[0].position = { x: -0.5, y: 1, z: 0 }
-  labels.value[2].text = "I'm Text Label"
+  labels.value[0].position = { x: -0.5, y: 1, z: 0 };
+  labels.value[2].text = "I'm Text Label";
 }
 </script>
 <style>
-.top{
+.top {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
 }
-.top button{
+.top button {
   margin: 0 2px;
 }
 </style>
