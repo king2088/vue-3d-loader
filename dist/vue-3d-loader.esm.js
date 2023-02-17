@@ -41894,7 +41894,7 @@ const _sfc_main = defineComponent({
     function setLabel() {
       const { filePath } = props;
       if (isMultipleModels.value) {
-        if (loaderIndex.value === filePath.length) {
+        if (loaderIndex.value === filePath.length - 1) {
           setSpriteLabel();
         }
       } else {
@@ -41943,7 +41943,9 @@ const _sfc_main = defineComponent({
     function clearSprite() {
       wrapper.children.forEach((item) => {
         if (item instanceof Group) {
-          const notSpriteItem = item.children.filter((i) => !(i instanceof Sprite) ? i : null);
+          const notSpriteItem = item.children.filter(
+            (i) => !(i instanceof Sprite) ? i : null
+          );
           item.children = notSpriteItem;
         }
       });
@@ -42066,7 +42068,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-77e85614"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-1e34d707"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
