@@ -28,8 +28,6 @@ import {
   WebGLRendererParameters,
   AnimationClip,
   Light,
-  Mesh,
-  AnimationObjectGroup,
   Group,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -791,7 +789,7 @@ function getAllObject() {
 function setLabel() {
   const { filePath } = props;
   if (isMultipleModels.value) {
-    if (loaderIndex.value === filePath.length) {
+    if (loaderIndex.value === filePath.length - 1) {
       setSpriteLabel();
     }
   } else {
@@ -844,11 +842,13 @@ function setSpriteLabel() {
 }
 function clearSprite() {
   wrapper.children.forEach((item) => {
-    if(item instanceof Group) {
-      const notSpriteItem:any = item.children.filter(i => !(i instanceof Sprite) ? i : null)
-      item.children = notSpriteItem
+    if (item instanceof Group) {
+      const notSpriteItem: any = item.children.filter((i) =>
+        !(i instanceof Sprite) ? i : null
+      );
+      item.children = notSpriteItem;
     }
-  })
+  });
 }
 function generateCanvas(text: string, style: any) {
   const roundRect = (
