@@ -597,6 +597,30 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   The damping inertia used if enableDamping is set to true. [dampingFactor](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.dampingFactor)
   </td>
 </tr>
+<tr>
+  <td>
+  verticalCtrl
+  </td>
+  <td>boolean | object</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  true，only enable vertical rotation of the camera
+  </td>
+</tr>
+<tr>
+  <td>
+  horizontalCtrl
+  </td>
+  <td>boolean | object</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  true，only enable horizontal rotation of the camera
+  </td>
+</tr>
 </table>
 
 ### Events
