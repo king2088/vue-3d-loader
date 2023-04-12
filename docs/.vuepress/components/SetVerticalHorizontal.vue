@@ -3,11 +3,11 @@
     <div class="buttons">
       <!-- 开启水平旋转 -->
       <button @click="setHorizontal()">
-        Only {{ horizontalCtrl ? "disable" : "enable" }} horizontal
+        Only enable horizontal
       </button>
       <!-- 开启垂直旋转 -->
       <button @click="setVertical()">
-        Only {{ verticalCtrl ? "disable" : "enable" }} vertical
+        Only enable vertical
       </button>
       <!-- 设置水平旋转最大/小角度 -->
       <button @click="setHorizontal('range')">
@@ -20,14 +20,16 @@
     </div>
     <vue3dLoader
       v-if="!refersh"
-      filePath="/models/collada/stormtrooper/stormtrooper.dae"
+      filePath="/vue-3d-loader-docs/models/collada/stormtrooper/stormtrooper.dae"
       :scale="{ x: 0.1, y: 0.1, z: 0.1 }"
       :verticalCtrl="verticalCtrl"
       :horizontalCtrl="horizontalCtrl"
+      :height="500"
     />
   </div>
 </template>
 <script lang="ts" setup>
+import { vue3dLoader } from "vue-3d-loader";
 import { nextTick, ref } from "vue";
 const verticalCtrl: any = ref(false);
 const horizontalCtrl: any = ref(false);
@@ -50,8 +52,9 @@ function setHorizontal(type?: string) {
   if (type === "range") {
     // set horizontal angle range
     horizontalCtrl.value = { min: 1, max: 2 };
-  } else {
+  } else {    
     horizontalCtrl.value = true;
+    console.log(horizontalCtrl.value);
     // verticalCtrl.value = { min: -Math.PI, max: Math.PI };
   }
   refersh3d();
