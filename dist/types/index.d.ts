@@ -163,6 +163,16 @@ declare const _default: {
             type: NumberConstructor;
             required: false;
         };
+        verticalCtrl: {
+            type: (ObjectConstructor | BooleanConstructor)[];
+            required: false;
+            default: boolean;
+        };
+        horizontalCtrl: {
+            type: (ObjectConstructor | BooleanConstructor)[];
+            required: false;
+            default: boolean;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -196,6 +206,8 @@ declare const _default: {
             intersectRecursive: boolean;
             enableDamping?: boolean | undefined;
             dampingFactor?: number | undefined;
+            verticalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
+            horizontalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -262,6 +274,7 @@ declare const _default: {
         playAnimations: () => void;
         playSingleModel: (item: Three.Object3D<Three.Event>) => void;
         playMultipleModels: (obj: Three.Object3D<Three.Event>) => void;
+        setVerticalHorizontalControls: () => void;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];
@@ -421,6 +434,16 @@ declare const _default: {
             type: NumberConstructor;
             required: false;
         };
+        verticalCtrl: {
+            type: (ObjectConstructor | BooleanConstructor)[];
+            required: false;
+            default: boolean;
+        };
+        horizontalCtrl: {
+            type: (ObjectConstructor | BooleanConstructor)[];
+            required: false;
+            default: boolean;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -448,6 +471,8 @@ declare const _default: {
         enableDraco: boolean;
         intersectRecursive: boolean;
         enableDamping: boolean;
+        verticalCtrl: boolean | Record<string, any>;
+        horizontalCtrl: boolean | Record<string, any>;
     }>;
 };
 export default _default;
