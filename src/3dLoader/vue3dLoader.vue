@@ -48,6 +48,12 @@ export interface coordinates {
   y: number;
   z: number;
 }
+
+export interface controlsValue {
+  min: number;
+  max: number;
+}
+
 type encode = "linear" | "sRGB";
 interface Props {
   filePath: string | string[];
@@ -82,6 +88,8 @@ interface Props {
   intersectRecursive?: boolean;
   enableDamping?: boolean;
   dampingFactor?: number;
+  verticalCtrl?: boolean | controlsValue;
+  horizontalCtrl?: boolean | controlsValue;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -126,6 +134,8 @@ const props = withDefaults(defineProps<Props>(), {
   autoPlay: true,
   enableDraco: false,
   intersectRecursive: false,
+  verticalCtrl: false,
+  horizontalCtrl: false,
 });
 
 // Non responsive variable
@@ -153,7 +163,14 @@ const isMultipleModels = ref(false);
 const containerElement = ref(null);
 const canvasElement = ref(null);
 
-// no deep watch
+onMounted(() => {
+  init();
+});
+
+onBeforeUnmount(() => {
+  destroyScene();
+});
+
 watch(
   [
     () => props.filePath,
@@ -199,6 +216,7 @@ watch(
   },
   { deep: true }
 );
+
 watch(
   [() => size],
   () => {
@@ -207,6 +225,7 @@ watch(
   },
   { deep: true }
 );
+
 watch(
   [() => props.controlsOptions],
   () => {
@@ -214,6 +233,7 @@ watch(
   },
   { deep: true }
 );
+
 watch(
   [() => props.cameraRotation, () => props.cameraPosition],
   () => {
@@ -221,6 +241,7 @@ watch(
   },
   { deep: true }
 );
+
 watch(
   [() => props.labels],
   () => {
@@ -229,15 +250,18 @@ watch(
   },
   { deep: true }
 );
+
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
+
 watch([() => props.width, () => props.height], () => {
   size.value = {
     width: props.width || 0,
     height: props.height || 0,
   };
 });
+
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -249,14 +273,6 @@ const emit = defineEmits([
   "process",
   "error",
 ]);
-
-onMounted(() => {
-  init();
-});
-
-onBeforeUnmount(() => {
-  destroyScene();
-});
 
 // Dynamic reload filePath
 function resetScene() {
@@ -332,6 +348,7 @@ function init() {
       }
     }
   }
+  setVerticalHorizontalControls();
 
   wrapper = new Object3D();
   scene.add(wrapper);
@@ -715,6 +732,9 @@ function animate() {
       m.update(delta);
     });
   }
+  if (controls) {
+    controls.update();
+  }
   render();
 }
 function render() {
@@ -971,6 +991,33 @@ function playMultipleModels(obj: Object3D) {
       });
     }
   });
+}
+// set vertical horizontal controls
+function setVerticalHorizontalControls() {
+  if (!controls) {
+    return;
+  }
+  const { verticalCtrl, horizontalCtrl } = props;
+  // set vertical
+  if (verticalCtrl && typeof verticalCtrl === "boolean") {
+    controls.minAzimuthAngle = -2 * Math.PI;
+    controls.maxAzimuthAngle = -2 * Math.PI;
+  }
+  if (verticalCtrl && typeof verticalCtrl === "object") {
+    // min/max azimuth angle value range [-2 * Math.PI，2 * Math.PI]
+    controls.minAzimuthAngle = verticalCtrl.min;
+    controls.maxAzimuthAngle = verticalCtrl.max;
+  }
+  // set horizontal
+  if (horizontalCtrl && typeof horizontalCtrl === "boolean") {
+    controls.minPolarAngle = 1;
+    controls.maxPolarAngle = 1;
+  }
+  if (horizontalCtrl && typeof horizontalCtrl === "object") {
+    // min/max azimuth angle value range [0，Math.PI]
+    controls.minPolarAngle = horizontalCtrl.min;
+    controls.maxPolarAngle = horizontalCtrl.max;
+  }
 }
 </script>
 <style scoped>

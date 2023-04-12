@@ -597,6 +597,30 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   enableDamping必须为true，此选项才有效。[dampingFactor](https://threejs.org/docs/index.html#examples/zh/controls/OrbitControls.dampingFactor)用于设置阻尼惯性大小。
   </td>
 </tr>
+<tr>
+  <td>
+  verticalCtrl
+  </td>
+  <td>boolean | object</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  为true，仅能垂直旋转相机。
+  </td>
+</tr>
+<tr>
+  <td>
+  horizontalCtrl
+  </td>
+  <td>boolean | object</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  为true，仅能水平旋转相机。
+  </td>
+</tr>
 </table>
 
 ### 事件
