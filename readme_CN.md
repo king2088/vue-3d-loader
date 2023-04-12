@@ -104,6 +104,8 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 | enableDraco | boolean | false | 加载Gltf draco模型需开启draco解密，开启后需要[下载draco解密库](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z)放到默认目录assets中，默认目录为assets/draco/gltf/，如需修改默认目录，请查看参数dracoDir。[关于draco请查阅](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
 | dracoDir | string | assets/draco/gltf/ | draco解密库默认目录，可自行修改|
 | intersectRecursive | boolean | false | 若为true，则同时也会检测所有物体的后代。否则将只会检测对象本身的相交部分，用于鼠标事件获取模型对象。 |
+|   verticalCtrl | boolean | object |为true，仅能垂直旋转相机。|
+|   horizontalCtrl | boolean | object |为true，仅能水平旋转相机。|
 
 ### 事件
 

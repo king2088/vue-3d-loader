@@ -137,6 +137,14 @@ export default {
         return false;
       },
     },
+    verticalCtrl: {
+      type: [Boolean, Object],
+      default: false
+    },
+    horizontalCtrl: {
+      type: [Boolean, Object],
+      default: false
+    }
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -293,6 +301,7 @@ export default {
       if (!this.controls) {
         this.controls = new OrbitControls(this.camera, el);
       }
+      this.setVerticalHorizontalControls();
 
       this.wrapper = new Object3D();
       this.scene.add(this.wrapper);
@@ -752,6 +761,9 @@ export default {
           m.update(delta);
         });
       }
+      if (this.controls) {
+        this.controls.update();
+      }
       this.render();
     },
     render() {
@@ -1008,6 +1020,32 @@ export default {
         }
       });
     },
+    // set vertical horizontal controls
+    setVerticalHorizontalControls() {
+      if (!this.controls) {
+        return;
+      }
+      // set vertical
+      if (this.verticalCtrl && typeof this.verticalCtrl === "boolean") {
+        this.controls.minAzimuthAngle = -2 * Math.PI;
+        this.controls.maxAzimuthAngle = -2 * Math.PI;
+      }
+      if (this.verticalCtrl && typeof this.verticalCtrl === "object") {
+        // min/max azimuth angle value range [-2 * Math.PI，2 * Math.PI]
+        this.controls.minAzimuthAngle = this.verticalCtrl.min;
+        this.controls.maxAzimuthAngle = this.verticalCtrl.max;
+      }
+      // set horizontal
+      if (this.horizontalCtrl && typeof this.horizontalCtrl === "boolean") {
+        this.controls.minPolarAngle = 1;
+        this.controls.maxPolarAngle = 1;
+      }
+      if (this.horizontalCtrl && typeof this.horizontalCtrl === "object") {
+        // min/max azimuth angle value range [0，Math.PI]
+        this.controls.minPolarAngle = this.horizontalCtrl.min;
+        this.controls.maxPolarAngle = this.horizontalCtrl.max;
+      }
+    }
   },
 };
 </script>
