@@ -5,6 +5,10 @@ export interface coordinates {
     y: number;
     z: number;
 }
+export interface controlsValue {
+    min: number;
+    max: number;
+}
 declare type encode = "linear" | "sRGB";
 declare const _default: import("vue").DefineComponent<{
     filePath: {
@@ -165,6 +169,16 @@ declare const _default: import("vue").DefineComponent<{
         type: NumberConstructor;
         required: false;
     };
+    verticalCtrl: {
+        type: (ObjectConstructor | BooleanConstructor)[];
+        required: false;
+        default: boolean;
+    };
+    horizontalCtrl: {
+        type: (ObjectConstructor | BooleanConstructor)[];
+        required: false;
+        default: boolean;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -198,6 +212,8 @@ declare const _default: import("vue").DefineComponent<{
         intersectRecursive: boolean;
         enableDamping?: boolean | undefined;
         dampingFactor?: number | undefined;
+        verticalCtrl: boolean | controlsValue;
+        horizontalCtrl: boolean | controlsValue;
     };
     object: any;
     raycaster: Raycaster;
@@ -264,6 +280,7 @@ declare const _default: import("vue").DefineComponent<{
     playAnimations: () => void;
     playSingleModel: (item: Object3D) => void;
     playMultipleModels: (obj: Object3D) => void;
+    setVerticalHorizontalControls: () => void;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
@@ -423,6 +440,16 @@ declare const _default: import("vue").DefineComponent<{
         type: NumberConstructor;
         required: false;
     };
+    verticalCtrl: {
+        type: (ObjectConstructor | BooleanConstructor)[];
+        required: false;
+        default: boolean;
+    };
+    horizontalCtrl: {
+        type: (ObjectConstructor | BooleanConstructor)[];
+        required: false;
+        default: boolean;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -450,5 +477,7 @@ declare const _default: import("vue").DefineComponent<{
     enableDraco: boolean;
     intersectRecursive: boolean;
     enableDamping: boolean;
+    verticalCtrl: boolean | Record<string, any>;
+    horizontalCtrl: boolean | Record<string, any>;
 }>;
 export default _default;
