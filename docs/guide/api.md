@@ -576,3 +576,35 @@ The damping inertia used if enableDamping is set to true. [dampingFactor](https:
 ```vue
 <vue3dLoader :enableDamping="true" :dampingFactor="0.05" />
 ```
+
+## verticalCtrl
+
+| Type            | Default | Required |
+| ------- | ------ | -------- |
+| boolean \| object | false  | No       |
+
+1. Description
+
+If true，only enable vertical rotation of the camera
+
+2. Use
+
+```vue
+<vue3dLoader :verticalCtrl="true" />
+```
+
+## horizontalCtrl
+
+| Type            | Default | Required |
+| ------- | ------ | -------- |
+| boolean \| object | false  | No       |
+
+1. Description
+
+If true，only enable horizontal rotation of the camera
+
+2. Use
+
+```vue
+<vue3dLoader :horizontalCtrl="true" />
+```

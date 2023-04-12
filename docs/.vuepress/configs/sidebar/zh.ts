@@ -31,7 +31,8 @@ export const sidebarZh: SidebarConfig = {
         '/zh/guide/example/add-labels.md',
         '/zh/guide/example/play-animations.md',
         '/zh/guide/example/enable-damping.md',
-        '/zh/guide/example/progress-bar.md'
+        '/zh/guide/example/progress-bar.md',
+        '/zh/guide/example/set-vertical-horizontal.md'
       ],
     },
   ],

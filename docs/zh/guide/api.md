@@ -576,3 +576,35 @@ enableDamping必须为true，此选项才有效。[dampingFactor](https://threej
 ```vue
 <vue3dLoader :enableDamping="true" :dampingFactor="0.05" />
 ```
+
+## verticalCtrl
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| boolean \| object | false  | 否       |
+
+1. 描述
+
+verticalCtrl为true，仅能垂直旋转相机。
+
+2. 使用样例
+
+```vue
+<vue3dLoader :verticalCtrl="true" />
+```
+
+## horizontalCtrl
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| boolean \| object | false  | 否       |
+
+1. 描述
+
+horizontalCtrl为true，仅能水平旋转相机。
+
+2. 使用样例
+
+```vue
+<vue3dLoader :horizontalCtrl="true" />
+```
