@@ -608,3 +608,24 @@ horizontalCtrl为true，仅能水平旋转相机。
 ```vue
 <vue3dLoader :horizontalCtrl="true" />
 ```
+
+## plyMaterial
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| string | false  | 否       |
+
+1. 描述
+
+plyMaterial默认值为MeshStandardMaterial，用于ply模型材质修改，支持`MeshStandardMaterial` and `MeshBasicMaterial`两个值。  
+[MeshStandardMaterial 文档](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial)  
+[MeshBasicMaterial 文档](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial)。  
+
+2. 使用样例
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  plyMaterial="MeshStandardMaterial"
+/>
+```

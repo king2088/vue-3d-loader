@@ -608,3 +608,24 @@ If true，only enable horizontal rotation of the camera
 ```vue
 <vue3dLoader :horizontalCtrl="true" />
 ```
+
+## plyMaterial
+
+| Type   | Default | Required |
+| ------- | ------ | -------- |
+| string | false  | 否       |
+
+1. Description
+
+plyMaterial default value is `MeshStandardMaterial`, for ply model material，support `MeshStandardMaterial` and `MeshBasicMaterial`.  
+[MeshStandardMaterial doc](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial)  
+[MeshBasicMaterial doc](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial)。  
+
+2. Use
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  plyMaterial="MeshStandardMaterial"
+/>
+```
