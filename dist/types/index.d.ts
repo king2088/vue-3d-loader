@@ -173,6 +173,11 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        plyMaterial: {
+            type: StringConstructor;
+            required: false;
+            default: string;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -208,6 +213,7 @@ declare const _default: {
             dampingFactor?: number | undefined;
             verticalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
             horizontalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
+            plyMaterial: "MeshStandardMaterial" | "MeshBasicMaterial";
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -444,6 +450,11 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        plyMaterial: {
+            type: StringConstructor;
+            required: false;
+            default: string;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -473,6 +484,7 @@ declare const _default: {
         enableDamping: boolean;
         verticalCtrl: boolean | Record<string, any>;
         horizontalCtrl: boolean | Record<string, any>;
+        plyMaterial: string;
     }>;
 };
 export default _default;

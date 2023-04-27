@@ -9,6 +9,7 @@ export interface controlsValue {
     min: number;
     max: number;
 }
+declare type plyMaterial = 'MeshBasicMaterial' | 'MeshStandardMaterial';
 declare type encode = "linear" | "sRGB";
 declare const _default: import("vue").DefineComponent<{
     filePath: {
@@ -179,6 +180,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    plyMaterial: {
+        type: StringConstructor;
+        required: false;
+        default: string;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -214,6 +220,7 @@ declare const _default: import("vue").DefineComponent<{
         dampingFactor?: number | undefined;
         verticalCtrl: boolean | controlsValue;
         horizontalCtrl: boolean | controlsValue;
+        plyMaterial: plyMaterial;
     };
     object: any;
     raycaster: Raycaster;
@@ -450,6 +457,11 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    plyMaterial: {
+        type: StringConstructor;
+        required: false;
+        default: string;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -479,5 +491,6 @@ declare const _default: import("vue").DefineComponent<{
     enableDamping: boolean;
     verticalCtrl: boolean | Record<string, any>;
     horizontalCtrl: boolean | Record<string, any>;
+    plyMaterial: string;
 }>;
 export default _default;

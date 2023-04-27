@@ -40655,7 +40655,7 @@ function getExtension(str) {
     return extension;
   }
 }
-function getLoader(filePath, fileType, isDraco, dracoDir) {
+function getLoader(filePath, fileType, isDraco, plyMaterial, dracoDir) {
   let fileExtension;
   if (fileType) {
     fileExtension = fileType;
@@ -40706,7 +40706,7 @@ function getLoader(filePath, fileType, isDraco, dracoDir) {
         loader: new PLYLoader(manager),
         getObject: (geometry) => {
           geometry.computeVertexNormals();
-          return new Mesh(geometry, new MeshStandardMaterial());
+          return new Mesh(geometry, plyMaterial === "MeshStandardMaterial" ? new MeshStandardMaterial() : new MeshBasicMaterial({ vertexColors: true }));
         }
       };
       break;
@@ -40809,7 +40809,8 @@ const _sfc_main = defineComponent({
     enableDamping: { type: Boolean },
     dampingFactor: null,
     verticalCtrl: { type: [Boolean, Object], default: false },
-    horizontalCtrl: { type: [Boolean, Object], default: false }
+    horizontalCtrl: { type: [Boolean, Object], default: false },
+    plyMaterial: { default: "MeshStandardMaterial" }
   },
   emits: [
     "mousedown",
@@ -41181,14 +41182,15 @@ const _sfc_main = defineComponent({
         requestHeader,
         mtlPath,
         enableDraco: enableDraco2,
-        dracoDir
+        dracoDir,
+        plyMaterial
       } = props;
       if (!filePath)
         return;
       const index2 = fileIndex || loaderIndex.value;
       const filePathString = !isMultipleModels.value ? filePath : filePath[index2];
       const fileTypeString = typeof fileType === "string" ? fileType : fileType ? fileType[index2] : "";
-      const loaderObject3d = getLoader(filePathString, fileTypeString, enableDraco2, dracoDir);
+      const loaderObject3d = getLoader(filePathString, fileTypeString, enableDraco2, plyMaterial, dracoDir);
       loader = loaderObject3d.loader;
       const getObjectFun = loaderObject3d.getObject ? loaderObject3d.getObject : getObject;
       if (object && index2 === 0) {
@@ -41546,7 +41548,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-9cab67fa"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-481db234"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
