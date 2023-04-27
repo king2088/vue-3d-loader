@@ -1,4 +1,4 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshBasicMaterial, Object3D, ObjectLoader } from "three";
+import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial,MeshBasicMaterial, Object3D, ObjectLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -45,7 +45,7 @@ function getExtension(str: string) {
 }
 
 // auto select model loader
-function getLoader(filePath: string, fileType: string, isDraco: boolean, dracoDir?: string) {
+function getLoader(filePath: string, fileType: string, isDraco: boolean, plyMaterial: string, dracoDir?: string) {
   let fileExtension: string
   if (fileType) {
     // Custom file extension
@@ -100,7 +100,8 @@ function getLoader(filePath: string, fileType: string, isDraco: boolean, dracoDi
         loader: new PLYLoader(manager),
         getObject: (geometry: any) => { // geometry
           geometry.computeVertexNormals();
-          return new Mesh(geometry, new MeshBasicMaterial({ vertexColors: true }));
+          // Set ply model material
+          return new Mesh(geometry, plyMaterial === 'MeshStandardMaterial' ? new MeshStandardMaterial() : new MeshBasicMaterial({ vertexColors: true }));
         },
       };
       break;
