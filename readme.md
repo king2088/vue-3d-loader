@@ -106,6 +106,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 | intersectRecursive | boolean | false | If true, it also checks all descendants. Otherwise it only checks intersection with the object. |
 |   verticalCtrl | boolean | object |  true，only enable vertical rotation of the camera|
 |   horizontalCtrl | boolean | object |  true，only enable horizontal rotation of the camera|
+|plyMaterial|string|MeshStandardMaterial|Value only support `MeshStandardMaterial` and `MeshBasicMaterial`. For ply model. [MeshStandardMaterial doc](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial). [MeshBasicMaterial doc](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial).|
 
 ### Events
 

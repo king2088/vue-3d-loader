@@ -144,6 +144,10 @@ export default {
     horizontalCtrl: {
       type: [Boolean, Object],
       default: false
+    },
+    plyMaterial: {
+      type: String,
+      default: "MeshStandardMaterial"
     }
   },
   data() {
@@ -639,6 +643,7 @@ export default {
         _filePath,
         _fileType,
         this.enableDraco,
+        this.plyMaterial,
         this.dracoDir
       ); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
