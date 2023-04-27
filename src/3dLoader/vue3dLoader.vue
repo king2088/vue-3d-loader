@@ -54,6 +54,7 @@ export interface controlsValue {
   max: number;
 }
 
+type plyMaterial = 'MeshBasicMaterial' | 'MeshStandardMaterial';
 type encode = "linear" | "sRGB";
 interface Props {
   filePath: string | string[];
@@ -90,6 +91,7 @@ interface Props {
   dampingFactor?: number;
   verticalCtrl?: boolean | controlsValue;
   horizontalCtrl?: boolean | controlsValue;
+  plyMaterial?: plyMaterial;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -136,6 +138,7 @@ const props = withDefaults(defineProps<Props>(), {
   intersectRecursive: false,
   verticalCtrl: false,
   horizontalCtrl: false,
+  plyMaterial: 'MeshStandardMaterial',
 });
 
 // Non responsive variable
@@ -602,6 +605,7 @@ function load(fileIndex?: number) {
     mtlPath,
     enableDraco,
     dracoDir,
+    plyMaterial
   } = props;
   if (!filePath) return;
   const index = fileIndex || loaderIndex.value;
@@ -615,6 +619,7 @@ function load(fileIndex?: number) {
     filePathString,
     fileTypeString,
     enableDraco,
+    plyMaterial,
     dracoDir
   ); // {loader, getObject, mtlLoader}
   loader = loaderObject3d.loader;

@@ -621,6 +621,18 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   true，only enable horizontal rotation of the camera
   </td>
 </tr>
+<tr>
+  <td>
+  plyMaterial
+  </td>
+  <td>string</td>
+  <td>MeshStandardMaterial</td>
+  <td>-</td>
+  <td>
+
+  Value only support `MeshStandardMaterial` and `MeshBasicMaterial`. For ply model. [MeshStandardMaterial doc](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial).[MeshBasicMaterial doc](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial).
+  </td>
+</tr>
 </table>
 
 ### Events

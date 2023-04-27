@@ -6,6 +6,7 @@
     filePath="/models/ply/Lucy100k.ply"
     @mousemove="onMouseMove"
     :cameraPosition="{ x: 0, y: 0, z: -2500 }"
+    plyMaterial="MeshStandardMaterial"
   />
 </template>
 <script setup lang="ts">

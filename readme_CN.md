@@ -621,6 +621,18 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   为true，仅能水平旋转相机。
   </td>
 </tr>
+<tr>
+  <td>
+  plyMaterial
+  </td>
+  <td>string</td>
+  <td>MeshStandardMaterial</td>
+  <td>-</td>
+  <td>
+
+  值仅有两个 `MeshStandardMaterial` 和 `MeshBasicMaterial`. 用于ply模型. [MeshStandardMaterial相关文档](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial).[MeshBasicMaterial相关文档](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial)
+  </td>
+</tr>
 </table>
 
 ### 事件
