@@ -1,4 +1,4 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, ObjectLoader } from "three";
+import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshBasicMaterial, Object3D, ObjectLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -100,7 +100,7 @@ function getLoader(filePath: string, fileType: string, isDraco: boolean, dracoDi
         loader: new PLYLoader(manager),
         getObject: (geometry: any) => { // geometry
           geometry.computeVertexNormals();
-          return new Mesh(geometry, new MeshStandardMaterial());
+          return new Mesh(geometry, new MeshBasicMaterial({ vertexColors: true }));
         },
       };
       break;
