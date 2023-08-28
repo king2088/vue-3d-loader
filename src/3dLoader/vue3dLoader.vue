@@ -26,6 +26,8 @@ import {
   SpriteMaterial,
   sRGBEncoding,
   Group,
+  AxesHelper,
+  GridHelper
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -148,7 +150,19 @@ export default {
     plyMaterial: {
       type: String,
       default: "MeshStandardMaterial"
-    }
+    },
+    enableAxesHelper: { 
+      type: Boolean, 
+      default: false
+    },
+    axesHelperSize: { 
+      type: Number, 
+      default: 100
+    },
+    enableGridHelper: { 
+      type: Boolean, 
+      default: false
+    },
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -309,6 +323,18 @@ export default {
 
       this.wrapper = new Object3D();
       this.scene.add(this.wrapper);
+
+      if (this.enableAxesHelper) {
+        // add axes
+        var axes = new AxesHelper(this.axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
+        this.scene.add(axes);
+      }
+
+      if (this.enableGridHelper) {
+        // add grid
+        var grid = new GridHelper(2000, 100);
+        this.scene.add(grid);
+      }
 
       this.loadModelSelect();
       this.update();

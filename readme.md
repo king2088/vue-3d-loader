@@ -104,10 +104,12 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 | enableDraco | boolean | false | Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to [download Draco decryption library](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z) and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use dracoDir parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader) |
 | dracoDir | string | assets/draco/gltf/ | Draco decryption library default directory, you can modified it. |
 | intersectRecursive | boolean | false | If true, it also checks all descendants. Otherwise it only checks intersection with the object. |
-|   verticalCtrl | boolean | object |  true，only enable vertical rotation of the camera|
-|   horizontalCtrl | boolean | object |  true，only enable horizontal rotation of the camera|
+|   verticalCtrl | boolean \| object| false |  true，only enable vertical rotation of the camera|
+|   horizontalCtrl | boolean \| object| false |  true，only enable horizontal rotation of the camera|
 |plyMaterial|string|MeshStandardMaterial|Value only support `MeshStandardMaterial` and `MeshBasicMaterial`. For ply model. [MeshStandardMaterial doc](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial). [MeshBasicMaterial doc](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial).|
-
+|   enableAxesHelper | boolean | false |  Enable axes |
+|   axesHelperSize | number | 100 |  Axes size |
+|   enableGridHelper | boolean | false |  Enable grid |
 ### Events
 
 | event                        | description                                                          |

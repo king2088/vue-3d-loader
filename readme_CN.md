@@ -107,6 +107,9 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 |   verticalCtrl | boolean \| object |false|为true，仅能垂直旋转相机。|
 |   horizontalCtrl | boolean \| object |false|为true，仅能水平旋转相机。|
 |plyMaterial|string|MeshStandardMaterial|值仅有两个 `MeshStandardMaterial` 和 `MeshBasicMaterial`。用于ply模型. [MeshStandardMaterial相关文档](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial)。[MeshBasicMaterial相关文档](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial)|
+|   enableAxesHelper | boolean | false |  开启或显示x,y,z轴 |
+|   axesHelperSize | number | 100 |  x,y,z轴尺寸长度 |
+|   enableGridHelper | boolean | false |  开启或显示网格 |
 
 ### 事件
 
