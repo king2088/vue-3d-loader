@@ -633,6 +633,42 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   值仅有两个 `MeshStandardMaterial` 和 `MeshBasicMaterial`. 用于ply模型. [MeshStandardMaterial相关文档](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial).[MeshBasicMaterial相关文档](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial)
   </td>
 </tr>
+<tr>
+  <td>
+  enableAxesHelper
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  开启并在场景中显示x,y,z轴
+  </td>
+</tr>
+<tr>
+  <td>
+  axesHelperSize
+  </td>
+  <td>number</td>
+  <td>100</td>
+  <td>-</td>
+  <td>
+
+  x,y,z轴的尺寸
+  </td>
+</tr>
+<tr>
+  <td>
+  enableGridHelper
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  开启并在场景中显示网格
+  </td>
+</tr>
 </table>
 
 ### 事件

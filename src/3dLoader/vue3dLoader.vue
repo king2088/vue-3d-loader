@@ -29,6 +29,8 @@ import {
   AnimationClip,
   Light,
   Group,
+  AxesHelper,
+  GridHelper
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -92,6 +94,9 @@ interface Props {
   verticalCtrl?: boolean | controlsValue;
   horizontalCtrl?: boolean | controlsValue;
   plyMaterial?: plyMaterial;
+  enableAxesHelper?: boolean;
+  axesHelperSize?: number;
+  enableGridHelper?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -139,6 +144,9 @@ const props = withDefaults(defineProps<Props>(), {
   verticalCtrl: false,
   horizontalCtrl: false,
   plyMaterial: 'MeshStandardMaterial',
+  enableAxesHelper: false,
+  axesHelperSize: 100,
+  enableGridHelper: false
 });
 
 // Non responsive variable
@@ -316,6 +324,9 @@ function init() {
     showFps,
     enableDamping,
     dampingFactor,
+    enableAxesHelper,
+    axesHelperSize,
+    enableGridHelper
   } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
@@ -356,6 +367,18 @@ function init() {
   wrapper = new Object3D();
   scene.add(wrapper);
 
+  if (enableAxesHelper) {
+    // add axes
+    var axes = new AxesHelper(axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
+    scene.add(axes);
+  }
+
+  if (enableGridHelper) {
+    // add grid
+    var grid = new GridHelper(2000, 100);
+    scene.add(grid);
+  }
+  
   loadModelSelect();
   update();
   // enable mouse move

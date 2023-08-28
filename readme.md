@@ -633,6 +633,42 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   Value only support `MeshStandardMaterial` and `MeshBasicMaterial`. For ply model. [MeshStandardMaterial doc](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial).[MeshBasicMaterial doc](https://threejs.org/docs/?q=MeshBasicMaterial#api/en/materials/MeshBasicMaterial).
   </td>
 </tr>
+<tr>
+  <td>
+  enableAxesHelper
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Enable or show axes
+  </td>
+</tr>
+<tr>
+  <td>
+  axesHelperSize
+  </td>
+  <td>number</td>
+  <td>100</td>
+  <td>-</td>
+  <td>
+
+  Axes size
+  </td>
+</tr>
+<tr>
+  <td>
+  enableGridHelper
+  </td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Enable or show grid
+  </td>
+</tr>
 </table>
 
 ### Events
