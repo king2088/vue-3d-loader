@@ -178,6 +178,21 @@ declare const _default: {
             required: false;
             default: string;
         };
+        enableAxesHelper: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
+        axesHelperSize: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
+        enableGridHelper: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -214,6 +229,9 @@ declare const _default: {
             verticalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
             horizontalCtrl: boolean | import("./3dLoader/vue3dLoader.vue").controlsValue;
             plyMaterial: "MeshStandardMaterial" | "MeshBasicMaterial";
+            enableAxesHelper: boolean;
+            axesHelperSize: number;
+            enableGridHelper: boolean;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -455,6 +473,21 @@ declare const _default: {
             required: false;
             default: string;
         };
+        enableAxesHelper: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
+        axesHelperSize: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
+        enableGridHelper: {
+            type: BooleanConstructor;
+            required: false;
+            default: boolean;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -485,6 +518,9 @@ declare const _default: {
         verticalCtrl: boolean | Record<string, any>;
         horizontalCtrl: boolean | Record<string, any>;
         plyMaterial: string;
+        enableAxesHelper: boolean;
+        axesHelperSize: number;
+        enableGridHelper: boolean;
     }>;
 };
 export default _default;

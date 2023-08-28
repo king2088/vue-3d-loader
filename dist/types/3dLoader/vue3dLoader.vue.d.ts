@@ -185,6 +185,21 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: string;
     };
+    enableAxesHelper: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
+    axesHelperSize: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
+    enableGridHelper: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -221,6 +236,9 @@ declare const _default: import("vue").DefineComponent<{
         verticalCtrl: boolean | controlsValue;
         horizontalCtrl: boolean | controlsValue;
         plyMaterial: plyMaterial;
+        enableAxesHelper: boolean;
+        axesHelperSize: number;
+        enableGridHelper: boolean;
     };
     object: any;
     raycaster: Raycaster;
@@ -462,6 +480,21 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: string;
     };
+    enableAxesHelper: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
+    axesHelperSize: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
+    enableGridHelper: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -492,5 +525,8 @@ declare const _default: import("vue").DefineComponent<{
     verticalCtrl: boolean | Record<string, any>;
     horizontalCtrl: boolean | Record<string, any>;
     plyMaterial: string;
+    enableAxesHelper: boolean;
+    axesHelperSize: number;
+    enableGridHelper: boolean;
 }>;
 export default _default;
