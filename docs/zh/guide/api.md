@@ -613,7 +613,7 @@ horizontalCtrl为true，仅能水平旋转相机。
 
 | 类型    | 默认值 | 是否必填 |
 | ------- | ------ | -------- |
-| string | false  | 否       |
+| string | MeshStandardMaterial  | 否       |
 
 1. 描述
 
@@ -627,5 +627,62 @@ plyMaterial默认值为MeshStandardMaterial，用于ply模型材质修改，支�
 <vue3dLoader
   filePath="/models/ply/Lucy100k.ply"
   plyMaterial="MeshStandardMaterial"
+/>
+```
+
+## enableAxesHelper
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| boolean | false  | 否       |
+
+1. 描述
+
+enableAxesHelper用于在场景中开启或显示x,y,z轴
+
+2. 使用样例
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :enableAxesHelper="true"
+/>
+```
+
+## axesHelperSize
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| number | 100  | 否       |
+
+1. 描述
+
+axesHelperSize设置x,y,z轴尺寸，默认为100
+
+2. 使用样例
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :axesHelperSize="500"
+/>
+```
+
+## enableGridHelper
+
+| 类型    | 默认值 | 是否必填 |
+| ------- | ------ | -------- |
+| boolean | false  | 否       |
+
+1. 描述
+
+enableGridHelper在场景中开启或显示网格
+
+2. 使用样例
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :enableGridHelper="true"
 />
 ```

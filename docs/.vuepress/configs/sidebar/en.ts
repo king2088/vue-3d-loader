@@ -32,7 +32,8 @@ export const sidebarEn: SidebarConfig = {
         '/guide/example/play-animations.md',
         '/guide/example/enable-damping.md',
         '/guide/example/progress-bar.md',
-        '/guide/example/set-vertical-horizontal.md'
+        '/guide/example/set-vertical-horizontal.md',
+        '/guide/example/enable-axes-grid.md',
       ],
     },
   ],
