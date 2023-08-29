@@ -613,7 +613,7 @@ If true，only enable horizontal rotation of the camera
 
 | Type   | Default | Required |
 | ------- | ------ | -------- |
-| string | false  | 否       |
+| string | MeshStandardMaterial  | No       |
 
 1. Description
 
@@ -627,5 +627,61 @@ plyMaterial default value is `MeshStandardMaterial`, for ply model material，su
 <vue3dLoader
   filePath="/models/ply/Lucy100k.ply"
   plyMaterial="MeshStandardMaterial"
+/>
+```
+## enableAxesHelper
+
+| Type    | Default | Required |
+| ------- | ------ | -------- |
+| boolean | false  | No       |
+
+1. Description
+
+enableAxesHelper is show axes in scene
+
+2. Use
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :enableAxesHelper="true"
+/>
+```
+
+## axesHelperSize
+
+| Type    | Default | Required |
+| ------- | ------ | -------- |
+| number | 100  | No       |
+
+1. Description
+
+axesHelperSize set axes size
+
+2. Use
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :axesHelperSize="500"
+/>
+```
+
+## enableGridHelper
+
+| Type    | Default | Required |
+| ------- | ------ | -------- |
+| boolean | false  | No       |
+
+1. Description
+
+enableGridHelper show grid in scene
+
+2. Use
+
+```vue
+<vue3dLoader
+  filePath="/models/ply/Lucy100k.ply"
+  :enableGridHelper="true"
 />
 ```
