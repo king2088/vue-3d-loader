@@ -1707,10 +1707,10 @@ vite@~3.0.9:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vue-3d-loader@^2.1.8:
-  version "2.1.8"
-  resolved "https://registry.npmjs.org/vue-3d-loader/-/vue-3d-loader-2.1.8.tgz#861f4441dc85a7b9cf17673df3a96828e76e8c59"
-  integrity sha512-52kQXvBUXRhfGH1KauPzW+E/wh7MJ4ATuSYOqQmHQ2KgASlhkg6k6Amka4ShcITTKpWsbBkGGQdbVMl4dqX5uw==
+vue-3d-loader@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.npmjs.org/vue-3d-loader/-/vue-3d-loader-2.1.9.tgz#b336b412394997dd6de617314053837b95c953e6"
+  integrity sha512-6yDq6c+0xuXY1FnEZQEKfAxIwWoc7tovEl7As9R1jeWe1CYUH+yZ1iwdClAPQ1nhGMLsDOaQmLkjCaZAxrtJ+A==
   dependencies:
     "@types/three" "^0.143.0"
     three "^0.143.0"
