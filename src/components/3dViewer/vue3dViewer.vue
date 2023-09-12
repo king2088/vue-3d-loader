@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import { getSize, getCenter, getLoader } from "./loadModel";
+import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 import {
   Object3D,
   Vector2,
@@ -98,7 +98,8 @@ export default {
       type: Number,
       default: LinearEncoding,
     },
-    glOptions: Object,
+    webGLRendererOptions: Object,
+    mtlPath: String,
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -122,23 +123,18 @@ export default {
     };
     Object.assign(this, result);
     // 响应式对象
-    return {
-      progress: {
-        isComplete: false,
-        lengthComputable: false,
-        loaded: 0,
-      },
-    };
+    return {};
   },
   mounted() {
+    const el = this.$refs.container;
     if (!this.width || !this.height) {
       this.size = {
-        width: this.$refs.container.offsetWidth,
-        height: this.$refs.container.offsetHeight,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
       };
     }
-    const GL_OPTIONS = { antialias: true, alpha: true };
-    const options = Object.assign({}, GL_OPTIONS, this.glOptions, {
+    const WEB_GL_OPTIONS = { antialias: true, alpha: true };
+    const options = Object.assign({}, WEB_GL_OPTIONS, this.webGLRendererOptions, {
       canvas: this.$refs.canvas,
     });
 
@@ -146,7 +142,7 @@ export default {
     this.renderer.shadowMap.enabled = true;
     this.renderer.outputEncoding = this.outputEncoding;
 
-    this.controls = new OrbitControls(this.camera, this.$refs.container);
+    this.controls = new OrbitControls(this.camera, el);
     // this.controls.type = 'orbit';
 
     this.scene.add(this.wrapper);
@@ -154,13 +150,11 @@ export default {
     this.load();
     this.update();
 
-    const element = this.$refs.container;
-
-    element.addEventListener("mousedown", this.onMouseDown, false);
-    element.addEventListener("mousemove", this.onMouseMove, false);
-    element.addEventListener("mouseup", this.onMouseUp, false);
-    element.addEventListener("click", this.onClick, false);
-    element.addEventListener("dblclick", this.onDblclick, false);
+    el.addEventListener("mousedown", this.onMouseDown, false);
+    el.addEventListener("mousemove", this.onMouseMove, false);
+    el.addEventListener("mouseup", this.onMouseUp, false);
+    el.addEventListener("click", this.onClick, false);
+    el.addEventListener("dblclick", this.onDblclick, false);
 
     window.addEventListener("resize", this.onResize, false);
 
@@ -175,13 +169,13 @@ export default {
       this.controls.dispose();
     }
 
-    const element = this.$refs.container;
+    const el = this.$refs.container;
 
-    element.removeEventListener("mousedown", this.onMouseDown, false);
-    element.removeEventListener("mousemove", this.onMouseMove, false);
-    element.removeEventListener("mouseup", this.onMouseUp, false);
-    element.removeEventListener("click", this.onClick, false);
-    element.removeEventListener("dblclick", this.onDblclick, false);
+    el.removeEventListener("mousedown", this.onMouseDown, false);
+    el.removeEventListener("mousemove", this.onMouseMove, false);
+    el.removeEventListener("mouseup", this.onMouseUp, false);
+    el.removeEventListener("click", this.onClick, false);
+    el.removeEventListener("dblclick", this.onDblclick, false);
 
     window.removeEventListener("resize", this.onResize, false);
   },
@@ -238,7 +232,7 @@ export default {
   },
   methods: {
     onResize() {
-      if (!this.width || !this.height) {
+      if (!this.width && !this.height) {
         this.$nextTick(() => {
           this.size = {
             width: this.$refs.container.offsetWidth,
@@ -249,28 +243,22 @@ export default {
       }
     },
     onMouseDown(event) {
-      if (!this.$attrs.onMousedown) return;
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousedown", event, intersected);
     },
     onMouseMove(event) {
-      if (!this.$attrs.onMousemove) return;
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousemove", event, intersected);
     },
     onMouseUp(event) {
-      if (!this.$attrs.onMouseup) return;
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mouseup", event, intersected);
     },
     onClick(event) {
-      if (!this.$attrs.onClick) return;
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("click", event, intersected);
     },
     onDblclick(event) {
-      if (!this.$attrs.onDblclick) return;
-
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("dblclick", event, intersected);
     },
@@ -446,36 +434,66 @@ export default {
     },
     load() {
       if (!this.filePath) return;
-      let _loader = getLoader(this.filePath); // {loader, getObject, mtlLoader}
-      this.loader = _loader;
-      if(_loader.objLoader) {
-        this.loader = _loader.objLoader
-      }
+      let loaderObj = getLoader(this.filePath); // {loader, getObject, mtlLoader}
+      this.loader = loaderObj.loader;
+      const _getObject = loaderObj.getObject ? loaderObj.getObject : this.getObject
       if (this.object) {
         this.wrapper.remove(this.object);
       }
-
-      this.loader.setRequestHeader(this.requestHeader);
-
+      if (this.requestHeader) {
+        this.loader.setRequestHeader(this.requestHeader);
+      }
+      if (this.crossOrigin) {
+        this.loader.setCrossOrigin(this.crossOrigin);
+      }
+      if (this.mtlPath) {
+        // load materials and model
+        this.loadMtl(_getObject);
+        return;
+      }
       this.loader.load(
         this.filePath,
         (...args) => {
-          const object = this.getObject(...args);
-          this.process(object);
+          const object = _getObject(...args);
           this.addObject(object);
-          this.$emit("load");
         },
         (event) => {
-          this.$emit("progress", event);
+          this.$emit("process", event);
         },
         (event) => {
           this.$emit("error", event);
         }
       );
     },
-    // eslint-disable-next-line
-    process(object) {
-      return object;
+    loadMtl(getObject) {
+      const mtlLoader = getMTLLoader();
+      if (this.crossOrigin) {
+        mtlLoader.setCrossOrigin(this.crossOrigin);
+      }
+      if (this.requestHeader) {
+        mtlLoader.setRequestHeader(this.requestHeader);
+      }
+      const returnPathArray = /^(.*\/)([^/]*)$/.exec(this.mtlPath);
+      const path = returnPathArray[1]
+      const file = returnPathArray[2]
+      mtlLoader.setPath(path).load(file, (materials) => {
+        materials.preload();
+        this.loader
+        .setMaterials(materials)
+        .load(
+          this.filePath,
+          (...args) => {
+            const object = getObject(...args);
+            this.addObject(object);
+          },
+          (event) => {
+            this.$emit("process", event);
+          },
+          (event) => {
+            this.$emit("error", event);
+          }
+        );
+      });
     },
     getObject(object) {
       return object;
