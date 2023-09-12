@@ -100,7 +100,7 @@ export default {
       default: LinearEncoding,
     },
     webGLRendererOptions: Object,
-    mtlPath: String,
+    mtlPath: {type: [String, Array]},
     showFps: { type: Boolean, default: false },
   },
   data() {
@@ -126,7 +126,9 @@ export default {
     };
     Object.assign(this, result);
     // 响应式对象
-    return {};
+    return {
+      loaderIndex: 0
+    };
   },
   mounted() {
     const el = this.$refs.container;
@@ -151,7 +153,6 @@ export default {
     this.renderer.outputEncoding = this.outputEncoding;
 
     this.controls = new OrbitControls(this.camera, el);
-    // this.controls.type = 'orbit';
 
     this.scene.add(this.wrapper);
 
@@ -446,7 +447,9 @@ export default {
     },
     load() {
       if (!this.filePath) return;
-      let loaderObj = getLoader(this.filePath); // {loader, getObject, mtlLoader}
+      // if multiple files
+      const _filePath = typeof this.filePath === 'string' ? this.filePath : this.filePath[this.loaderIndex]
+      const loaderObj = getLoader(_filePath); // {loader, getObject, mtlLoader}
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject
         ? loaderObj.getObject
@@ -461,25 +464,43 @@ export default {
         this.loader.setCrossOrigin(this.crossOrigin);
       }
       if (this.mtlPath) {
-        // load materials and model
-        this.loadMtl(_getObject);
-        return;
+        // load materials
+        const isMultipleMTL = typeof this.mtlPath === 'string'
+        if (isMultipleMTL) {
+          // single material
+          this.loadMtl(_filePath, _getObject);
+        } else {
+          console.log('this.loaderIndex', this.loaderIndex);
+          // load materials and model
+          if (!this.mtlPath[this.loaderIndex]) {
+            console.log('no mtl');
+            this.loadFilePath(_filePath, _getObject)
+            return
+          }
+          this.loadMtl(_filePath, _getObject);
+        }
+      } else {
+        // don't load materials
+        this.loadFilePath(_filePath, _getObject)
       }
+    },
+    loadFilePath(filePath, getObject) {
       this.loader.load(
-        this.filePath,
+        filePath,
         (...args) => {
-          const object = _getObject(...args);
+          const object = getObject(...args);
           this.addObject(object);
         },
         (event) => {
-          this.$emit("process", event);
+          this.onProcess(event)
+          this.$emit("process", event, this.loaderIndex);
         },
         (event) => {
           this.$emit("error", event);
         }
       );
     },
-    loadMtl(getObject) {
+    loadMtl(filePath, getObject) {
       const mtlLoader = getMTLLoader();
       if (this.crossOrigin) {
         mtlLoader.setCrossOrigin(this.crossOrigin);
@@ -487,24 +508,15 @@ export default {
       if (this.requestHeader) {
         mtlLoader.setRequestHeader(this.requestHeader);
       }
-      const returnPathArray = /^(.*\/)([^/]*)$/.exec(this.mtlPath);
+      const _mtl = typeof this.mtlPath === 'string' ? this.mtlPath : this.mtlPath[this.loaderIndex]
+      console.log('_mtl', _mtl);
+      const returnPathArray = /^(.*\/)([^/]*)$/.exec(_mtl);
       const path = returnPathArray[1];
       const file = returnPathArray[2];
       mtlLoader.setPath(path).load(file, (materials) => {
         materials.preload();
-        this.loader.setMaterials(materials).load(
-          this.filePath,
-          (...args) => {
-            const object = getObject(...args);
-            this.addObject(object);
-          },
-          (event) => {
-            this.$emit("process", event);
-          },
-          (event) => {
-            this.$emit("error", event);
-          }
-        );
+        this.loader.setMaterials(materials)
+        this.loadFilePath(filePath, getObject)
       });
     },
     getObject(object) {
@@ -534,7 +546,21 @@ export default {
       if (this.showFps) {
         this.stats.update();
       }
-    }
+    },
+    onProcess(xhr) {
+      let process = Math.floor((xhr.loaded / xhr.total) * 100);
+      if (process === 100) {
+        // Load completed
+        if (typeof this.filePath === 'object' && (this.filePath.length - 1) - this.loaderIndex != 0) {
+          this.$nextTick(() => {
+            this.loaderIndex++
+            this.load()
+          })
+        }else {
+          this.loaderIndex = 0
+        }
+      }
+    },
   },
 };
 </script>
