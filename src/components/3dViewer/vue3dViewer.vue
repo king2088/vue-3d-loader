@@ -1,33 +1,6 @@
 <template>
-  <div
-    style="position: relative; width: 100%; height: 100%; margin: 0; border: 0; padding: 0;"
-    ref="container"
-  >
-    <slot
-      name="progress-bar"
-      :progress="progress"
-      v-if="progress.isComplete === false"
-    >
-      <div
-        style="position: absolute; z-index: 2; height: 3px; width: 100%; background-color: rgba(0, 0, 0, 0.04)"
-      >
-        <div
-          :style="{
-            width: `${loadProgressPercentage}%`,
-            height: '100%',
-            backgroundColor: '#1890ff',
-            transition: 'width .2s',
-          }"
-        />
-      </div>
-    </slot>
-    <div
-      v-if="progress.isComplete === false"
-      style="position: absolute; z-index: 1; width: 100%; height: 100%;"
-    >
-      <slot name="poster" />
-    </div>
-    <canvas ref="canvas" style="width: 100%; height: 100%;"></canvas>
+  <div class="viewer-container" ref="container">
+    <canvas ref="canvas" class="viewer-canvas"></canvas>
   </div>
 </template>
 <script>
@@ -44,12 +17,13 @@ import {
   AmbientLight,
   PointLight,
   HemisphereLight,
-  LinearEncoding
+  DirectionalLight,
+  LinearEncoding,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export default {
   props: {
-    filePath: String | Array, // supports one or more filePath
+    filePath: { type: [String, Array] }, // supports one or more filePath
     width: Number,
     height: Number,
     position: {
@@ -149,36 +123,22 @@ export default {
     Object.assign(this, result);
     // 响应式对象
     return {
-      process: {
+      progress: {
         isComplete: false,
         lengthComputable: false,
         loaded: 0,
       },
     };
   },
-  computed: {
-    loadProgressPercentage() {
-      if (this.progress.isComplete) return 100;
-      if (this.progress.lengthComputable) {
-        // lengthComputable 为 false 时，total 无直接参考意义，但是这里仍然使用它 * 3来作为估计值
-        // 因为 gzip 压缩后的长度大约为三分之一
-        return (
-          Math.min(0.92, this.progress.loaded / (this.progress.total * 3)) * 100
-        );
-      }
-
-      return Math.min(1, this.progress.loaded / this.progress.total) * 100;
-    },
-  },
   mounted() {
-    if (this.width === undefined || this.height === undefined) {
+    if (!this.width || !this.height) {
       this.size = {
         width: this.$refs.container.offsetWidth,
         height: this.$refs.container.offsetHeight,
       };
     }
-
-    const options = Object.assign({}, DEFAULT_GL_OPTIONS, this.glOptions, {
+    const GL_OPTIONS = { antialias: true, alpha: true };
+    const options = Object.assign({}, GL_OPTIONS, this.glOptions, {
       canvas: this.$refs.canvas,
     });
 
@@ -226,7 +186,7 @@ export default {
     window.removeEventListener("resize", this.onResize, false);
   },
   watch: {
-    src() {
+    filePath() {
       this.load();
     },
     rotation: {
@@ -278,37 +238,33 @@ export default {
   },
   methods: {
     onResize() {
-      if (this.width === undefined || this.height === undefined) {
+      if (!this.width || !this.height) {
         this.$nextTick(() => {
           this.size = {
             width: this.$refs.container.offsetWidth,
             height: this.$refs.container.offsetHeight,
           };
+          this.update();
         });
       }
     },
     onMouseDown(event) {
       if (!this.$attrs.onMousedown) return;
-
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousedown", event, intersected);
     },
     onMouseMove(event) {
-      console.log(this.$attrs);
       if (!this.$attrs.onMousemove) return;
-
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mousemove", event, intersected);
     },
     onMouseUp(event) {
       if (!this.$attrs.onMouseup) return;
-
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("mouseup", event, intersected);
     },
     onClick(event) {
       if (!this.$attrs.onClick) return;
-
       const intersected = this.pick(event.clientX, event.clientY);
       this.$emit("click", event, intersected);
     },
@@ -321,19 +277,13 @@ export default {
     pick(x, y) {
       if (!this.object) return null;
       if (!this.$refs.container) return;
-
       const rect = this.$refs.container.getBoundingClientRect();
-
       x -= rect.left;
       y -= rect.top;
-
       this.mouse.x = (x / this.size.width) * 2 - 1;
       this.mouse.y = -(y / this.size.height) * 2 + 1;
-
       this.raycaster.setFromCamera(this.mouse, this.camera);
-
       const intersects = this.raycaster.intersectObject(this.object, true);
-
       return (intersects && intersects.length) > 0 ? intersects[0] : null;
     },
     update() {
@@ -494,61 +444,36 @@ export default {
         Object.assign(this.controls, this.controlsOptions);
       }
     },
-    // type: 'start' | 'end' | 'progress'
-    // data?: {
-    //   lengthComputable: boolean;
-    //   loaded: number;
-    //   total: number;
-    // }
-    reportProgress(type, data = {}) {
-      if (type === "start") {
-        this.progress.isComplete = false;
-        this.progress.startedAt = Date.now();
-        this.progress.loaded = 0;
-        this.progress.total = 0;
-      } else if (type === "end") {
-        this.progress.isComplete = true;
-        this.progress.endedAt = Date.now();
-      } else {
-        this.progress.lengthComputable = data.lengthComputable || false;
-        this.progress.loaded = data.loaded || 0;
-        this.progress.total = data.total || 0;
-      }
-    },
     load() {
       if (!this.filePath) return;
-      this.loader = getLoader(this.filePath);
+      let _loader = getLoader(this.filePath); // {loader, getObject, mtlLoader}
+      this.loader = _loader;
+      if(_loader.objLoader) {
+        this.loader = _loader.objLoader
+      }
       if (this.object) {
         this.wrapper.remove(this.object);
       }
 
       this.loader.setRequestHeader(this.requestHeader);
 
-      this.reportProgress("start");
-
       this.loader.load(
         this.filePath,
         (...args) => {
-          this.reportProgress("end");
-
           const object = this.getObject(...args);
-
           this.process(object);
-
           this.addObject(object);
-
           this.$emit("load");
         },
         (event) => {
-          this.reportProgress("progress", event);
           this.$emit("progress", event);
         },
         (event) => {
-          this.reportProgress("end");
           this.$emit("error", event);
         }
       );
     },
+    // eslint-disable-next-line
     process(object) {
       return object;
     },
@@ -577,3 +502,17 @@ export default {
   },
 };
 </script>
+<style>
+.viewer-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.viewer-canvas {
+  width: 100%;
+  height: 100%;
+}
+</style>
