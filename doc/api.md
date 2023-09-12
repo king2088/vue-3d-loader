@@ -3,7 +3,8 @@
 
 |prop|type|default|example|description|
 |----|----|----|----|----|
-|filePath|string \| array|-|./exapmle.obj|文件路径|
+|filePath|string \| array|-|./example.obj|文件路径，支持多个文件一起加载，**注意：**如果有每一个文件都对应一个材质，则也需要将材质对象mtlPath设置为对应的数组|
+|mtlPath|string \| array|-|./example.mtl|材质路径，支持多个材质一起加载，设置此参数为数组，必须设置**filePath**为数组|
 |width|number|-|300|宽度|
 |height|number|-|300|高度|
 |position|object|{ x: 0, y: 0, z: 0 }|{ x: 100, y: 20, z: -10 }|物体位置|
@@ -24,9 +25,9 @@ cameraRotation|object|{ x: 0, y: 0, z: 0 }|	{ x: 3, y: 2, z: -1 }|摄像机旋�
 ## 事件
 |event|description|
 |--|--|
-|mousedown|鼠标按下|
-|mousemove|鼠标移动|
-|mouseup|鼠标放开|
-|click|点击|
-|process|加载进度|
-|error|错误事件|
+|mousedown(event, intersects)|鼠标按下, intersect:当前相交最近的物体|
+|mousemove(event, intersects)|鼠标移动, intersect:当前相交最近的物体|
+|mouseup(event, intersects)|鼠标放开, intersect:当前相交最近的物体|
+|click(event, intersects)|点击, intersect:当前相交最近的物体|
+|process(event, fileIndex)|加载进度, fileIndex:当前正在加载第几个文件|
+|error(event)|错误事件|
