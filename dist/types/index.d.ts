@@ -193,6 +193,16 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        minDistance: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
+        maxDistance: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -232,6 +242,8 @@ declare const _default: {
             enableAxesHelper: boolean;
             axesHelperSize: number;
             enableGridHelper: boolean;
+            minDistance: number;
+            maxDistance: number;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -248,6 +260,8 @@ declare const _default: {
         stats: any;
         mixers: Three.AnimationMixer | Three.AnimationMixer[];
         textureLoader: any;
+        axesHelper: Three.AxesHelper;
+        gridHelper: Three.GridHelper;
         size: import("vue").Ref<{
             width: number;
             height: number;
@@ -299,6 +313,7 @@ declare const _default: {
         playSingleModel: (item: Three.Object3D<Three.Event>) => void;
         playMultipleModels: (obj: Three.Object3D<Three.Event>) => void;
         setVerticalHorizontalControls: () => void;
+        setAxesAndGridHelper: () => void;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];
@@ -488,6 +503,16 @@ declare const _default: {
             required: false;
             default: boolean;
         };
+        minDistance: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
+        maxDistance: {
+            type: NumberConstructor;
+            required: false;
+            default: number;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -521,6 +546,8 @@ declare const _default: {
         enableAxesHelper: boolean;
         axesHelperSize: number;
         enableGridHelper: boolean;
+        minDistance: number;
+        maxDistance: number;
     }>;
 };
 export default _default;

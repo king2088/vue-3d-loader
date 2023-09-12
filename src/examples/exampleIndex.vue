@@ -32,6 +32,7 @@
     <enableDampingVue v-if="currentMenuId === 18" />
     <setVerticalHorizontal v-if="currentMenuId === 19" />
     <enableAxesGrid v-if="currentMenuId === 20"/>
+    <minMaxDistance v-if="currentMenuId === 21"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -55,6 +56,7 @@ import loaderDracoModelVue from "./loader-draco-model.vue";
 import enableDampingVue from "./enable-damping.vue";
 import setVerticalHorizontal from "./set-vertical-horizontal.vue";
 import enableAxesGrid from "./enable-axes-grid.vue";
+import minMaxDistance from "./min-max-distance.vue";
 import { ref } from "vue";
 const menu = ref();
 const lang = ref();
@@ -79,6 +81,7 @@ menu.value = [
   { id: 18, name_CN: "开启阻尼", name_EN: "Enable damping" },
   { id: 19, name_CN: "垂直/水平旋转相机", name_EN: "Set camera rotation"},
   { id: 20, name_CN: "显示坐标及网格", name_EN: "Show axes and grid" },
+  { id: 21, name_CN: "限制缩放大小", name_EN: "Min and max distance" }
 ];
 const currentMenuId = ref(1);
 

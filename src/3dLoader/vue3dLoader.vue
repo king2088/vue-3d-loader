@@ -97,6 +97,8 @@ interface Props {
   enableAxesHelper?: boolean;
   axesHelperSize?: number;
   enableGridHelper?: boolean;
+  minDistance?: number; 
+  maxDistance?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -146,14 +148,16 @@ const props = withDefaults(defineProps<Props>(), {
   plyMaterial: 'MeshStandardMaterial',
   enableAxesHelper: false,
   axesHelperSize: 100,
-  enableGridHelper: false
+  enableGridHelper: false,
+  minDistance: 0,
+  maxDistance: Infinity
 });
 
 // Non responsive variable
 let object: any = null;
 const raycaster = new Raycaster();
 const mouse = new Vector2();
-const camera = new PerspectiveCamera(45, 1, 1, 100000);
+const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 const clock = new Clock();
 let scene: Scene = new Scene();
 let wrapper: Object3D = null as any;
@@ -165,6 +169,8 @@ let requestAnimationId: number = 0;
 let stats: any = null;
 let mixers: AnimationMixer | AnimationMixer[] = null as any;
 let textureLoader: any = null;
+let axesHelper: AxesHelper = null as any;
+let gridHelper: GridHelper = null as any;
 
 // responsive variable
 const size = ref({ width: props.width || 0, height: props.height || 0 });
@@ -206,6 +212,29 @@ watch(
     }
   }
 );
+
+watch([() => props.autoPlay], () => {
+  playAnimations();
+});
+
+watch([() => props.width, () => props.height], () => {
+  size.value = {
+    width: props.width || 0,
+    height: props.height || 0,
+  };
+});
+
+watch([
+  () => props.enableAxesHelper,
+  () => props.axesHelperSize,
+  () => props.enableGridHelper
+], () => {
+  setAxesAndGridHelper();
+});
+
+watch([() => props.minDistance, () => props.maxDistance], () => {
+  setVerticalHorizontalControls();
+});
 
 // deep watch
 watch(
@@ -262,17 +291,6 @@ watch(
   { deep: true }
 );
 
-watch([() => props.autoPlay], () => {
-  playAnimations();
-});
-
-watch([() => props.width, () => props.height], () => {
-  size.value = {
-    width: props.width || 0,
-    height: props.height || 0,
-  };
-});
-
 // emit
 const emit = defineEmits([
   "mousedown",
@@ -323,10 +341,7 @@ function init() {
     webGLRendererOptions,
     showFps,
     enableDamping,
-    dampingFactor,
-    enableAxesHelper,
-    axesHelperSize,
-    enableGridHelper
+    dampingFactor
   } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
@@ -363,22 +378,9 @@ function init() {
     }
   }
   setVerticalHorizontalControls();
-
   wrapper = new Object3D();
   scene.add(wrapper);
-
-  if (enableAxesHelper) {
-    // add axes
-    var axes = new AxesHelper(axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
-    scene.add(axes);
-  }
-
-  if (enableGridHelper) {
-    // add grid
-    var grid = new GridHelper(2000, 100);
-    scene.add(grid);
-  }
-  
+  setAxesAndGridHelper();
   loadModelSelect();
   update();
   // enable mouse move
@@ -1025,7 +1027,7 @@ function setVerticalHorizontalControls() {
   if (!controls) {
     return;
   }
-  const { verticalCtrl, horizontalCtrl } = props;
+  const { verticalCtrl, horizontalCtrl, minDistance, maxDistance } = props;
   // set vertical
   if (verticalCtrl && typeof verticalCtrl === "boolean") {
     controls.minAzimuthAngle = -2 * Math.PI;
@@ -1045,6 +1047,35 @@ function setVerticalHorizontalControls() {
     // min/max azimuth angle value range [0，Math.PI]
     controls.minPolarAngle = horizontalCtrl.min;
     controls.maxPolarAngle = horizontalCtrl.max;
+  }
+  if (minDistance != 0 && typeof minDistance === "number") {
+    controls.minDistance = minDistance;
+  }
+  if (maxDistance != Infinity && typeof maxDistance === "number") {
+    controls.maxDistance = maxDistance;
+  }
+}
+// set axes and grid helper
+function setAxesAndGridHelper () {
+  const { enableAxesHelper, enableGridHelper, axesHelperSize } = props;
+  if (enableAxesHelper) {
+    // add axes
+    axesHelper = new AxesHelper(axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
+    scene.add(axesHelper);
+  } else {
+    if (axesHelper) {
+      scene.remove(axesHelper);
+    }
+  }
+
+  if (enableGridHelper) {
+    // add grid
+    gridHelper = new GridHelper(2000, 100);
+    scene.add(gridHelper);
+  } else {
+    if (gridHelper) {
+      scene.remove(gridHelper);
+    }
   }
 }
 </script>

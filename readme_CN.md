@@ -669,6 +669,30 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   开启并在场景中显示网格
   </td>
 </tr>
+<tr>
+  <td>
+  minDistance
+  </td>
+  <td>float</td>
+  <td>0</td>
+  <td>-</td>
+  <td>
+
+  你能够将相机向内移动多少，其默认值为0
+  </td>
+</tr>
+<tr>
+  <td>
+  maxDistance
+  </td>
+  <td>float</td>
+  <td>Infinity</td>
+  <td>-</td>
+  <td>
+
+  你能够将相机向外移动多少，其默认值为Infinity
+  </td>
+</tr>
 </table>
 
 ### 事件

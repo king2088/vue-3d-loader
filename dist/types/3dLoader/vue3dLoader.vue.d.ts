@@ -1,4 +1,4 @@
-import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, AnimationMixer, Clock, Light } from "three";
+import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, AnimationMixer, Clock, Light, AxesHelper, GridHelper } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface coordinates {
     x: number;
@@ -200,6 +200,16 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    minDistance: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
+    maxDistance: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
 }, {
     props: {
         filePath: string | string[];
@@ -239,6 +249,8 @@ declare const _default: import("vue").DefineComponent<{
         enableAxesHelper: boolean;
         axesHelperSize: number;
         enableGridHelper: boolean;
+        minDistance: number;
+        maxDistance: number;
     };
     object: any;
     raycaster: Raycaster;
@@ -255,6 +267,8 @@ declare const _default: import("vue").DefineComponent<{
     stats: any;
     mixers: AnimationMixer | AnimationMixer[];
     textureLoader: any;
+    axesHelper: AxesHelper;
+    gridHelper: GridHelper;
     size: import("vue").Ref<{
         width: number;
         height: number;
@@ -306,6 +320,7 @@ declare const _default: import("vue").DefineComponent<{
     playSingleModel: (item: Object3D) => void;
     playMultipleModels: (obj: Object3D) => void;
     setVerticalHorizontalControls: () => void;
+    setAxesAndGridHelper: () => void;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
@@ -495,6 +510,16 @@ declare const _default: import("vue").DefineComponent<{
         required: false;
         default: boolean;
     };
+    minDistance: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
+    maxDistance: {
+        type: NumberConstructor;
+        required: false;
+        default: number;
+    };
 }>> & {
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
@@ -528,5 +553,7 @@ declare const _default: import("vue").DefineComponent<{
     enableAxesHelper: boolean;
     axesHelperSize: number;
     enableGridHelper: boolean;
+    minDistance: number;
+    maxDistance: number;
 }>;
 export default _default;

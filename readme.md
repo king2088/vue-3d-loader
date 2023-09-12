@@ -669,6 +669,30 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   Enable or show grid
   </td>
 </tr>
+<tr>
+  <td>
+  minDistance
+  </td>
+  <td>float</td>
+  <td>0</td>
+  <td>-</td>
+  <td>
+
+  How far you can dolly in.
+  </td>
+</tr>
+<tr>
+  <td>
+  maxDistance
+  </td>
+  <td>float</td>
+  <td>Infinity</td>
+  <td>-</td>
+  <td>
+
+  How far you can dolly out.
+  </td>
+</tr>
 </table>
 
 ### Events
