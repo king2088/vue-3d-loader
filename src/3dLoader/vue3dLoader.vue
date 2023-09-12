@@ -163,6 +163,14 @@ export default {
       type: Boolean, 
       default: false
     },
+    minDistance: {
+      type: Number,
+      default: 0,
+    },
+    maxDistance: {
+      type: Number,
+      default: Infinity,
+    }
   },
   data() {
     // 非响应式对象，防止threeJS多次渲染
@@ -173,7 +181,7 @@ export default {
       },
       object: null,
       raycaster: new Raycaster(),
-      camera: new PerspectiveCamera(45, 1, 1, 100000),
+      camera: new PerspectiveCamera(45, 1, 0.1, 100000),
       scene: new Scene(),
       wrapper: null,
       renderer: null,
@@ -186,6 +194,8 @@ export default {
       mixers: null,
       textureLoader: null,
       css2DRenderer: null,
+      axesHelper: null,
+      gridHelper: null
     };
     Object.assign(this, result);
     // 响应式对象
@@ -289,6 +299,21 @@ export default {
         this.setSpriteLabel();
       },
     },
+    enableAxesHelper() {
+      this.setAxesAndGridHelper();
+    },
+    axesHelperSize() {
+      this.setAxesAndGridHelper();
+    },
+    enableGridHelper() {
+      this.setAxesAndGridHelper();
+    },
+    minDistance() {
+      this.setVerticalHorizontalControls();
+    },
+    maxDistance() {
+      this.setVerticalHorizontalControls();
+    }
   },
   methods: {
     init() {
@@ -323,19 +348,7 @@ export default {
 
       this.wrapper = new Object3D();
       this.scene.add(this.wrapper);
-
-      if (this.enableAxesHelper) {
-        // add axes
-        var axes = new AxesHelper(this.axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
-        this.scene.add(axes);
-      }
-
-      if (this.enableGridHelper) {
-        // add grid
-        var grid = new GridHelper(2000, 100);
-        this.scene.add(grid);
-      }
-
+      this.setAxesAndGridHelper();
       this.loadModelSelect();
       this.update();
 
@@ -1076,8 +1089,36 @@ export default {
         this.controls.minPolarAngle = this.horizontalCtrl.min;
         this.controls.maxPolarAngle = this.horizontalCtrl.max;
       }
+      if (this.minDistance != 0 && typeof this.minDistance === "number") {
+        this.controls.minDistance = this.minDistance;
+      }
+      if (this.maxDistance != Infinity && typeof this.maxDistance === "number") {
+        this.controls.maxDistance = this.maxDistance;
+      }
+    },
+    // set axes and grid helper
+    setAxesAndGridHelper () {
+      if (this.enableAxesHelper) {
+        // add axes
+        this.axesHelper = new AxesHelper(this.axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
+        this.scene.add(this.axesHelper);
+      } else {
+        if (this.axesHelper) {
+          this.scene.remove(this.axesHelper);
+        }
+      }
+
+      if (this.enableGridHelper) {
+        // add grid
+        this.gridHelper = new GridHelper(2000, 100);
+        this.scene.add(this.gridHelper);
+      } else {
+        if (this.gridHelper) {
+          this.scene.remove(this.gridHelper);
+        }
+      }
     }
-  },
+  }
 };
 </script>
 <style>

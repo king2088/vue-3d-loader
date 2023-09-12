@@ -2258,7 +2258,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-82.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=fd086752&
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-82.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=8b25ba2e&
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -19273,6 +19273,14 @@ function enableDraco(isDraco, obj, dir = '') {
     enableGridHelper: {
       type: Boolean,
       default: false
+    },
+    minDistance: {
+      type: Number,
+      default: 0
+    },
+    maxDistance: {
+      type: Number,
+      default: Infinity
     }
   },
   data() {
@@ -19284,7 +19292,7 @@ function enableDraco(isDraco, obj, dir = '') {
       },
       object: null,
       raycaster: new Raycaster(),
-      camera: new PerspectiveCamera(45, 1, 1, 100000),
+      camera: new PerspectiveCamera(45, 1, 0.1, 100000),
       scene: new Scene(),
       wrapper: null,
       renderer: null,
@@ -19296,7 +19304,9 @@ function enableDraco(isDraco, obj, dir = '') {
       stats: null,
       mixers: null,
       textureLoader: null,
-      css2DRenderer: null
+      css2DRenderer: null,
+      axesHelper: null,
+      gridHelper: null
     };
     Object.assign(this, result);
     // 响应式对象
@@ -19399,6 +19409,21 @@ function enableDraco(isDraco, obj, dir = '') {
         this.clearSprite();
         this.setSpriteLabel();
       }
+    },
+    enableAxesHelper() {
+      this.setAxesAndGridHelper();
+    },
+    axesHelperSize() {
+      this.setAxesAndGridHelper();
+    },
+    enableGridHelper() {
+      this.setAxesAndGridHelper();
+    },
+    minDistance() {
+      this.setVerticalHorizontalControls();
+    },
+    maxDistance() {
+      this.setVerticalHorizontalControls();
     }
   },
   methods: {
@@ -19428,16 +19453,7 @@ function enableDraco(isDraco, obj, dir = '') {
       this.setVerticalHorizontalControls();
       this.wrapper = new Object3D();
       this.scene.add(this.wrapper);
-      if (this.enableAxesHelper) {
-        // add axes
-        var axes = new AxesHelper(this.axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
-        this.scene.add(axes);
-      }
-      if (this.enableGridHelper) {
-        // add grid
-        var grid = new GridHelper(2000, 100);
-        this.scene.add(grid);
-      }
+      this.setAxesAndGridHelper();
       this.loadModelSelect();
       this.update();
       el.addEventListener("mousedown", this.onMouseDown, false);
@@ -20075,15 +20091,42 @@ function enableDraco(isDraco, obj, dir = '') {
         this.controls.minPolarAngle = this.horizontalCtrl.min;
         this.controls.maxPolarAngle = this.horizontalCtrl.max;
       }
+      if (this.minDistance != 0 && typeof this.minDistance === "number") {
+        this.controls.minDistance = this.minDistance;
+      }
+      if (this.maxDistance != Infinity && typeof this.maxDistance === "number") {
+        this.controls.maxDistance = this.maxDistance;
+      }
+    },
+    // set axes and grid helper
+    setAxesAndGridHelper() {
+      if (this.enableAxesHelper) {
+        // add axes
+        this.axesHelper = new AxesHelper(this.axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
+        this.scene.add(this.axesHelper);
+      } else {
+        if (this.axesHelper) {
+          this.scene.remove(this.axesHelper);
+        }
+      }
+      if (this.enableGridHelper) {
+        // add grid
+        this.gridHelper = new GridHelper(2000, 100);
+        this.scene.add(this.gridHelper);
+      } else {
+        if (this.gridHelper) {
+          this.scene.remove(this.gridHelper);
+        }
+      }
     }
   }
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-54.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-54.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-54.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=fd086752&prod&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-54.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-54.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-54.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=8b25ba2e&prod&lang=css&
 // extracted by mini-css-extract-plugin
 
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=fd086752&prod&lang=css&
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=8b25ba2e&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */

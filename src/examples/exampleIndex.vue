@@ -30,6 +30,7 @@
     <disableAnimationsVue v-if="currentMenuId === 16" />
     <loaderDracoModelVue v-if="currentMenuId === 17" />
     <setVerticalHorizontal v-if="currentMenuId === 18" />
+    <minMaxDistance v-if="currentMenuId === 19" />
   </div>
 </template>
 <script>
@@ -51,6 +52,7 @@ import loadJsonModelVue from "./load-json-model.vue";
 import disableAnimationsVue from "./disable-animations.vue";
 import loaderDracoModelVue from "./load-draco-model.vue";
 import setVerticalHorizontal from "./set-vertical-horizontal.vue";
+import minMaxDistance from "./min-max-distance.vue";
 export default {
   components: {
     loadAModelVue,
@@ -70,7 +72,8 @@ export default {
     loadJsonModelVue,
     disableAnimationsVue,
     loaderDracoModelVue,
-    setVerticalHorizontal
+    setVerticalHorizontal,
+    minMaxDistance
   },
   data() {
     return {
@@ -92,7 +95,8 @@ export default {
         { id: 15, name_CN: "加载JSON模型", name_EN: "Load json model" },
         { id: 16, name_CN: "播放/停止动画", name_EN: "Play/Stop animations" },
         { id: 17, name_CN: "加载Draco压缩模型", name_EN: "Loader draco model" },
-        { id: 18, name_CN: "垂直/水平旋转相机", name_EN: "Set camera rotation"}
+        { id: 18, name_CN: "垂直/水平旋转相机", name_EN: "Set camera rotation"},
+        { id: 19, name_CN: "相机向内外距离限制", name_EN: "Min and max distance"}
       ],
       currentMenuId: 1,
     };
