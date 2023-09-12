@@ -3,7 +3,7 @@
     OBJ+MTL
     <vue3dViewerVue :height="200" :filePath="filePath" :mtlPath="mtlPath" :backgroundColor="'#ff00ff'" @mousemove="onMouseMove"></vue3dViewerVue>
     FBX
-    <vue3dViewerVue :height="200" :filePath="'/fbx/Samba Dancing.fbx'" :backgroundColor="'#ffff00'"></vue3dViewerVue>
+    <vue3dViewerVue :height="200" :showFps="true" :filePath="'/fbx/Samba Dancing.fbx'" :backgroundColor="'#ffff00'"></vue3dViewerVue>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     onMouseMove(event, intersected) {
-      console.log('event', event);
+      // console.log('event', event);
       if (this.object) {
         this.object.material.color.setStyle('#fff');
       }

@@ -19,6 +19,7 @@ cameraRotation|object|{ x: 0, y: 0, z: 0 }|	{ x: 3, y: 2, z: -1 }|摄像机旋�
 |requestHeader|object|-|{ 'Authorization: Bearer token' }|设置请求头|
 |outputEncoding|number|THREE.LinearEncoding|[WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)|渲染器的输出编码|
 |webGLRendererOptions|object|{ antialias: true, alpha: true }|[WebGLRenderer Parameters](https://threejs.org/docs/index.html#api/zh/renderers/WebGLRenderer)|WebGLRenderer可选参数|
+|showFps|boolean|false|-|显示FPS等信息|
 
 ## 事件
 |event|description|
