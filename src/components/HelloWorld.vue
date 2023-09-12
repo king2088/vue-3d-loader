@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
-    <vue3dViewerVue :filePath="filePath" :backgroundColor="'#ff00ff'"></vue3dViewerVue>
+    OBJ+MTL
+    <vue3dViewerVue :height="200" :filePath="filePath" :mtlPath="mtlPath" :backgroundColor="'#ff00ff'" @mousemove="onMouseMove"></vue3dViewerVue>
+    FBX
+    <vue3dViewerVue :height="200" :filePath="'/fbx/Samba Dancing.fbx'" :backgroundColor="'#ffff00'"></vue3dViewerVue>
   </div>
 </template>
 
@@ -16,7 +19,22 @@ export default {
   },
   data() {
     return {
-      filePath: '/obj/tree.obj'
+      filePath: '/obj/male02.obj',
+      mtlPath: '/obj/male02.mtl',
+      object: null
+    }
+  },
+  methods: {
+    onMouseMove(event, intersected) {
+      console.log('event', event);
+      if (this.object) {
+        this.object.material.color.setStyle('#fff');
+      }
+
+      if (intersected) {
+        this.object = intersected.object;
+        this.object.material.color.setStyle('#13ce66');
+      }
     }
   }
 }
@@ -24,6 +42,5 @@ export default {
 <style>
 .hello{
   width: 100%;
-  height: 100vh;
 }
 </style>
