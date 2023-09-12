@@ -110,6 +110,8 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 |   enableAxesHelper | boolean | false |  开启或显示x,y,z轴 |
 |   axesHelperSize | number | 100 |  x,y,z轴尺寸长度 |
 |   enableGridHelper | boolean | false |  开启或显示网格 |
+|   minDistance | float | 0 |  你能够将相机向内移动多少，其默认值为0 |
+|   maxDistance | float | Infinity |  你能够将相机向外移动多少，其默认值为Infinity |
 
 ### 事件
 

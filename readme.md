@@ -110,6 +110,8 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 |   enableAxesHelper | boolean | false |  Enable axes |
 |   axesHelperSize | number | 100 |  Axes size |
 |   enableGridHelper | boolean | false |  Enable grid |
+|     minDistance | float | 0 |    How far you can dolly in |
+|   maxDistance | float |  Infinity |    How far you can dolly out |
 ### Events
 
 | event                        | description                                                          |
