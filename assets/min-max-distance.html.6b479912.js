@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-57760b62","path":"/guide/example/min-max-distance.html","title":"Set min or max distance","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":1694503975000,"contributors":[{"name":"king2088","email":"king6180@gmail.com","commits":1}]},"filePathRelative":"guide/example/min-max-distance.md"}');export{e as data};
