@@ -4,12 +4,10 @@
     backgroundColor="#cccccc"
     :position="[{ x: 0, y: 0, z: 0 }, { x: 100, y: 100, z: 100}]"
     :labels="labels"
-    :parallelLoad="true"
     :scale="[{ x: 10, y: 10, z: 10 },{ x: 0.5, y: 0.5, z: 0.5 }]"
     :enableAxesHelper="true"
     :enableGridHelper="true"
     outputEncoding="sRGB"
-    @load="setLabels"
   />
   <div class="top">
     <button @click="changeLabelPosition">Change label position</button>
@@ -21,12 +19,9 @@
 import { ref } from "vue";
 const labels = ref();
 const filePath = ['/models/gltf/DamagedHelmet.gltf', '/models/fbx/Samba Dancing.fbx']
-labels.value = []
-function setLabels(e: any) {
-  console.log('e', e);
-  labels.value = [
-    // image label
-    {
+labels.value = [
+  // image label
+  {
       image: "./assets/label1.png",
       position: { x: 0, y: 0, z: 200 },
       scale: { x: 50, y: 50, z: 50 },
@@ -56,11 +51,10 @@ function setLabels(e: any) {
       },
       sid: 3, // 自定义标识，可有可无
     },
-  ]
-}
+]
 
 function changeLabelPosition() {
-  labels.value[0].position = { x: -0.2, y: 2, z: 1 };
+  labels.value[0].position = { x: 100, y: 0, z: 200 };
 }
 
 function changeTextLabelName() {
@@ -72,7 +66,7 @@ function changeTextLabelName() {
 }
 
 function resetLabels() {
-  labels.value[0].position = { x: -0.5, y: 1, z: 0 };
+  labels.value[0].position = { x: 0, y: 0, z: 200 };
   labels.value[2].text = "I'm Text Label";
 }
 </script>

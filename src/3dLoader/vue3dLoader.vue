@@ -28,6 +28,7 @@ import {
   WebGLRendererParameters,
   AnimationClip,
   Light,
+  Group,
   AxesHelper,
   GridHelper
 } from "three";
@@ -203,7 +204,7 @@ watch(
       loadModelSelect();
     }
     if (valueArray[3]) {
-      clearSceneWrapper();
+      clearScene();
     }
     if (valueArray[4] || valueArray[5]) {
       updateRenderer();
@@ -283,7 +284,6 @@ watch(
 watch(
   [() => props.labels],
   () => {
-    clearSprite();
     setSpriteLabel();
   },
   { deep: true }
@@ -338,7 +338,8 @@ function init() {
     webGLRendererOptions,
     showFps,
     enableDamping,
-    dampingFactor
+    dampingFactor,
+    labels
   } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
@@ -391,6 +392,10 @@ function init() {
     el.appendChild(stats.dom);
   }
   animate();
+  // Init labels
+  if (labels && labels.length > 0) {
+    setSpriteLabel();
+  }
 }
 
 function setContainerElementStyle(el: any) {
@@ -690,8 +695,6 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
           addTexture(object, _texture);
         }
       }
-      clearSprite();
-      setLabel();
       emit("load", scene);
     },
     (event: ProgressEvent) => {
@@ -719,7 +722,7 @@ function loadMtl(filePath: string, getObject: any, index: number) {
   const mtlPathArray: any = /^(.*\/)([^/]*)$/.exec(mtl);
   const path = mtlPathArray[1];
   const file = mtlPathArray[2];
-  mtlLoader.setPath(path).load(file, (materials) => {
+  mtlLoader.setPath(path).load(file, (materials: any) => {
     materials.preload();
     loader.setMaterials(materials);
     loadFilePath(filePath, getObject, index);
@@ -811,7 +814,7 @@ function addTexture(object: Object3D, texture: any) {
     }
   });
 }
-function clearSceneWrapper() {
+function clearScene() {
   scene.clear();
 }
 function setObjectAttribute(type: string, val: any) {
@@ -832,19 +835,10 @@ function setObjectAttribute(type: string, val: any) {
 function getAllObject() {
   return isMultipleModels.value ? scene : object;
 }
-function setLabel() {
-  const { filePath } = props;
-  if (isMultipleModels.value) {
-    if (loaderIndex.value === filePath.length - 1) {
-      setSpriteLabel();
-    }
-  } else {
-    setSpriteLabel();
-  }
-}
 function setSpriteLabel() {
   const { labels } = props;
   if (!labels || labels.length <= 0) return;
+  clearSprite();
   const obj = isMultipleModels.value ? scene : object;
   const spriteImageLabel = (image: any) => {
     if (!textureLoader) {
@@ -890,8 +884,20 @@ function clearSprite() {
   const sceneChildren = scene.children;
   for (let i = sceneChildren.length - 1; i >= 0; i--) {
     const item = sceneChildren[i];
-    if (item && item instanceof Sprite) {
-      scene.remove(item)
+    if (item) {
+      // If have only one model the Sprite in Group
+      if (item instanceof Group && item.children) {
+        scene.children[i].children = item.children.map((_item: any) => {
+          if (_item instanceof Sprite) {
+            return null;
+          }
+          return _item;
+        }).filter((item: any) => item);
+      }
+      // If have multiple models the Sprite in children
+      if (item instanceof Sprite) {
+        scene.remove(item)
+      }
     }
   }
 }
