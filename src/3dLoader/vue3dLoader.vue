@@ -5,7 +5,6 @@
 </template>
 <script>
 import {
-  Object3D,
   Vector2,
   Vector3,
   Color,
@@ -295,7 +294,6 @@ export default {
     labels: {
       deep: true,
       handler() {
-        this.clearSprite();
         this.setSpriteLabel();
       },
     },
@@ -345,9 +343,6 @@ export default {
         this.controls = new OrbitControls(this.camera, el);
       }
       this.setVerticalHorizontalControls();
-
-      this.wrapper = new Object3D();
-      this.scene.add(this.wrapper);
       this.setAxesAndGridHelper();
       this.loadModelSelect();
       this.update();
@@ -365,6 +360,10 @@ export default {
         el.appendChild(this.stats.dom);
       }
       this.animate();
+      // Init labels
+      if (this.labels && this.labels.length > 0) {
+        this.setSpriteLabel();
+      }
     },
     destroyScene() {
       if (this.requestAnimationId) {
@@ -385,7 +384,6 @@ export default {
       el.removeEventListener("click", this.onClick, false);
       el.removeEventListener("dblclick", this.onDblclick, false);
       window.removeEventListener("resize", this.onResize, false);
-      this.wrapper = null;
       this.object = null;
       if (this.scene) {
         this.scene.clear();
@@ -690,7 +688,7 @@ export default {
         ? loaderObj.getObject
         : this.getObject;
       if (this.object && index === 0) {
-        this.wrapper.remove(this.object);
+        this.scene.remove(this.object);
       }
       if (this.requestHeader) {
         this.loader.setRequestHeader(this.requestHeader);
@@ -734,8 +732,7 @@ export default {
               this.addTexture(object, _texture);
             }
           }
-          this.setLabel();
-          this.$emit("load", this.wrapper);
+          this.$emit("load", this.scene);
         },
         (event) => {
           if (!this.parallelLoad) {
@@ -775,7 +772,7 @@ export default {
       const center = getCenter(object);
       // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
       if (!this.objectPositionHasSet) {
-        this.wrapper.position.copy(center.negate());
+        this.scene.position.copy(center.negate());
         this.objectPositionHasSet = true;
       }
       this.object = object;
@@ -783,7 +780,7 @@ export default {
       let fileName = filePath.split("/");
       fileName = fileName[fileName.length - 1];
       this.object.fileName = fileName;
-      this.wrapper.add(object);
+      this.scene.add(object);
       if (object.isMesh) {
         this.update();
         return;
@@ -873,7 +870,7 @@ export default {
       });
     },
     clearSceneWrapper() {
-      this.wrapper.clear();
+      this.scene.clear();
     },
     setObjectAttr(type, val) {
       let obj = this.returnObject();
@@ -893,20 +890,11 @@ export default {
       obj[type].set(val.x, val.y, val.z);
     },
     returnObject() {
-      return this.isMultipleModels ? this.wrapper : this.object;
-    },
-    setLabel() {
-      if (this.isMultipleModels) {
-        if (this.loaderIndex === this.filePath.length - 1) {
-          this.setSpriteLabel();
-        }
-      } else {
-        this.setSpriteLabel();
-      }
+      return this.isMultipleModels ? this.scene : this.object;
     },
     setSpriteLabel() {
       if (!this.labels) return;
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      this.clearSprite()
       const spriteImageLabel = (image) => {
         if (!this.textureLoader) {
           this.textureLoader = new TextureLoader();
@@ -952,18 +940,29 @@ export default {
         if (item.sid) {
           sprite.sid = item.sid;
         }
-        obj.add(sprite);
+        this.scene.add(sprite);
       });
     },
     clearSprite() {
-      this.wrapper.children.forEach((item) => {
-        if (item instanceof Group) {
-          const notSpriteItem = item.children.filter((i) =>
-            !(i instanceof Sprite) ? i : null
-          );
-          item.children = notSpriteItem;
+      const sceneChildren = this.scene.children;
+      for (let i = sceneChildren.length - 1; i >= 0; i--) {
+        const item = sceneChildren[i];
+        if (item) {
+          // If have only one model the Sprite in Group
+          if (item instanceof Group && item.children) {
+            this.scene.children[i].children = item.children.map((_item) => {
+              if (_item instanceof Sprite) {
+                return null;
+              }
+              return _item;
+            }).filter(item => item);
+          }
+          // If have multiple models the Sprite in children
+          if (item instanceof Sprite) {
+            this.scene.remove(item)
+          }
         }
-      });
+      }
     },
     generateCanvas(text, style) {
       if (style === undefined) style = {};
@@ -1024,7 +1023,7 @@ export default {
     },
     playAnimations() {
       if (this.isMultipleModels) {
-        this.playMultipleModels(this.wrapper);
+        this.playMultipleModels(this.scene);
         return;
       }
       this.playSingleModel(this.object);

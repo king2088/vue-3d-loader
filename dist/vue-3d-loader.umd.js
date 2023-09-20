@@ -2258,7 +2258,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-82.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=8b25ba2e&
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-82.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=abf02b7a&
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -19406,7 +19406,6 @@ function enableDraco(isDraco, obj, dir = '') {
     labels: {
       deep: true,
       handler() {
-        this.clearSprite();
         this.setSpriteLabel();
       }
     },
@@ -19451,8 +19450,6 @@ function enableDraco(isDraco, obj, dir = '') {
         this.controls = new OrbitControls(this.camera, el);
       }
       this.setVerticalHorizontalControls();
-      this.wrapper = new Object3D();
-      this.scene.add(this.wrapper);
       this.setAxesAndGridHelper();
       this.loadModelSelect();
       this.update();
@@ -19469,6 +19466,10 @@ function enableDraco(isDraco, obj, dir = '') {
         el.appendChild(this.stats.dom);
       }
       this.animate();
+      // Init labels
+      if (this.labels && this.labels.length > 0) {
+        this.setSpriteLabel();
+      }
     },
     destroyScene() {
       if (this.requestAnimationId) {
@@ -19489,7 +19490,6 @@ function enableDraco(isDraco, obj, dir = '') {
       el.removeEventListener("click", this.onClick, false);
       el.removeEventListener("dblclick", this.onDblclick, false);
       window.removeEventListener("resize", this.onResize, false);
-      this.wrapper = null;
       this.object = null;
       if (this.scene) {
         this.scene.clear();
@@ -19735,7 +19735,7 @@ function enableDraco(isDraco, obj, dir = '') {
       this.loader = loaderObj.loader;
       const _getObject = loaderObj.getObject ? loaderObj.getObject : this.getObject;
       if (this.object && index === 0) {
-        this.wrapper.remove(this.object);
+        this.scene.remove(this.object);
       }
       if (this.requestHeader) {
         this.loader.setRequestHeader(this.requestHeader);
@@ -19774,8 +19774,7 @@ function enableDraco(isDraco, obj, dir = '') {
             this.addTexture(object, _texture);
           }
         }
-        this.setLabel();
-        this.$emit("load", this.wrapper);
+        this.$emit("load", this.scene);
       }, event => {
         if (!this.parallelLoad) {
           this.onProcess(event);
@@ -19811,7 +19810,7 @@ function enableDraco(isDraco, obj, dir = '') {
       const center = getCenter(object);
       // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
       if (!this.objectPositionHasSet) {
-        this.wrapper.position.copy(center.negate());
+        this.scene.position.copy(center.negate());
         this.objectPositionHasSet = true;
       }
       this.object = object;
@@ -19819,7 +19818,7 @@ function enableDraco(isDraco, obj, dir = '') {
       let fileName = filePath.split("/");
       fileName = fileName[fileName.length - 1];
       this.object.fileName = fileName;
-      this.wrapper.add(object);
+      this.scene.add(object);
       if (object.isMesh) {
         this.update();
         return;
@@ -19901,7 +19900,7 @@ function enableDraco(isDraco, obj, dir = '') {
       });
     },
     clearSceneWrapper() {
-      this.wrapper.clear();
+      this.scene.clear();
     },
     setObjectAttr(type, val) {
       let obj = this.returnObject();
@@ -19921,20 +19920,11 @@ function enableDraco(isDraco, obj, dir = '') {
       obj[type].set(val.x, val.y, val.z);
     },
     returnObject() {
-      return this.isMultipleModels ? this.wrapper : this.object;
-    },
-    setLabel() {
-      if (this.isMultipleModels) {
-        if (this.loaderIndex === this.filePath.length - 1) {
-          this.setSpriteLabel();
-        }
-      } else {
-        this.setSpriteLabel();
-      }
+      return this.isMultipleModels ? this.scene : this.object;
     },
     setSpriteLabel() {
       if (!this.labels) return;
-      let obj = this.isMultipleModels ? this.wrapper : this.object;
+      this.clearSprite();
       const spriteImageLabel = image => {
         if (!this.textureLoader) {
           this.textureLoader = new TextureLoader();
@@ -19969,16 +19959,29 @@ function enableDraco(isDraco, obj, dir = '') {
         if (item.sid) {
           sprite.sid = item.sid;
         }
-        obj.add(sprite);
+        this.scene.add(sprite);
       });
     },
     clearSprite() {
-      this.wrapper.children.forEach(item => {
-        if (item instanceof Group) {
-          const notSpriteItem = item.children.filter(i => !(i instanceof Sprite) ? i : null);
-          item.children = notSpriteItem;
+      const sceneChildren = this.scene.children;
+      for (let i = sceneChildren.length - 1; i >= 0; i--) {
+        const item = sceneChildren[i];
+        if (item) {
+          // If have only one model the Sprite in Group
+          if (item instanceof Group && item.children) {
+            this.scene.children[i].children = item.children.map(_item => {
+              if (_item instanceof Sprite) {
+                return null;
+              }
+              return _item;
+            }).filter(item => item);
+          }
+          // If have multiple models the Sprite in children
+          if (item instanceof Sprite) {
+            this.scene.remove(item);
+          }
         }
-      });
+      }
     },
     generateCanvas(text, style) {
       if (style === undefined) style = {};
@@ -20026,7 +20029,7 @@ function enableDraco(isDraco, obj, dir = '') {
     },
     playAnimations() {
       if (this.isMultipleModels) {
-        this.playMultipleModels(this.wrapper);
+        this.playMultipleModels(this.scene);
         return;
       }
       this.playSingleModel(this.object);
@@ -20123,10 +20126,10 @@ function enableDraco(isDraco, obj, dir = '') {
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-54.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-54.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-54.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=8b25ba2e&prod&lang=css&
+;// CONCATENATED MODULE: ./node_modules/mini-css-extract-plugin/dist/loader.js??clonedRuleSet-54.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-54.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-54.use[2]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=abf02b7a&prod&lang=css&
 // extracted by mini-css-extract-plugin
 
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=8b25ba2e&prod&lang=css&
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=abf02b7a&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
