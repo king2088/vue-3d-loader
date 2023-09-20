@@ -40872,7 +40872,7 @@ const _sfc_main = defineComponent({
         loadModelSelect();
       }
       if (valueArray[3]) {
-        clearSceneWrapper();
+        clearScene();
       }
       if (valueArray[4] || valueArray[5]) {
         updateRenderer();
@@ -40923,7 +40923,6 @@ const _sfc_main = defineComponent({
       updateCamera();
     }, { deep: true });
     watch([() => props.labels], () => {
-      clearSprite();
       setSpriteLabel();
     }, { deep: true });
     function resetScene() {
@@ -40960,7 +40959,8 @@ const _sfc_main = defineComponent({
         webGLRendererOptions,
         showFps,
         enableDamping,
-        dampingFactor
+        dampingFactor,
+        labels
       } = props;
       if (filePath && typeof filePath === "object") {
         isMultipleModels.value = true;
@@ -41002,6 +41002,9 @@ const _sfc_main = defineComponent({
         el.appendChild(stats.dom);
       }
       animate();
+      if (labels && labels.length > 0) {
+        setSpriteLabel();
+      }
     }
     function setContainerElementStyle(el) {
       const { width, height } = props;
@@ -41243,8 +41246,6 @@ const _sfc_main = defineComponent({
             addTexture(object, _texture);
           }
         }
-        clearSprite();
-        setLabel();
         emit("load", scene);
       }, (event) => {
         if (!parallelLoad) {
@@ -41353,7 +41354,7 @@ const _sfc_main = defineComponent({
         }
       });
     }
-    function clearSceneWrapper() {
+    function clearScene() {
       scene.clear();
     }
     function setObjectAttribute(type, val) {
@@ -41373,20 +41374,11 @@ const _sfc_main = defineComponent({
     function getAllObject() {
       return isMultipleModels.value ? scene : object;
     }
-    function setLabel() {
-      const { filePath } = props;
-      if (isMultipleModels.value) {
-        if (loaderIndex.value === filePath.length - 1) {
-          setSpriteLabel();
-        }
-      } else {
-        setSpriteLabel();
-      }
-    }
     function setSpriteLabel() {
       const { labels } = props;
       if (!labels || labels.length <= 0)
         return;
+      clearSprite();
       const obj = isMultipleModels.value ? scene : object;
       const spriteImageLabel = (image) => {
         if (!textureLoader) {
@@ -41426,8 +41418,18 @@ const _sfc_main = defineComponent({
       const sceneChildren = scene.children;
       for (let i = sceneChildren.length - 1; i >= 0; i--) {
         const item = sceneChildren[i];
-        if (item && item instanceof Sprite) {
-          scene.remove(item);
+        if (item) {
+          if (item instanceof Group && item.children) {
+            scene.children[i].children = item.children.map((_item) => {
+              if (_item instanceof Sprite) {
+                return null;
+              }
+              return _item;
+            }).filter((item2) => item2);
+          }
+          if (item instanceof Sprite) {
+            scene.remove(item);
+          }
         }
       }
     }
@@ -41589,7 +41591,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-6249086c"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-112a1ace"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

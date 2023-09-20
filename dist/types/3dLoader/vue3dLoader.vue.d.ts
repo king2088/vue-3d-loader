@@ -307,10 +307,9 @@ declare const _default: import("vue").DefineComponent<{
     updateStats: () => void;
     onProcess: (xhr: ProgressEvent) => void;
     addTexture: (object: Object3D, texture: any) => void;
-    clearSceneWrapper: () => void;
+    clearScene: () => void;
     setObjectAttribute: (type: string, val: any) => void;
     getAllObject: () => any;
-    setLabel: () => void;
     setSpriteLabel: () => void;
     clearSprite: () => void;
     generateCanvas: (text: string, style: any) => HTMLCanvasElement;

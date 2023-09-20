@@ -300,10 +300,9 @@ declare const _default: {
         updateStats: () => void;
         onProcess: (xhr: ProgressEvent<EventTarget>) => void;
         addTexture: (object: Three.Object3D<Three.Event>, texture: any) => void;
-        clearSceneWrapper: () => void;
+        clearScene: () => void;
         setObjectAttribute: (type: string, val: any) => void;
         getAllObject: () => any;
-        setLabel: () => void;
         setSpriteLabel: () => void;
         clearSprite: () => void;
         generateCanvas: (text: string, style: any) => HTMLCanvasElement;
