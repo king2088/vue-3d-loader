@@ -258,7 +258,6 @@ declare const _default: import("vue").DefineComponent<{
     camera: PerspectiveCamera;
     clock: Clock;
     scene: Scene;
-    wrapper: Object3D<import("three").Event>;
     renderer: WebGLRenderer;
     controls: OrbitControls;
     allLights: Light[];

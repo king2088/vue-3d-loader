@@ -251,7 +251,6 @@ declare const _default: {
         camera: Three.PerspectiveCamera;
         clock: Three.Clock;
         scene: Three.Scene;
-        wrapper: Three.Object3D<Three.Event>;
         renderer: Three.WebGLRenderer;
         controls: import("three/examples/jsm/controls/OrbitControls").OrbitControls;
         allLights: Three.Light[];

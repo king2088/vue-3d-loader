@@ -28,7 +28,6 @@ import {
   WebGLRendererParameters,
   AnimationClip,
   Light,
-  Group,
   AxesHelper,
   GridHelper
 } from "three";

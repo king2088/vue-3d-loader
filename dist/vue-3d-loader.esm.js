@@ -40835,7 +40835,6 @@ const _sfc_main = defineComponent({
     const camera = new PerspectiveCamera(45, 1, 0.1, 1e5);
     const clock = new Clock();
     let scene = new Scene();
-    let wrapper = null;
     let renderer = null;
     let controls = {};
     let allLights = [];
@@ -40950,7 +40949,6 @@ const _sfc_main = defineComponent({
       el.removeEventListener("dblclick", onDblclick, false);
       window.removeEventListener("resize", onResize, false);
       object = null;
-      wrapper = null;
       if (scene) {
         scene.clear();
       }
@@ -40990,8 +40988,6 @@ const _sfc_main = defineComponent({
         }
       }
       setVerticalHorizontalControls();
-      wrapper = new Object3D();
-      scene.add(wrapper);
       setAxesAndGridHelper();
       loadModelSelect();
       update();
@@ -41212,7 +41208,7 @@ const _sfc_main = defineComponent({
       loader = loaderObject3d.loader;
       const getObjectFun = loaderObject3d.getObject ? loaderObject3d.getObject : getObject;
       if (object && index2 === 0) {
-        wrapper.remove(object);
+        scene.remove(object);
       }
       if (requestHeader) {
         loader.setRequestHeader(requestHeader);
@@ -41247,8 +41243,9 @@ const _sfc_main = defineComponent({
             addTexture(object, _texture);
           }
         }
+        clearSprite();
         setLabel();
-        emit("load", wrapper);
+        emit("load", scene);
       }, (event) => {
         if (!parallelLoad) {
           onProcess(event);
@@ -41284,14 +41281,14 @@ const _sfc_main = defineComponent({
     function addObject(obj, filePath) {
       const center = getCenter(object);
       if (!objectPositionHasSet.value) {
-        wrapper.position.copy(center.negate());
+        scene.position.copy(center.negate());
         objectPositionHasSet.value = true;
       }
       object = obj;
       let fileName = filePath.split("/");
       fileName = fileName[fileName.length - 1];
       object.fileName = fileName;
-      wrapper.add(object);
+      scene.add(object);
       updateCamera();
       updateModel();
       playAnimations();
@@ -41357,7 +41354,7 @@ const _sfc_main = defineComponent({
       });
     }
     function clearSceneWrapper() {
-      wrapper.clear();
+      scene.clear();
     }
     function setObjectAttribute(type, val) {
       const obj = getAllObject();
@@ -41374,7 +41371,7 @@ const _sfc_main = defineComponent({
       obj[type].set(val.x, val.y, val.z);
     }
     function getAllObject() {
-      return isMultipleModels.value ? wrapper : object;
+      return isMultipleModels.value ? scene : object;
     }
     function setLabel() {
       const { filePath } = props;
@@ -41390,7 +41387,7 @@ const _sfc_main = defineComponent({
       const { labels } = props;
       if (!labels || labels.length <= 0)
         return;
-      const obj = isMultipleModels.value ? wrapper : object;
+      const obj = isMultipleModels.value ? scene : object;
       const spriteImageLabel = (image) => {
         if (!textureLoader) {
           textureLoader = new TextureLoader();
@@ -41426,12 +41423,13 @@ const _sfc_main = defineComponent({
       });
     }
     function clearSprite() {
-      wrapper.children.forEach((item) => {
-        if (item instanceof Group) {
-          const notSpriteItem = item.children.filter((i) => !(i instanceof Sprite) ? i : null);
-          item.children = notSpriteItem;
+      const sceneChildren = scene.children;
+      for (let i = sceneChildren.length - 1; i >= 0; i--) {
+        const item = sceneChildren[i];
+        if (item && item instanceof Sprite) {
+          scene.remove(item);
         }
-      });
+      }
     }
     function generateCanvas(text, style) {
       const roundRect = (ctx, x, y, w, h, r) => {
@@ -41591,7 +41589,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-7efc6078"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-6249086c"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
