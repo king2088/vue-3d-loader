@@ -160,7 +160,6 @@ const mouse = new Vector2();
 const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 const clock = new Clock();
 let scene: Scene = new Scene();
-let wrapper: Object3D = null as any;
 let renderer: WebGLRenderer = null as any;
 let controls: OrbitControls = {} as any;
 let allLights: Light[] = [];
@@ -328,7 +327,6 @@ function destroyScene() {
   el.removeEventListener("dblclick", onDblclick, false);
   window.removeEventListener("resize", onResize, false);
   object = null;
-  wrapper = null as any;
   if (scene) {
     scene.clear();
   }
@@ -378,8 +376,6 @@ function init() {
     }
   }
   setVerticalHorizontalControls();
-  wrapper = new Object3D();
-  scene.add(wrapper);
   setAxesAndGridHelper();
   loadModelSelect();
   update();
@@ -652,7 +648,7 @@ function load(fileIndex?: number) {
     ? loaderObject3d.getObject
     : getObject;
   if (object && index === 0) {
-    wrapper.remove(object);
+    scene.remove(object);
   }
   if (requestHeader) {
     loader.setRequestHeader(requestHeader);
@@ -695,8 +691,9 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
           addTexture(object, _texture);
         }
       }
+      clearSprite();
       setLabel();
-      emit("load", wrapper);
+      emit("load", scene);
     },
     (event: ProgressEvent) => {
       if (!parallelLoad) {
@@ -736,7 +733,7 @@ function addObject(obj: Object3D, filePath: string) {
   const center = getCenter(object);
   // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
   if (!objectPositionHasSet.value) {
-    wrapper.position.copy(center.negate());
+    scene.position.copy(center.negate());
     objectPositionHasSet.value = true;
   }
   object = obj;
@@ -744,7 +741,7 @@ function addObject(obj: Object3D, filePath: string) {
   let fileName: any = filePath.split("/");
   fileName = fileName[fileName.length - 1];
   object.fileName = fileName;
-  wrapper.add(object);
+  scene.add(object);
   updateCamera();
   updateModel();
   playAnimations();
@@ -816,7 +813,7 @@ function addTexture(object: Object3D, texture: any) {
   });
 }
 function clearSceneWrapper() {
-  wrapper.clear();
+  scene.clear();
 }
 function setObjectAttribute(type: string, val: any) {
   const obj = getAllObject();
@@ -834,7 +831,7 @@ function setObjectAttribute(type: string, val: any) {
   obj[type].set(val.x, val.y, val.z);
 }
 function getAllObject() {
-  return isMultipleModels.value ? wrapper : object;
+  return isMultipleModels.value ? scene : object;
 }
 function setLabel() {
   const { filePath } = props;
@@ -849,7 +846,7 @@ function setLabel() {
 function setSpriteLabel() {
   const { labels } = props;
   if (!labels || labels.length <= 0) return;
-  const obj = isMultipleModels.value ? wrapper : object;
+  const obj = isMultipleModels.value ? scene : object;
   const spriteImageLabel = (image: any) => {
     if (!textureLoader) {
       textureLoader = new TextureLoader();
@@ -891,14 +888,13 @@ function setSpriteLabel() {
   });
 }
 function clearSprite() {
-  wrapper.children.forEach((item) => {
-    if (item instanceof Group) {
-      const notSpriteItem: any = item.children.filter((i) =>
-        !(i instanceof Sprite) ? i : null
-      );
-      item.children = notSpriteItem;
+  const sceneChildren = scene.children;
+  for (let i = sceneChildren.length - 1; i >= 0; i--) {
+    const item = sceneChildren[i];
+    if (item && item instanceof Sprite) {
+      scene.remove(item)
     }
-  });
+  }
 }
 function generateCanvas(text: string, style: any) {
   const roundRect = (
