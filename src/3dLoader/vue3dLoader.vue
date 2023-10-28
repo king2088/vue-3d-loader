@@ -150,16 +150,16 @@ export default {
       type: String,
       default: "MeshStandardMaterial"
     },
-    enableAxesHelper: { 
-      type: Boolean, 
+    enableAxesHelper: {
+      type: Boolean,
       default: false
     },
-    axesHelperSize: { 
-      type: Number, 
+    axesHelperSize: {
+      type: Number,
       default: 100
     },
-    enableGridHelper: { 
-      type: Boolean, 
+    enableGridHelper: {
+      type: Boolean,
       default: false
     },
     minDistance: {
@@ -320,7 +320,7 @@ export default {
       }
       const el = this.$refs.container;
       // init canvas width and height
-      this.onResize();
+      this.resizeModel();
       const WEB_GL_OPTIONS = { antialias: true, alpha: true };
       const options = Object.assign(
         {},
@@ -353,7 +353,7 @@ export default {
       el.addEventListener("mouseup", this.onMouseUp, false);
       el.addEventListener("click", this.onClick, false);
       el.addEventListener("dblclick", this.onDblclick, false);
-      window.addEventListener("resize", this.onResize, false);
+      window.addEventListener("resize", this.resizeModel, false);
       // stats
       if (this.showFps) {
         this.stats = new Stats();
@@ -383,13 +383,13 @@ export default {
       el.removeEventListener("mouseup", this.onMouseUp, false);
       el.removeEventListener("click", this.onClick, false);
       el.removeEventListener("dblclick", this.onDblclick, false);
-      window.removeEventListener("resize", this.onResize, false);
+      window.removeEventListener("resize", this.resizeModel, false);
       this.object = null;
       if (this.scene) {
         this.scene.clear();
       }
     },
-    onResize() {
+    resizeModel() {
       if (!this.width || !this.height) {
         this.$nextTick(() => {
           let el = this.$refs.container;
