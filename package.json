@@ -1,6 +1,6 @@
 {
   "name": "vue-3d-loader",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "private": false,
   "main": "dist/vue-3d-loader.umd.min.js",
   "unpkg": "dist/vue-3d-loader.min.js",
