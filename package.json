@@ -3,9 +3,14 @@
   "version": "1.3.1",
   "private": false,
   "main": "dist/vue-3d-loader.umd.min.js",
+  "unpkg": "dist/vue-3d-loader.min.js",
+  "jsdelivr": "dist/vue-3d-loader.min.js",
+  "description": "VueJS and threeJS 3d viewer",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib ./src/index.js --name vue-3d-loader --dest dist",
+    "build": "npm run build:lib && npm run build:wc",
+    "build:lib": "vue-cli-service build --target lib ./src/index.js --name vue-3d-loader --dest dist",
+    "build:wc": "vue-cli-service build --target wc --no-clean ./src/3dLoader/vue3dLoader.vue --name vue-3d-loader --dest dist",
     "build:example": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
