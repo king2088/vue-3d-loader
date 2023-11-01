@@ -13,6 +13,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
+import { vue3dLoader } from "vue-3d-loader";
 
 const lights = ref();
 lights.value = [

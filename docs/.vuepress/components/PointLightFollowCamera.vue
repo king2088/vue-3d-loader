@@ -4,10 +4,12 @@
     :lights="lights"
     :cameraPosition="{ x: 0, y: 10, z: 10 }"
     :pointLightFollowCamera="true"
+    :height="350"
   />
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
+import { vue3dLoader } from "vue-3d-loader";
 
 const lights = ref();
 lights.value = [
