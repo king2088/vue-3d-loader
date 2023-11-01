@@ -34,7 +34,8 @@ export const sidebarZh: SidebarConfig = {
         '/zh/guide/example/progress-bar.md',
         '/zh/guide/example/set-vertical-horizontal.md',
         '/zh/guide/example/enable-axes-grid.md',
-        '/zh/guide/example/min-max-distance.md'
+        '/zh/guide/example/min-max-distance.md',
+        '/zh/guide/example/point-light-follow-camera.md'
       ],
     },
   ],

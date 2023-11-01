@@ -34,7 +34,8 @@ export const sidebarEn: SidebarConfig = {
         '/guide/example/progress-bar.md',
         '/guide/example/set-vertical-horizontal.md',
         '/guide/example/enable-axes-grid.md',
-        '/guide/example/min-max-distance.md'
+        '/guide/example/min-max-distance.md',
+        '/guide/example/point-light-follow-camera.md'
       ],
     },
   ],
