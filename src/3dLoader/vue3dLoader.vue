@@ -99,6 +99,7 @@ interface Props {
   enableGridHelper?: boolean;
   minDistance?: number; 
   maxDistance?: number;
+  pointLightFollowCamera?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -554,7 +555,7 @@ function updateLights() {
         item.intensity === 0 ? item.intensity : item.intensity || 1;
       light = new AmbientLight(color, intensity);
     }
-    if (type === "point" || type === "pointlight") {
+    if (type === "point" || type === "pointLight") {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0xffffff;
       const intensity =
@@ -767,6 +768,10 @@ function animate() {
   render();
 }
 function render() {
+  const { pointLightFollowCamera } = props
+  if (pointLightFollowCamera) {
+    setLightFollowCamera()
+  }
   renderer.render(scene, camera);
 }
 function updateStats() {
@@ -1078,6 +1083,17 @@ function setAxesAndGridHelper () {
       scene.remove(gridHelper);
     }
   }
+}
+
+// 光源跟随相机
+function setLightFollowCamera() {
+  const vector = camera.position.clone();
+  //console.log(vector.x);
+  scene.children.forEach(item => {
+    if (item instanceof PointLight) {
+      item.position.set(vector.x,vector.y,vector.z);
+    }
+  })
 }
 </script>
 <style scoped>
