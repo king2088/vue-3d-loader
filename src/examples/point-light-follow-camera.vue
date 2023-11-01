@@ -12,7 +12,7 @@ import { ref } from "vue";
 const lights = ref();
 lights.value = [
   {
-    type: "pointlight",
+    type: "pointLight",
     color: "#fff",
     position: { x: 0, y: 0, z: 400 },
     intensity: 1
