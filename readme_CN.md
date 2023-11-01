@@ -693,6 +693,16 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   你能够将相机向外移动多少，其默认值为Infinity
   </td>
 </tr>
+<tr>
+  <td>pointLightFollowCamera</td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  开启点光源跟随相机
+  </td>
+</tr>
 </table>
 
 ### 事件

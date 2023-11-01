@@ -1088,8 +1088,7 @@ function setAxesAndGridHelper () {
 // 光源跟随相机
 function setLightFollowCamera() {
   const vector = camera.position.clone();
-  //console.log(vector.x);
-  scene.children.forEach(item => {
+  scene.children.forEach((item: any) => {
     if (item instanceof PointLight) {
       item.position.set(vector.x,vector.y,vector.z);
     }

@@ -693,6 +693,16 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   How far you can dolly out.
   </td>
 </tr>
+<tr>
+  <td>pointLightFollowCamera</td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Point light follow camera.
+  </td>
+</tr>
 </table>
 
 ### Events
