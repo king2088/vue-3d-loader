@@ -169,6 +169,10 @@ export default {
     maxDistance: {
       type: Number,
       default: Infinity,
+    },
+    pointLightFollowCamera: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {
@@ -808,6 +812,9 @@ export default {
       this.render();
     },
     render() {
+      if (this.pointLightFollowCamera) {
+        this.setLightFollowCamera()
+      }
       if (this.renderer) {
         this.renderer.render(this.scene, this.camera);
       }
@@ -1116,6 +1123,15 @@ export default {
           this.scene.remove(this.gridHelper);
         }
       }
+    },
+    // 光源跟随相机
+    setLightFollowCamera() {
+      const vector = this.camera.position.clone();
+      this.scene.children.forEach(item => {
+        if (item instanceof PointLight) {
+          item.position.set(vector.x,vector.y,vector.z);
+        }
+      })
     }
   }
 };
