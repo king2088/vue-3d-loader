@@ -1673,7 +1673,7 @@ if (FORCED) defineBuiltInAccessor(RegExpPrototype, 'flags', {
 
 /***/ }),
 
-/***/ 4120:
+/***/ 1801:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1798,19 +1798,19 @@ module.exports = function (i) {
 
 /***/ }),
 
-/***/ 8085:
+/***/ 6349:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(4120);
+var content = __webpack_require__(1801);
 if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.id, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = (__webpack_require__(7037)/* ["default"] */ .Z)
-var update = add("4e95e272", content, true, {"sourceMap":false,"shadowMode":false});
+var update = add("65001a80", content, true, {"sourceMap":false,"shadowMode":false});
 
 /***/ }),
 
@@ -2672,7 +2672,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=7c044953&
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=template&id=7239f133&
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -20094,7 +20094,7 @@ function enableDraco(isDraco, obj, dir = '') {
           const color = item.color === 0x000000 ? item.color : item.color || 0x404040;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new AmbientLight(color, intensity);
-        } else if (type === "point" || type === "pointlight") {
+        } else if (type === "point" || type === "pointLight") {
           const color = item.color === 0x000000 ? item.color : item.color || 0xffffff;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           const distance = item.distance || 0;
@@ -20556,9 +20556,9 @@ function enableDraco(isDraco, obj, dir = '') {
 });
 ;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var _3dLoader_vue3dLoadervue_type_script_lang_js_ = (vue3dLoadervue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=7c044953&prod&lang=css&
-var vue3dLoadervue_type_style_index_0_id_7c044953_prod_lang_css_ = __webpack_require__(8085);
-;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=7c044953&prod&lang=css&
+// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-12.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/vue-loader-v15/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=7239f133&prod&lang=css&
+var vue3dLoadervue_type_style_index_0_id_7239f133_prod_lang_css_ = __webpack_require__(6349);
+;// CONCATENATED MODULE: ./src/3dLoader/vue3dLoader.vue?vue&type=style&index=0&id=7239f133&prod&lang=css&
 
 ;// CONCATENATED MODULE: ./node_modules/@vue/vue-loader-v15/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
