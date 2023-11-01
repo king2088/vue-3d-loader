@@ -112,6 +112,7 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
 |   enableGridHelper | boolean | false |  开启或显示网格 |
 |   minDistance | float | 0 |  你能够将相机向内移动多少，其默认值为0 |
 |   maxDistance | float | Infinity |  你能够将相机向外移动多少，其默认值为Infinity |
+| pointLightFollowCamera|  boolean |  false  |  开启点光源跟随相机  |
 
 ### 事件
 

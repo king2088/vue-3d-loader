@@ -112,6 +112,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 |   enableGridHelper | boolean | false |  Enable grid |
 |     minDistance | float | 0 |    How far you can dolly in |
 |   maxDistance | float |  Infinity |    How far you can dolly out |
+| pointLightFollowCamera|  boolean |  false  |  poibt light follow camera  |
 ### Events
 
 | event                        | description                                                          |
