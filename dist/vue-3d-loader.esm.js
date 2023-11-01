@@ -40815,7 +40815,8 @@ const _sfc_main = defineComponent({
     axesHelperSize: { default: 100 },
     enableGridHelper: { type: Boolean, default: false },
     minDistance: { default: 0 },
-    maxDistance: { default: Infinity }
+    maxDistance: { default: Infinity },
+    pointLightFollowCamera: { type: Boolean }
   },
   emits: [
     "mousedown",
@@ -41139,7 +41140,7 @@ const _sfc_main = defineComponent({
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new AmbientLight(color, intensity);
         }
-        if (type === "point" || type === "pointlight") {
+        if (type === "point" || type === "pointLight") {
           const color = item.color === 0 ? item.color : item.color || 16777215;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           const distance = item.distance || 0;
@@ -41312,6 +41313,10 @@ const _sfc_main = defineComponent({
       render();
     }
     function render() {
+      const { pointLightFollowCamera } = props;
+      if (pointLightFollowCamera) {
+        setLightFollowCamera();
+      }
       renderer.render(scene, camera);
     }
     function updateStats() {
@@ -41576,6 +41581,14 @@ const _sfc_main = defineComponent({
         }
       }
     }
+    function setLightFollowCamera() {
+      const vector = camera.position.clone();
+      scene.children.forEach((item) => {
+        if (item instanceof PointLight) {
+          item.position.set(vector.x, vector.y, vector.z);
+        }
+      });
+    }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
         ref_key: "containerElement",
@@ -41591,7 +41604,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-32d09fd9"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-a6662fee"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

@@ -203,6 +203,10 @@ declare const _default: {
             required: false;
             default: number;
         };
+        pointLightFollowCamera: {
+            type: BooleanConstructor;
+            required: false;
+        };
     }, {
         props: {
             filePath: string | string[];
@@ -244,6 +248,7 @@ declare const _default: {
             enableGridHelper: boolean;
             minDistance: number;
             maxDistance: number;
+            pointLightFollowCamera?: boolean | undefined;
         };
         object: any;
         raycaster: Three.Raycaster;
@@ -312,6 +317,7 @@ declare const _default: {
         playMultipleModels: (obj: Three.Object3D<Three.Event>) => void;
         setVerticalHorizontalControls: () => void;
         setAxesAndGridHelper: () => void;
+        setLightFollowCamera: () => void;
     }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
         filePath: {
             type: (StringConstructor | ArrayConstructor)[];
@@ -511,6 +517,10 @@ declare const _default: {
             required: false;
             default: number;
         };
+        pointLightFollowCamera: {
+            type: BooleanConstructor;
+            required: false;
+        };
     }>> & {
         onMousedown?: ((...args: any[]) => any) | undefined;
         onMousemove?: ((...args: any[]) => any) | undefined;
@@ -546,6 +556,7 @@ declare const _default: {
         enableGridHelper: boolean;
         minDistance: number;
         maxDistance: number;
+        pointLightFollowCamera: boolean;
     }>;
 };
 export default _default;
