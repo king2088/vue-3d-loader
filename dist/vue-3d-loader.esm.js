@@ -40858,6 +40858,25 @@ const _sfc_main = defineComponent({
     onBeforeUnmount(() => {
       destroyScene();
     });
+    watch([() => props.autoPlay], () => {
+      playAnimations();
+    });
+    watch([() => props.width, () => props.height], () => {
+      size.value = {
+        width: props.width || 0,
+        height: props.height || 0
+      };
+    });
+    watch([
+      () => props.enableAxesHelper,
+      () => props.axesHelperSize,
+      () => props.enableGridHelper
+    ], () => {
+      setAxesAndGridHelper();
+    });
+    watch([() => props.minDistance, () => props.maxDistance], () => {
+      setVerticalHorizontalControls();
+    });
     watch([
       () => props.filePath,
       () => props.fileType,
@@ -40878,26 +40897,7 @@ const _sfc_main = defineComponent({
       if (valueArray[4] || valueArray[5]) {
         updateRenderer();
       }
-    });
-    watch([() => props.autoPlay], () => {
-      playAnimations();
-    });
-    watch([() => props.width, () => props.height], () => {
-      size.value = {
-        width: props.width || 0,
-        height: props.height || 0
-      };
-    });
-    watch([
-      () => props.enableAxesHelper,
-      () => props.axesHelperSize,
-      () => props.enableGridHelper
-    ], () => {
-      setAxesAndGridHelper();
-    });
-    watch([() => props.minDistance, () => props.maxDistance], () => {
-      setVerticalHorizontalControls();
-    });
+    }, { deep: true });
     watch([
       () => props.rotation,
       () => props.position,
@@ -41604,7 +41604,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-230fb205"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-cbdef4f6"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };
