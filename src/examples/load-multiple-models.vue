@@ -38,6 +38,13 @@ scale.value = [
   { x: 0.8, y: 0.8, z: 0.8 },
 ];
 
+setTimeout(() => {
+  filePath.value = [
+  "/models/ply/Lucy100k.ply",
+  "/models/obj/tree.obj",
+];
+}, 10000)
+
 function change(event: any, type: string) {
   const value = event.target.checked;
   switch (type) {

@@ -188,31 +188,6 @@ onBeforeUnmount(() => {
   destroyScene();
 });
 
-watch(
-  [
-    () => props.filePath,
-    () => props.fileType,
-    () => props.mtlPath,
-    () => props.clearScene,
-    () => props.backgroundAlpha,
-    () => props.backgroundColor,
-  ],
-  (valueArray) => {
-    if (valueArray[0] || valueArray[1]) {
-      resetScene();
-    }
-    if (valueArray[2]) {
-      loadModelSelect();
-    }
-    if (valueArray[3]) {
-      clearScene();
-    }
-    if (valueArray[4] || valueArray[5]) {
-      updateRenderer();
-    }
-  }
-);
-
 watch([() => props.autoPlay], () => {
   playAnimations();
 });
@@ -237,6 +212,31 @@ watch([() => props.minDistance, () => props.maxDistance], () => {
 });
 
 // deep watch
+watch(
+  [
+    () => props.filePath,
+    () => props.fileType,
+    () => props.mtlPath,
+    () => props.clearScene,
+    () => props.backgroundAlpha,
+    () => props.backgroundColor,
+  ],
+  (valueArray) => {
+    if (valueArray[0] || valueArray[1]) {
+      resetScene();
+    }
+    if (valueArray[2]) {
+      loadModelSelect();
+    }
+    if (valueArray[3]) {
+      clearScene();
+    }
+    if (valueArray[4] || valueArray[5]) {
+      updateRenderer();
+    }
+  },
+  { deep: true }
+);
 watch(
   [
     () => props.rotation,
