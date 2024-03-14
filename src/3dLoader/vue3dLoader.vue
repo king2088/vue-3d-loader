@@ -216,9 +216,12 @@ export default {
     this.destroyScene();
   },
   watch: {
-    filePath() {
-      this.destroyScene();
-      this.init();
+    filePath: {
+      handler() {
+        this.destroyScene();
+        this.init();
+      },
+      deep: true
     },
     fileType() {
       this.destroyScene();
