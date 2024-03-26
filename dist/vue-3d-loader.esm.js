@@ -40828,7 +40828,7 @@ const _sfc_main = defineComponent({
     "process",
     "error"
   ],
-  setup(__props, { emit }) {
+  setup(__props, { expose, emit }) {
     const props = __props;
     let object = null;
     const raycaster = new Raycaster();
@@ -41589,6 +41589,10 @@ const _sfc_main = defineComponent({
         }
       });
     }
+    expose({
+      camera,
+      scene
+    });
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
         ref_key: "containerElement",
@@ -41604,7 +41608,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-cbdef4f6"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-550d01bf"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

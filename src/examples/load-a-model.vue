@@ -5,9 +5,9 @@
     ref="vueRef"
   />
 </template>
-<script setup>
+<script setup lang="ts">
 import { nextTick, onMounted, ref } from "vue";
-const vueRef = ref(null);
+const vueRef = ref<any>(null);
 onMounted(() => {
   console.log(vueRef.value.camera);
   // console.log(vue2Ref.value);
