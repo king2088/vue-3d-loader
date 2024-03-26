@@ -1094,6 +1094,12 @@ function setLightFollowCamera() {
     }
   })
 }
+
+// 导出变量
+defineExpose({
+  camera,
+  scene,
+})
 </script>
 <style scoped>
 .viewer-container {
