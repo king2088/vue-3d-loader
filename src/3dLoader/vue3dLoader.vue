@@ -184,8 +184,6 @@ export default {
       },
       object: null,
       raycaster: new Raycaster(),
-      camera: new PerspectiveCamera(45, 1, 0.1, 100000),
-      scene: new Scene(),
       wrapper: null,
       renderer: null,
       controls: null,
@@ -207,6 +205,8 @@ export default {
       timer: null,
       objectPositionHasSet: false,
       isMultipleModels: false,
+      camera: new PerspectiveCamera(45, 1, 0.1, 100000),
+      scene: new Scene(),
     };
   },
   mounted() {

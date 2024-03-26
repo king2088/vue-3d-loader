@@ -5,6 +5,7 @@
       filePath="/models/collada/stormtrooper/stormtrooper.dae"
       :scale="{ x: 0.2, y: 0.2, z: 0.2 }"
       :autoPlay="autoPlay"
+      ref="vue3dLoaderRef"
     />
   </div>
 </template>
@@ -14,6 +15,10 @@ export default {
     return {
       autoPlay: true,
     };
+  },
+  mounted() {
+    const ref = this.$refs.vue3dLoaderRef;
+    console.log('ref', ref);
   },
   methods: {
     enableAnimations() {
