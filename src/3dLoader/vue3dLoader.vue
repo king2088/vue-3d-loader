@@ -605,7 +605,7 @@ export default {
           const intensity =
             item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new AmbientLight(color, intensity);
-        } else if (type === "point" || type === "pointLight") {
+        } else if (type === "point" || type === "pointlight") {
           const color =
             item.color === 0x000000 ? item.color : item.color || 0xffffff;
           const intensity =
