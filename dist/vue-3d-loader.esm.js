@@ -41140,7 +41140,7 @@ const _sfc_main = defineComponent({
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           light = new AmbientLight(color, intensity);
         }
-        if (type === "point" || type === "pointLight") {
+        if (type === "point" || type === "pointlight") {
           const color = item.color === 0 ? item.color : item.color || 16777215;
           const intensity = item.intensity === 0 ? item.intensity : item.intensity || 1;
           const distance = item.distance || 0;
@@ -41608,7 +41608,7 @@ const _sfc_main = defineComponent({
     };
   }
 });
-var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-550d01bf"]]);
+var vue3dLoader = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-e92274c2"]]);
 const install = (app) => {
   app.component(vue3dLoader.name, vue3dLoader);
 };

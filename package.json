@@ -1,7 +1,7 @@
 {
   "name": "vue-3d-loader",
   "private": false,
-  "version": "2.2.3",
+  "version": "2.2.4",
   "main": "dist/vue-3d-loader.cjs.js",
   "module": "dist/vue-3d-loader.esm.js",
   "types": "dist/types/index.d.ts",
