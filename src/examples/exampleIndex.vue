@@ -32,6 +32,7 @@
     <setVerticalHorizontal v-if="currentMenuId === 18" />
     <minMaxDistance v-if="currentMenuId === 19" />
     <pointLightFollowCamera v-if="currentMenuId === 20" />
+    <cloneSameObjVue v-if="currentMenuId === 21" />
   </div>
 </template>
 <script>
@@ -55,6 +56,7 @@ import loaderDracoModelVue from "./load-draco-model.vue";
 import setVerticalHorizontal from "./set-vertical-horizontal.vue";
 import minMaxDistance from "./min-max-distance.vue";
 import pointLightFollowCamera from "./point-light-follow-camera.vue";
+import cloneSameObjVue from './clone-same-obj.vue';
 export default {
   components: {
     loadAModelVue,
@@ -76,7 +78,8 @@ export default {
     loaderDracoModelVue,
     setVerticalHorizontal,
     minMaxDistance,
-    pointLightFollowCamera
+    pointLightFollowCamera,
+    cloneSameObjVue
   },
   data() {
     return {
@@ -100,7 +103,8 @@ export default {
         { id: 17, name_CN: "加载Draco压缩模型", name_EN: "Loader draco model" },
         { id: 18, name_CN: "垂直/水平旋转相机", name_EN: "Set camera rotation"},
         { id: 19, name_CN: "相机向内外距离限制", name_EN: "Min and max distance" },
-        { id: 20, name_CN: "点光源跟随相机", name_EN: "Point light follow camera" }
+        { id: 20, name_CN: "点光源跟随相机", name_EN: "Point light follow camera" },
+        { id: 21, name_CN: "克隆模型", name_EN: "Clone model" }
       ],
       currentMenuId: 1,
     };
