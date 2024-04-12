@@ -34,6 +34,7 @@
     <enableAxesGrid v-if="currentMenuId === 20"/>
     <minMaxDistance v-if="currentMenuId === 21"/>
     <pointLightFollowCamera v-if="currentMenuId === 22" />
+    <cloneSameObj v-if="currentMenuId === 23" />
   </div>
 </template>
 <script setup lang="ts">
@@ -59,6 +60,7 @@ import setVerticalHorizontal from "./set-vertical-horizontal.vue";
 import enableAxesGrid from "./enable-axes-grid.vue";
 import minMaxDistance from "./min-max-distance.vue";
 import pointLightFollowCamera from "./point-light-follow-camera.vue";
+import cloneSameObj from './clone-same-obj.vue'
 import { ref } from "vue";
 const menu = ref();
 const lang = ref();
@@ -84,7 +86,8 @@ menu.value = [
   { id: 19, name_CN: "垂直/水平旋转相机", name_EN: "Set camera rotation"},
   { id: 20, name_CN: "显示坐标及网格", name_EN: "Show axes and grid" },
   { id: 21, name_CN: "限制缩放大小", name_EN: "Min and max distance" },
-  { id: 22, name_CN: "点灯光跟随相机", name_EN: "Point light follow camera" }
+  { id: 22, name_CN: "点灯光跟随相机", name_EN: "Point light follow camera" },
+  { id: 23, name_CN: "克隆相同模型", name_EN: "Clone model" }
 ];
 const currentMenuId = ref(1);
 
