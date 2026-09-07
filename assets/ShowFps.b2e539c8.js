@@ -1,0 +1,1 @@
+import{z as o}from"./index-ChGdgC32.6d84ffef.js";import{f as e,o as s,q as r,h as t,_ as a}from"../app.f099d8ba.mjs";const c=e({__name:"ShowFps",setup(p){return(_,n)=>(s(),r(t(o),{filePath:"/vue-3d-loader-docs/models/obj/tree.obj",height:350,backgroundColor:"#F2F2F2",showFps:!0}))}}),u=a(c,[["__file","ShowFps.vue"]]);export{u as default};
