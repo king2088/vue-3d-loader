@@ -176,16 +176,8 @@ let mixers: AnimationMixer | AnimationMixer[] = null as any;
 let textureLoader: any = null;
 let axesHelper: AxesHelper = null as any;
 let gridHelper: GridHelper = null as any;
-let resizeObserver: ResizeObserver | null = null;
-let intersectionObserver: IntersectionObserver | null = null;
-let isInViewport = true;
-let renderLoopRunning = false;
-let needsRender = false;
 let resizeRaf: number = 0;
 let destroyed = false;
-// true while at least one animation clip is actually playing; in that case the
-// render loop must redraw every frame (otherwise animation shows as jumps/flashes)
-let animationActive = false;
 // mousemove raycast throttle: coalesce to one pick per animation frame
 let lastMoveEvent: MouseEvent | null = null;
 let moveRafId = 0;
@@ -206,20 +198,10 @@ const canvasElement = ref(null);
 
 onMounted(() => {
   init();
-  observeVisibility();
 });
 
 onBeforeUnmount(() => {
   destroyScene();
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-    resizeObserver = null;
-  }
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    intersectionObserver = null;
-  }
-  document.removeEventListener("visibilitychange", onDocumentVisibility);
 });
 
 watch([() => props.autoPlay], () => {
@@ -354,61 +336,16 @@ const emit = defineEmits([
   "error",
 ]);
 
-// ---------- render loop (render on demand) ----------
+// ---------- render loop (continuous; same as the original pre-optimization behavior) ----------
 
 function invalidate() {
-  needsRender = true;
-  ensureRenderLoop();
-}
-
-function ensureRenderLoop() {
-  if (renderLoopRunning || !isVisible() || !renderer) return;
-  renderLoopRunning = true;
-  clock.getDelta(); // reset delta accumulator after a pause
-  animate();
-}
-
-function pauseRenderLoop() {
-  renderLoopRunning = false;
-  if (animationId) {
-    cancelAnimationFrame(animationId);
-    animationId = 0;
-  }
-}
-
-function isVisible() {
-  return isInViewport && document.visibilityState !== "hidden";
-}
-
-function onDocumentVisibility() {
-  if (isVisible()) {
-    needsRender = true;
-    ensureRenderLoop();
-  } else {
-    pauseRenderLoop();
-  }
-}
-
-function observeVisibility() {
-  const el = containerElement.value as HTMLElement | null;
-  if (el && typeof IntersectionObserver !== "undefined") {
-    intersectionObserver = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry) isInViewport = entry.isIntersecting;
-      onDocumentVisibility();
-    });
-    intersectionObserver.observe(el);
-  }
-  document.addEventListener("visibilitychange", onDocumentVisibility);
+  // no-op: the continuous render loop always redraws
 }
 
 function animate() {
-  if (!renderLoopRunning) return;
   animationId = requestAnimationFrame(animate);
-
+  if (props.showFps && stats) stats.update();
   const delta = clock.getDelta();
-  let keepRunning = false;
-
   // update play animations
   if (mixers && mixers instanceof AnimationMixer) {
     mixers.update(delta);
@@ -418,39 +355,19 @@ function animate() {
       m.update(delta);
     });
   }
-  if (animationActive) {
-    // animations are running: redraw every frame for smooth playback
-    keepRunning = true;
-  }
-
-  // controls.update() is only needed for damping smoothing / auto-rotate;
-  // without damping OrbitControls applies pointer deltas directly in its own
-  // event handlers, so calling it every frame would be wasted work
-  if (controls && (controls.enableDamping || controls.autoRotate)) {
+  if (controls) {
     controls.update();
-    keepRunning = true;
   }
-
-  if (needsRender || keepRunning) {
-    needsRender = false;
-    renderFrame();
-  }
-
-  if (props.showFps) {
-    if (stats) stats.update();
-    keepRunning = true;
-  }
-
-  // nothing volatile left (no animations, no damping): stop the loop
-  if (!keepRunning) {
-    pauseRenderLoop();
-  }
+  render();
 }
 
-function renderFrame() {
+function render() {
   if (!renderer) return;
   if (size.value.width === 0 || size.value.height === 0) return;
-  takePointLightFollowCamera();
+  const { pointLightFollowCamera } = props;
+  if (pointLightFollowCamera) {
+    takePointLightFollowCamera();
+  }
   renderer.render(scene, camera);
 }
 
@@ -463,7 +380,10 @@ function resetScene() {
 }
 
 function destroyScene() {
-  pauseRenderLoop();
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = 0;
+  }
   destroyed = true;
   if (moveRafId) {
     cancelAnimationFrame(moveRafId);
@@ -517,7 +437,6 @@ function stopMixers() {
     });
   }
   mixers = null as any;
-  animationActive = false;
 }
 
 function disposeObject3D(obj: Object3D) {
@@ -601,16 +520,12 @@ function init() {
   el.addEventListener("click", onClick, false);
   el.addEventListener("dblclick", onDblclick, false);
   window.addEventListener("resize", onResize, false);
-  if (!resizeObserver) {
-    resizeObserver = new ResizeObserver(() => onResize());
-    resizeObserver.observe(el);
-  }
   // stats
   if (showFps) {
     stats = new Stats();
     el.appendChild(stats.dom);
   }
-  invalidate();
+  animate();
   // Init labels
   if (labels && labels.length > 0) {
     setSpriteLabel();
@@ -1290,18 +1205,15 @@ function playSingleModel(item: Object3D) {
       }
     });
   }
-  animationActive = !!(item.animations && item.animations.length > 0) && autoPlay;
 }
 
 // play multiple models animation
 function playMultipleModels(obj: Object3D) {
   const { autoPlay } = props;
   mixers = [];
-  let anyPlaying = false;
   obj.children.forEach((item: any, index: number) => {
     (mixers as AnimationMixer[]).push(new AnimationMixer(item));
     const hasClips = !!(item.animations && item.animations.length > 0);
-    anyPlaying = anyPlaying || (hasClips && autoPlay);
     if (hasClips) {
       item.animations.forEach((clip: AnimationClip) => {
         if (clip) {
@@ -1315,7 +1227,6 @@ function playMultipleModels(obj: Object3D) {
       });
     }
   });
-  animationActive = anyPlaying;
 }
 
 // ---------- controls & helpers ----------
