@@ -10,6 +10,7 @@ import {
   Vector3,
   Color,
   Scene,
+  Box3,
   Raycaster,
   WebGLRenderer,
   PerspectiveCamera,
@@ -35,7 +36,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "three/examples/jsm/libs/stats.module.js";
-import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
+import { getCenter, getLoader, getMTLLoader } from "./loadModel";
 import {
   onMounted,
   ref,
@@ -187,6 +188,7 @@ let lastModelLoadKey = "";
 // reuse temporary objects to reduce GC pressure
 const _lookAtTarget = new Vector3();
 const _clearColor = new Color();
+const _sizeVec = new Vector3();
 
 // responsive variable
 const size = ref({ width: props.width || 0, height: props.height || 0 });
@@ -686,7 +688,6 @@ function updateCamera(isResize?: boolean) {
 
   if (!cameraLookAt || !cameraUp) {
     if (!object) return;
-    const distance = getSize(object).length();
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     if (cameraRotation) {
       camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
@@ -696,10 +697,12 @@ function updateCamera(isResize?: boolean) {
       cameraPosition.y === 0 &&
       cameraPosition.z === 0
     ) {
-      camera.position.z = distance;
+      // camera not explicitly positioned: frame the whole scene on first load
+      autoFit();
+    } else {
+      _lookAtTarget.set(0, 0, 0);
+      camera.lookAt(_lookAtTarget);
     }
-    _lookAtTarget.set(0, 0, 0);
-    camera.lookAt(_lookAtTarget);
   } else {
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     if (cameraRotation) {
@@ -709,6 +712,38 @@ function updateCamera(isResize?: boolean) {
     _lookAtTarget.set(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z);
     camera.lookAt(_lookAtTarget);
   }
+}
+
+// Frame the loaded models so everything fits inside the canvas. Only used when
+// the user did not explicitly set a camera position (all-zero cameraPosition).
+function autoFit() {
+  const bounds = new Box3();
+  let hasContent = false;
+  scene.children.forEach((child) => {
+    if (child === axesHelper || child === gridHelper) return;
+    if (child instanceof Light) return;
+    const childBox = new Box3().setFromObject(child);
+    if (childBox.isEmpty()) return;
+    bounds.union(childBox);
+    hasContent = true;
+  });
+  if (!hasContent) {
+    // no model child found (e.g. still loading): fall back to the last model
+    bounds.setFromObject(object);
+  }
+  const center = bounds.getCenter(new Vector3());
+  const radius = bounds.getSize(_sizeVec).length() / 2;
+  if (radius === 0) return;
+  const fov = (camera.fov * Math.PI) / 180;
+  const halfFov = Math.tan(fov / 2);
+  const fitVertical = radius / Math.max(halfFov, 1e-6);
+  const fitHorizontal = fitVertical / Math.max(camera.aspect || 1, 1e-6);
+  // +15% margin so nothing touches the canvas border
+  const distance = Math.max(fitVertical, fitHorizontal) * 1.15;
+  camera.position.set(0, 0, distance);
+  _lookAtTarget.copy(center);
+  camera.lookAt(_lookAtTarget);
+  if (controls) controls.target.copy(center);
 }
 
 function updateLights() {
