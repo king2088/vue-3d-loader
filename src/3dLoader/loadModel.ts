@@ -8,6 +8,7 @@ import {
   Object3D,
   ObjectLoader,
   LoadingManager,
+  SRGBColorSpace,
   type Loader,
 } from "three";
 
@@ -56,6 +57,39 @@ function getExtension(str: string) {
     return "";
   }
   return pathSplit.pop()!.toLowerCase();
+}
+
+// Texture slots that carry color data. Since three r152 those must be marked
+// SRGBColorSpace or they get interpreted as linear and render washed out.
+// GLTFLoader does this internally; ObjectLoader (JSON) does not, so we apply
+// the same convention here.
+const COLOR_TEXTURE_SLOTS = [
+  "map",
+  "lightMap",
+  "emissiveMap",
+  "specularMap",
+  "aoMap",
+  "matcap",
+] as const;
+
+function setTextureColorSpace(object: Object3D) {
+  object.traverse((child: any) => {
+    if (!child.isMesh) return;
+    const materials = Array.isArray(child.material)
+      ? child.material
+      : [child.material];
+    materials.forEach((material: any) => {
+      if (!material) return;
+      COLOR_TEXTURE_SLOTS.forEach((slot) => {
+        const texture = material[slot];
+        if (texture && texture.isTexture && texture.colorSpace !== SRGBColorSpace) {
+          texture.colorSpace = SRGBColorSpace;
+          texture.needsUpdate = true;
+          material.needsUpdate = true;
+        }
+      });
+    });
+  });
 }
 
 // Default Draco decoder path: self-hosted. Download draco.7z from the three.js
@@ -169,7 +203,13 @@ async function createFactory(
       });
     }
     case "json": {
-      return (manager) => ({ loader: new ObjectLoader(manager) });
+      return (manager) => ({
+        loader: new ObjectLoader(manager),
+        getObject: (object: any) => {
+          setTextureColorSpace(object);
+          return object;
+        },
+      });
     }
     default:
       throw new Error(`Unsupported model file type: "${fileExtension || "unknown"}"`);
