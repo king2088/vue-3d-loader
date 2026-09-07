@@ -183,6 +183,9 @@ let renderLoopRunning = false;
 let needsRender = false;
 let resizeRaf: number = 0;
 let destroyed = false;
+// true while at least one animation clip is actually playing; in that case the
+// render loop must redraw every frame (otherwise animation shows as jumps/flashes)
+let animationActive = false;
 // mousemove raycast throttle: coalesce to one pick per animation frame
 let lastMoveEvent: MouseEvent | null = null;
 let moveRafId = 0;
@@ -415,7 +418,8 @@ function animate() {
       m.update(delta);
     });
   }
-  if (mixers !== null) {
+  if (animationActive) {
+    // animations are running: redraw every frame for smooth playback
     keepRunning = true;
   }
 
@@ -427,7 +431,7 @@ function animate() {
     keepRunning = true;
   }
 
-  if (needsRender) {
+  if (needsRender || keepRunning) {
     needsRender = false;
     renderFrame();
   }
@@ -513,6 +517,7 @@ function stopMixers() {
     });
   }
   mixers = null as any;
+  animationActive = false;
 }
 
 function disposeObject3D(obj: Object3D) {
@@ -538,6 +543,9 @@ function disposeObject3D(obj: Object3D) {
 
 function init() {
   destroyed = false;
+  // avoid the deep filePath watcher resetting the scene just because it fires
+  // once with an unchanged model source after mount
+  lastModelLoadKey = JSON.stringify([props.filePath, props.fileType, props.mtlPath]);
   const {
     filePath,
     outputEncoding,
@@ -1282,15 +1290,19 @@ function playSingleModel(item: Object3D) {
       }
     });
   }
+  animationActive = !!(item.animations && item.animations.length > 0) && autoPlay;
 }
 
 // play multiple models animation
 function playMultipleModels(obj: Object3D) {
   const { autoPlay } = props;
   mixers = [];
+  let anyPlaying = false;
   obj.children.forEach((item: any, index: number) => {
     (mixers as AnimationMixer[]).push(new AnimationMixer(item));
-    if (item.animations && item.animations.length > 0) {
+    const hasClips = !!(item.animations && item.animations.length > 0);
+    anyPlaying = anyPlaying || (hasClips && autoPlay);
+    if (hasClips) {
       item.animations.forEach((clip: AnimationClip) => {
         if (clip) {
           const action = (mixers as AnimationMixer[])[index].clipAction(clip);
@@ -1303,6 +1315,7 @@ function playMultipleModels(obj: Object3D) {
       });
     }
   });
+  animationActive = anyPlaying;
 }
 
 // ---------- controls & helpers ----------
