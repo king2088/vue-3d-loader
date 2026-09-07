@@ -3,7 +3,7 @@
     <canvas ref="canvasElement" class="viewer-canvas" />
   </div>
 </template>
-<script setup lang="ts" name="vue3dLoader">
+<script setup lang="ts">
 import {
   Object3D,
   Vector2,
@@ -17,8 +17,8 @@ import {
   PointLight,
   HemisphereLight,
   DirectionalLight,
-  LinearEncoding,
-  sRGBEncoding,
+  SRGBColorSpace,
+  LinearSRGBColorSpace,
   Texture,
   TextureLoader,
   AnimationMixer,
@@ -30,20 +30,21 @@ import {
   Light,
   AxesHelper,
   GridHelper,
-  Group
+  Group,
+  type Material,
 } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Stats from "three/examples/jsm/libs/stats.module";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import Stats from "three/examples/jsm/libs/stats.module.js";
 import { getSize, getCenter, getLoader, getMTLLoader } from "./loadModel";
 import {
-  defineProps,
   onMounted,
   ref,
-  withDefaults,
   nextTick,
   watch,
   onBeforeUnmount,
 } from "vue";
+
+defineOptions({ name: "vue3dLoader" });
 
 export interface coordinates {
   x: number;
@@ -97,23 +98,26 @@ interface Props {
   enableAxesHelper?: boolean;
   axesHelperSize?: number;
   enableGridHelper?: boolean;
-  minDistance?: number; 
+  minDistance?: number;
   maxDistance?: number;
   pointLightFollowCamera?: boolean;
+  enableShadowMap?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  // Physical lights (three r165+): ambient/directional intensities are multipliers, not one-to-one legacy units.
   lights: () => {
     return [
       {
         type: "AmbientLight",
         color: 0xaaaaaa,
+        intensity: 2,
       },
       {
         type: "DirectionalLight",
         position: { x: 1, y: 1, z: 1 },
         color: 0xffffff,
-        intensity: 0.8,
+        intensity: 3,
       },
     ];
   },
@@ -151,7 +155,8 @@ const props = withDefaults(defineProps<Props>(), {
   axesHelperSize: 100,
   enableGridHelper: false,
   minDistance: 0,
-  maxDistance: Infinity
+  maxDistance: Infinity,
+  enableShadowMap: false,
 });
 
 // Non responsive variable
@@ -162,15 +167,25 @@ const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 const clock = new Clock();
 let scene: Scene = new Scene();
 let renderer: WebGLRenderer = null as any;
-let controls: OrbitControls = {} as any;
+let controls: OrbitControls = null as any;
 let allLights: Light[] = [];
 let loader: any = null;
-let requestAnimationId: number = 0;
+let animationId: number = 0;
 let stats: any = null;
 let mixers: AnimationMixer | AnimationMixer[] = null as any;
 let textureLoader: any = null;
 let axesHelper: AxesHelper = null as any;
 let gridHelper: GridHelper = null as any;
+let resizeObserver: ResizeObserver | null = null;
+let intersectionObserver: IntersectionObserver | null = null;
+let isInViewport = true;
+let renderLoopRunning = false;
+let needsRender = false;
+let resizeRaf: number = 0;
+
+// reuse temporary objects to reduce GC pressure
+const _lookAtTarget = new Vector3();
+const _clearColor = new Color();
 
 // responsive variable
 const size = ref({ width: props.width || 0, height: props.height || 0 });
@@ -182,14 +197,25 @@ const canvasElement = ref(null);
 
 onMounted(() => {
   init();
+  observeVisibility();
 });
 
 onBeforeUnmount(() => {
   destroyScene();
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    intersectionObserver = null;
+  }
+  document.removeEventListener("visibilitychange", onDocumentVisibility);
 });
 
 watch([() => props.autoPlay], () => {
   playAnimations();
+  invalidate();
 });
 
 watch([() => props.width, () => props.height], () => {
@@ -205,10 +231,12 @@ watch([
   () => props.enableGridHelper
 ], () => {
   setAxesAndGridHelper();
+  invalidate();
 });
 
 watch([() => props.minDistance, () => props.maxDistance], () => {
   setVerticalHorizontalControls();
+  invalidate();
 });
 
 // deep watch
@@ -249,6 +277,7 @@ watch(
     valueArray.forEach((item, index) => {
       if (index < 3 && item) {
         setObjectAttribute(attr[index], item);
+        invalidate();
       } else {
         updateLights();
       }
@@ -262,6 +291,7 @@ watch(
   () => {
     updateCamera(true);
     updateRenderer();
+    invalidate();
   },
   { deep: true }
 );
@@ -270,6 +300,7 @@ watch(
   [() => props.controlsOptions],
   () => {
     updateControls();
+    invalidate();
   },
   { deep: true }
 );
@@ -278,6 +309,7 @@ watch(
   [() => props.cameraRotation, () => props.cameraPosition],
   () => {
     updateCamera();
+    invalidate();
   },
   { deep: true }
 );
@@ -286,6 +318,7 @@ watch(
   [() => props.labels],
   () => {
     setSpriteLabel();
+    invalidate();
   },
   { deep: true }
 );
@@ -302,6 +335,106 @@ const emit = defineEmits([
   "error",
 ]);
 
+// ---------- render loop (render on demand) ----------
+
+function invalidate() {
+  needsRender = true;
+  ensureRenderLoop();
+}
+
+function ensureRenderLoop() {
+  if (renderLoopRunning || !isVisible() || !renderer) return;
+  renderLoopRunning = true;
+  clock.getDelta(); // reset delta accumulator after a pause
+  animate();
+}
+
+function pauseRenderLoop() {
+  renderLoopRunning = false;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = 0;
+  }
+}
+
+function isVisible() {
+  return isInViewport && document.visibilityState !== "hidden";
+}
+
+function onDocumentVisibility() {
+  if (isVisible()) {
+    needsRender = true;
+    ensureRenderLoop();
+  } else {
+    pauseRenderLoop();
+  }
+}
+
+function observeVisibility() {
+  const el = containerElement.value as HTMLElement | null;
+  if (el && typeof IntersectionObserver !== "undefined") {
+    intersectionObserver = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry) isInViewport = entry.isIntersecting;
+      onDocumentVisibility();
+    });
+    intersectionObserver.observe(el);
+  }
+  document.addEventListener("visibilitychange", onDocumentVisibility);
+}
+
+function animate() {
+  if (!renderLoopRunning) return;
+  animationId = requestAnimationFrame(animate);
+
+  const delta = clock.getDelta();
+  let keepRunning = false;
+
+  // update play animations
+  if (mixers && mixers instanceof AnimationMixer) {
+    mixers.update(delta);
+  }
+  if (mixers && mixers instanceof Array) {
+    mixers.forEach((m: any) => {
+      m.update(delta);
+    });
+  }
+  if (mixers !== null) {
+    keepRunning = true;
+  }
+
+  if (controls) {
+    controls.update();
+    if (controls.enableDamping || controls.autoRotate) {
+      keepRunning = true;
+    }
+  }
+
+  if (needsRender) {
+    needsRender = false;
+    renderFrame();
+  }
+
+  if (props.showFps) {
+    if (stats) stats.update();
+    keepRunning = true;
+  }
+
+  // nothing volatile left (no animations, no damping): stop the loop
+  if (!keepRunning) {
+    pauseRenderLoop();
+  }
+}
+
+function renderFrame() {
+  if (!renderer) return;
+  if (size.value.width === 0 || size.value.height === 0) return;
+  takePointLightFollowCamera();
+  renderer.render(scene, camera);
+}
+
+// ---------- lifecycle ----------
+
 // Dynamic reload filePath
 function resetScene() {
   destroyScene();
@@ -309,15 +442,13 @@ function resetScene() {
 }
 
 function destroyScene() {
-  if (requestAnimationId) {
-    cancelAnimationFrame(requestAnimationId);
-  }
+  pauseRenderLoop();
   if (renderer) {
     renderer.dispose();
   }
-  if (controls && Object.keys(controls).length > 0) {
+  if (controls) {
     controls.dispose();
-    controls = {} as any;
+    controls = null as any;
   }
   const el = containerElement.value as any;
   el.removeEventListener("mousedown", onMouseDown, false);
@@ -325,10 +456,44 @@ function destroyScene() {
   el.removeEventListener("mouseup", onMouseUp, false);
   el.removeEventListener("click", onClick, false);
   el.removeEventListener("dblclick", onDblclick, false);
+  if (resizeRaf) {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = 0;
+  }
   window.removeEventListener("resize", onResize, false);
-  object = null;
+
+  // dispose GPU resources (geometry / material / texture) to avoid leaks
   if (scene) {
+    scene.traverse((child) => disposeObject3D(child));
     scene.clear();
+  }
+  object = null;
+  mixers = null as any;
+  stats = null;
+  loader = null;
+  textureLoader = null;
+  objectPositionHasSet.value = false;
+  loaderIndex.value = 0;
+}
+
+function disposeObject3D(obj: Object3D) {
+  const mesh = obj as any;
+  if (mesh.geometry) {
+    mesh.geometry.dispose();
+  }
+  const material = mesh.material as Material | Material[] | undefined;
+  if (material) {
+    const materials = Array.isArray(material) ? material : [material];
+    materials.forEach((m) => {
+      if (!m) return;
+      for (const key in m) {
+        const value = (m as any)[key];
+        if (value && value.isTexture) {
+          value.dispose();
+        }
+      }
+      m.dispose();
+    });
   }
 }
 
@@ -340,7 +505,8 @@ function init() {
     showFps,
     enableDamping,
     dampingFactor,
-    labels
+    labels,
+    enableShadowMap,
   } = props;
   if (filePath && typeof filePath === "object") {
     isMultipleModels.value = true;
@@ -360,14 +526,14 @@ function init() {
   );
   if (!renderer) {
     renderer = new WebGLRenderer(options);
-    // renderer.hadowMapEnabled = true
-    renderer.shadowMap.enabled = true;
-    const encoding =
-      outputEncoding === "linear" ? LinearEncoding : sRGBEncoding;
-    renderer.outputEncoding = encoding;
+    // Shadow maps are expensive: only enable explicitly
+    renderer.shadowMap.enabled = enableShadowMap;
+    const colorSpace =
+      outputEncoding === "linear" ? LinearSRGBColorSpace : SRGBColorSpace;
+    renderer.outputColorSpace = colorSpace;
   }
 
-  if (!controls || Object.keys(controls).length <= 0) {
+  if (!controls) {
     controls = new OrbitControls(camera, el);
     if (enableDamping) {
       controls.enableDamping = true;
@@ -387,12 +553,16 @@ function init() {
   el.addEventListener("click", onClick, false);
   el.addEventListener("dblclick", onDblclick, false);
   window.addEventListener("resize", onResize, false);
+  if (!resizeObserver) {
+    resizeObserver = new ResizeObserver(() => onResize());
+    resizeObserver.observe(el);
+  }
   // stats
   if (showFps) {
-    stats = Stats();
+    stats = new Stats();
     el.appendChild(stats.dom);
   }
-  animate();
+  invalidate();
   // Init labels
   if (labels && labels.length > 0) {
     setSpriteLabel();
@@ -408,6 +578,9 @@ function setContainerElementStyle(el: any) {
     el.style.height = `${height}px`;
   }
 }
+
+// ---------- events ----------
+
 // mouse move event listener
 function enableMousemoveEvent(enable: boolean) {
   const el: any = containerElement.value;
@@ -417,40 +590,57 @@ function enableMousemoveEvent(enable: boolean) {
     el.removeEventListener("mousemove", onMouseMove, false);
   }
 }
+
 function onResize() {
   const { width, height } = props;
-  if (!width || !height) {
-    nextTick(() => {
-      const el = containerElement.value as any;
-      size.value = {
-        width: width || el.offsetWidth,
-        height: height || el.offsetHeight,
-      };
-    });
+  if (width && height) {
+    size.value = { width, height };
+    return;
   }
+  if (resizeRaf) cancelAnimationFrame(resizeRaf);
+  resizeRaf = requestAnimationFrame(() => {
+    resizeRaf = 0;
+    const el = containerElement.value as HTMLElement | null;
+    if (!el) return;
+    const w = width || el.offsetWidth;
+    const h = height || el.offsetHeight;
+    if (w !== size.value.width || h !== size.value.height) {
+      size.value = { width: w, height: h };
+    }
+  });
 }
+
 function onMouseDown(event: MouseEvent) {
   enableMousemoveEvent(false);
   const intersected = pick(event.clientX, event.clientY);
   emit("mousedown", event, intersected);
 }
+
 function onMouseMove(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
   emit("mousemove", event, intersected);
+  invalidate();
 }
+
 function onMouseUp(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
   emit("mouseup", event, intersected);
   enableMousemoveEvent(true);
+  invalidate();
 }
+
 function onClick(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
   emit("click", event, intersected);
+  invalidate();
 }
+
 function onDblclick(event: MouseEvent) {
   const intersected = pick(event.clientX, event.clientY);
   emit("dblclick", event, intersected);
+  invalidate();
 }
+
 function pick(x: number, y: number) {
   const obj = getAllObject();
   if (!obj || !containerElement.value) return null;
@@ -463,12 +653,16 @@ function pick(x: number, y: number) {
   const intersects = raycaster.intersectObject(obj, props.intersectRecursive);
   return (intersects && intersects.length) > 0 ? intersects[0] : null;
 }
+
+// ---------- update ----------
+
 function update() {
   updateRenderer();
   updateCamera();
   updateLights();
   updateControls();
 }
+
 function updateModel() {
   if (!object) return;
   const index = isMultipleModels.value ? getObjectIndex(object) : null;
@@ -503,13 +697,15 @@ function updateModel() {
       : object.scale.set(scale.x, scale.y, scale.z);
   }
 }
+
 function updateRenderer() {
   const { backgroundColor, backgroundAlpha } = props;
   renderer.setSize(size.value.width, size.value.height);
   renderer.setPixelRatio(window.devicePixelRatio || 1);
-  renderer.setClearColor(new Color(backgroundColor).getHex());
-  renderer.setClearAlpha(backgroundAlpha as any);
+  _clearColor.set(backgroundColor as any);
+  renderer.setClearColor(_clearColor, backgroundAlpha as number);
 }
+
 function updateCamera(isResize?: boolean) {
   const { cameraPosition, cameraRotation, cameraUp, cameraLookAt } = props;
   camera.aspect = size.value.width / size.value.height;
@@ -530,19 +726,23 @@ function updateCamera(isResize?: boolean) {
     ) {
       camera.position.z = distance;
     }
-    camera.lookAt(new Vector3());
+    _lookAtTarget.set(0, 0, 0);
+    camera.lookAt(_lookAtTarget);
   } else {
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     if (cameraRotation) {
       camera.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
     }
     camera.up.set(cameraUp.x, cameraUp.y, cameraUp.z);
-    camera.lookAt(new Vector3(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z));
+    _lookAtTarget.set(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z);
+    camera.lookAt(_lookAtTarget);
   }
 }
+
 function updateLights() {
   const { lights } = props;
   scene.remove(...allLights);
+  allLights.forEach((light) => disposeObject3D(light));
   allLights = [];
   lights.forEach((item: any) => {
     if (!item.type) return;
@@ -552,7 +752,7 @@ function updateLights() {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0x404040;
       const intensity =
-        item.intensity === 0 ? item.intensity : item.intensity || 1;
+        item.intensity === 0 ? item.intensity : item.intensity || 2;
       light = new AmbientLight(color, intensity);
     }
     if (type === "point" || type === "pointlight") {
@@ -561,7 +761,7 @@ function updateLights() {
       const intensity =
         item.intensity === 0 ? item.intensity : item.intensity || 1;
       const distance = item.distance || 0;
-      const decay = item.decay === 0 ? item.decay : item.decay || 1;
+      const decay = item.decay === 0 ? item.decay : item.decay || 2;
       light = new PointLight(color, intensity, distance, decay);
       if (item.position) {
         light.position.copy(item.position);
@@ -571,7 +771,7 @@ function updateLights() {
       const color =
         item.color === 0x000000 ? item.color : item.color || 0xffffff;
       const intensity =
-        item.intensity === 0 ? item.intensity : item.intensity || 1;
+        item.intensity === 0 ? item.intensity : item.intensity || 3;
 
       light = new DirectionalLight(color, intensity);
 
@@ -604,25 +804,31 @@ function updateLights() {
       scene.add(light);
     }
   });
+  invalidate();
 }
+
 function updateControls() {
   const { controlsOptions } = props;
   if (controlsOptions) {
     Object.assign(controls, controlsOptions);
   }
 }
+
+// ---------- load model ----------
+
 function loadModelSelect() {
   const { filePath, parallelLoad } = props;
   // If enable parallel load
-  if (parallelLoad && isMultipleModels) {
-    (filePath as any).forEach((path: string, index: number) => {
+  if (parallelLoad && isMultipleModels.value) {
+    (filePath as string[]).forEach((_path, index) => {
       load(index);
     });
   } else {
     load();
   }
 }
-function load(fileIndex?: number) {
+
+async function load(fileIndex?: number) {
   const {
     filePath,
     fileType,
@@ -634,20 +840,24 @@ function load(fileIndex?: number) {
     plyMaterial
   } = props;
   if (!filePath) return;
-  const index = fileIndex || loaderIndex.value;
+  const index = fileIndex ?? loaderIndex.value;
   // if multiple files
-  const filePathString: any = !isMultipleModels.value
-    ? filePath
-    : filePath[index];
+  const filePathString: string = !isMultipleModels.value
+    ? (filePath as string)
+    : (filePath as string[])[index];
   const fileTypeString: string =
     typeof fileType === "string" ? fileType : fileType ? fileType[index] : "";
-  const loaderObject3d: any = getLoader(
+  const loaderObject3d: any = await getLoader(
     filePathString,
     fileTypeString,
     enableDraco,
     plyMaterial,
     dracoDir
-  ); // {loader, getObject, mtlLoader}
+  ).catch((error) => {
+    emit("error", error);
+    return null;
+  });
+  if (!loaderObject3d) return;
   loader = loaderObject3d.loader;
   const getObjectFun = loaderObject3d.getObject
     ? loaderObject3d.getObject
@@ -656,10 +866,19 @@ function load(fileIndex?: number) {
     scene.remove(object);
   }
   if (requestHeader) {
-    loader.setRequestHeader(requestHeader);
+    try {
+      loader.setRequestHeader(requestHeader);
+    } catch (e) {
+      /* unsupported by this loader */
+    }
   }
   if (crossOrigin) {
-    loader.setCrossOrigin(crossOrigin);
+    const lo = loader as any;
+    if (typeof lo.setCrossOrigin === "function") {
+      lo.setCrossOrigin(crossOrigin);
+    } else if (lo.crossOrigin !== undefined) {
+      lo.crossOrigin = crossOrigin;
+    }
   }
   if (mtlPath) {
     // load materials
@@ -680,8 +899,9 @@ function load(fileIndex?: number) {
     loadFilePath(filePathString, getObjectFun, index);
   }
 }
+
 function loadFilePath(filePath: string, getObject: any, index: number) {
-  const { textureImage, parallelLoad } = props;
+  const { textureImage, parallelLoad, crossOrigin } = props;
   loader.load(
     filePath,
     (...args: any) => {
@@ -710,11 +930,14 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
     }
   );
 }
-function loadMtl(filePath: string, getObject: any, index: number) {
+
+async function loadMtl(filePath: string, getObject: any, index: number) {
   const { crossOrigin, requestHeader, mtlPath } = props;
-  const mtlLoader = getMTLLoader();
+  const mtlLoader: any = await getMTLLoader();
   if (crossOrigin) {
-    mtlLoader.setCrossOrigin(crossOrigin);
+    if (typeof mtlLoader.setCrossOrigin === "function") {
+      mtlLoader.setCrossOrigin(crossOrigin);
+    }
   }
   if (requestHeader) {
     mtlLoader.setRequestHeader(requestHeader as any);
@@ -729,11 +952,13 @@ function loadMtl(filePath: string, getObject: any, index: number) {
     loadFilePath(filePath, getObject, index);
   });
 }
+
 function getObject(object: any) {
   return object;
 }
+
 function addObject(obj: Object3D, filePath: string) {
-  const center = getCenter(object);
+  const center = getCenter(obj);
   // Multiple models set object position only once, prevent the position from changing every time multiple models objects is loaded
   if (!objectPositionHasSet.value) {
     scene.position.copy(center.negate());
@@ -748,47 +973,18 @@ function addObject(obj: Object3D, filePath: string) {
   updateCamera();
   updateModel();
   playAnimations();
+  invalidate();
 }
-function animate() {
-  requestAnimationId = requestAnimationFrame(animate);
-  updateStats();
-  const delta = clock.getDelta();
-  // update play animations
-  if (mixers && mixers instanceof AnimationMixer) {
-    mixers.update(delta);
-  }
-  if (mixers && mixers instanceof Array) {
-    mixers.forEach((m: any) => {
-      m.update(delta);
-    });
-  }
-  if (controls) {
-    controls.update();
-  }
-  render();
-}
-function render() {
-  const { pointLightFollowCamera } = props
-  if (pointLightFollowCamera) {
-    setLightFollowCamera()
-  }
-  renderer.render(scene, camera);
-}
-function updateStats() {
-  const { showFps } = props;
-  if (showFps) {
-    stats.update();
-  }
-}
+
 function onProcess(xhr: ProgressEvent) {
   const { filePath } = props;
   let process = Math.floor((xhr.loaded / xhr.total) * 100);
   if (process === 100) {
-    if (isMultipleModels.value && filePath.length > loaderIndex.value) {
+    if (isMultipleModels.value && (filePath as string[]).length > loaderIndex.value) {
       // Load completed
       nextTick(() => {
         loaderIndex.value++;
-        if (loaderIndex.value === filePath.length) {
+        if (loaderIndex.value === (filePath as string[]).length) {
           loaderIndex.value = 0;
           return;
         }
@@ -799,9 +995,13 @@ function onProcess(xhr: ProgressEvent) {
     }
   }
 }
+
 function addTexture(object: Object3D, texture: any) {
   if (!textureLoader) {
     textureLoader = new TextureLoader();
+    if (props.crossOrigin) {
+      textureLoader.crossOrigin = props.crossOrigin;
+    }
   }
   object.traverse((child: any) => {
     if (child.isMesh) {
@@ -818,10 +1018,20 @@ function addTexture(object: Object3D, texture: any) {
       );
     }
   });
+  invalidate();
 }
+
 function clearScene() {
-  scene.clear();
+  if (scene) {
+    scene.traverse((child) => disposeObject3D(child));
+    scene.clear();
+    allLights = [];
+    object = null;
+    mixers = null as any;
+  }
+  invalidate();
 }
+
 function setObjectAttribute(type: string, val: any) {
   const obj = getAllObject();
   if (!obj) return;
@@ -837,17 +1047,25 @@ function setObjectAttribute(type: string, val: any) {
   }
   obj[type].set(val.x, val.y, val.z);
 }
+
 function getAllObject() {
   return isMultipleModels.value ? scene : object;
 }
+
+// ---------- labels ----------
+
 function setSpriteLabel() {
   const { labels } = props;
   if (!labels || labels.length <= 0) return;
   clearSprite();
   const obj = isMultipleModels.value ? scene : object;
+  if (!obj) return;
   const spriteImageLabel = (image: any) => {
     if (!textureLoader) {
       textureLoader = new TextureLoader();
+      if (props.crossOrigin) {
+        textureLoader.crossOrigin = props.crossOrigin;
+      }
     }
     const imageTexture = textureLoader.load(image);
     return imageTexture;
@@ -867,8 +1085,6 @@ function setSpriteLabel() {
     const spriteMaterial = new SpriteMaterial({
       map: spriteMap,
       color: item.spriteMaterialColor || 0xffffff,
-      // useScreenCoordinates: false
-      // alignment: spriteAlignment
     });
     const sprite: any = new Sprite(spriteMaterial);
     if (item.scale) {
@@ -884,7 +1100,9 @@ function setSpriteLabel() {
     }
     obj.add(sprite);
   });
+  invalidate();
 }
+
 function clearSprite() {
   const sceneChildren = scene.children;
   for (let i = sceneChildren.length - 1; i >= 0; i--) {
@@ -894,18 +1112,21 @@ function clearSprite() {
       if (item instanceof Group && item.children) {
         scene.children[i].children = item.children.map((_item: any) => {
           if (_item instanceof Sprite) {
+            disposeObject3D(_item);
             return null;
           }
           return _item;
-        }).filter((item: any) => item);
+        }).filter((i2: any) => i2);
       }
       // If have multiple models the Sprite in children
       if (item instanceof Sprite) {
+        disposeObject3D(item);
         scene.remove(item)
       }
     }
   }
 }
+
 function generateCanvas(text: string, style: any) {
   const roundRect = (
     ctx: any,
@@ -965,6 +1186,7 @@ function generateCanvas(text: string, style: any) {
   }
   return canvas;
 }
+
 // Get object index
 function getObjectIndex(object: any) {
   const { filePath } = props;
@@ -980,7 +1202,9 @@ function getObjectIndex(object: any) {
   }
   return objIndex;
 }
-// play animations
+
+// ---------- animations ----------
+
 function playAnimations() {
   const { autoPlay } = props;
   const obj = getAllObject();
@@ -991,6 +1215,7 @@ function playAnimations() {
   }
   playSingleModel(obj);
 }
+
 // play a single model animation
 function playSingleModel(item: Object3D) {
   const { autoPlay } = props;
@@ -1008,6 +1233,7 @@ function playSingleModel(item: Object3D) {
     });
   }
 }
+
 // play multiple models animation
 function playMultipleModels(obj: Object3D) {
   const { autoPlay } = props;
@@ -1028,6 +1254,9 @@ function playMultipleModels(obj: Object3D) {
     }
   });
 }
+
+// ---------- controls & helpers ----------
+
 // set vertical horizontal controls
 function setVerticalHorizontalControls() {
   if (!controls) {
@@ -1040,7 +1269,7 @@ function setVerticalHorizontalControls() {
     controls.maxAzimuthAngle = -2 * Math.PI;
   }
   if (verticalCtrl && typeof verticalCtrl === "object") {
-    // min/max azimuth angle value range [-2 * Math.PI，2 * Math.PI]
+    // min/max azimuth angle value range [-2 * Math.PI�? * Math.PI]
     controls.minAzimuthAngle = verticalCtrl.min;
     controls.maxAzimuthAngle = verticalCtrl.max;
   }
@@ -1061,38 +1290,44 @@ function setVerticalHorizontalControls() {
     controls.maxDistance = maxDistance;
   }
 }
+
 // set axes and grid helper
-function setAxesAndGridHelper () {
+function setAxesAndGridHelper() {
   const { enableAxesHelper, enableGridHelper, axesHelperSize } = props;
   if (enableAxesHelper) {
-    // add axes
-    axesHelper = new AxesHelper(axesHelperSize); // axesHelperSize is axes size，red: x, green: y, blue: z
-    scene.add(axesHelper);
+    if (!axesHelper) {
+      axesHelper = new AxesHelper(axesHelperSize);
+      scene.add(axesHelper);
+    }
   } else {
     if (axesHelper) {
       scene.remove(axesHelper);
+      axesHelper = null as any;
     }
   }
 
   if (enableGridHelper) {
-    // add grid
-    gridHelper = new GridHelper(2000, 100);
-    scene.add(gridHelper);
+    if (!gridHelper) {
+      gridHelper = new GridHelper(2000, 100);
+      scene.add(gridHelper);
+    }
   } else {
     if (gridHelper) {
       scene.remove(gridHelper);
+      gridHelper = null as any;
     }
   }
 }
 
 // 光源跟随相机
-function setLightFollowCamera() {
+function takePointLightFollowCamera() {
+  if (!props.pointLightFollowCamera) return;
   const vector = camera.position.clone();
   scene.children.forEach((item: any) => {
     if (item instanceof PointLight) {
-      item.position.set(vector.x,vector.y,vector.z);
+      item.position.set(vector.x, vector.y, vector.z);
     }
-  })
+  });
 }
 
 // 导出变量
