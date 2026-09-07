@@ -279,6 +279,40 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
 </tr>
 <tr>
   <td>
+  cameraUp
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const cameraUp = {x:0, y:1, z:0}
+  ```
+
+  </td>
+  <td>
+  Camera's "up" vector. Must be used together with `cameraLookAt` to enable the manual targeting mode.
+  </td>
+</tr>
+<tr>
+  <td>
+  cameraLookAt
+  </td>
+  <td>object</td>
+  <td>-</td>
+  <td>
+
+  ```js
+  const cameraLookAt = {x:0, y:0, z:0}
+  ```
+
+  </td>
+  <td>
+  Camera's look-at target. When `cameraUp` and `cameraLookAt` are both set, the camera/target is fully driven by these props.
+  </td>
+</tr>
+<tr>
+  <td>
   scale
   </td>
   <td>object | array</td>
@@ -307,12 +341,13 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>[{
         type: "AmbientLight",
         color: 0xaaaaaa,
+        intensity: 2,
       },
       {
         type: "DirectionalLight",
         position: { x: 1, y: 1, z: 1 },
         color: 0xffffff,
-        intensity: 0.8,
+        intensity: 3,
       }]</td>
   <td>
   
@@ -439,8 +474,8 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>linear or sRGB</td>
   <td>
 
-  linear is LinearEncoding, sRGB is sRGBEncoding (sRGBEncoding can restore material color better).
-  Renderer's output encoding [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)
+  linear is LinearSRGBColorSpace, sRGB is SRGBColorSpace (sRGB can restore material color better).
+  Backed by `WebGLRenderer.outputColorSpace` (three r152+); the prop is kept for compatibility.
   </td>
 </tr>
 <tr>
@@ -545,7 +580,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>-</td>
   <td>
 
-  Load the Gltf Draco model, you need to enable Draco decryption. After the Draco decryption library is enabled, you need to [download Draco decryption library](https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z) and put it into the default directory assets. The default directory is assets/draco/gltf/. If you want to change the default draco directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  Load the Gltf Draco model, you need to enable Draco decryption. The Draco wasm decoder is loaded from Google's public CDN (<code>https://www.gstatic.com/draco/v1/decoders/</code>) by default — no manual download required. If you want to change the decoder directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
   </td>
 </tr>
 <tr>
@@ -553,10 +588,10 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   dracoDir
   </td>
   <td>string</td>
-  <td>assets/draco/gltf/</td>
+  <td>https://www.gstatic.com/draco/v1/decoders/</td>
   <td>-</td>
   <td>
-  Draco decryption library default directory, you can modified it.
+  Draco wasm decoder directory (Google CDN by default). Set it to a self-hosted path for offline use.
   </td>
 </tr>
 <tr>
@@ -699,6 +734,16 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>
 
   Point light follow camera.
+  </td>
+</tr>
+<tr>
+  <td>enableShadowMap</td>
+  <td>boolean</td>
+  <td>false</td>
+  <td>-</td>
+  <td>
+
+  Enable WebGLRenderer shadow map (disabled by default since it is expensive). When enabled, set `castShadow`/`receiveShadow` on your materials/meshes.
   </td>
 </tr>
 </table>
@@ -918,7 +963,7 @@ function change(event: any, type: string) {
 
 #### 8. Loader draco model
 
-Need to download Draco repository storage with local static folder of your project, download url: <https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z>
+The Draco wasm decoder is fetched from Google's public CDN by default. Use `dracoDir` to point to a self-hosted decoder.
 
 ```vue
 <template>
@@ -943,9 +988,12 @@ Need to download Draco repository storage with local static folder of your proje
   docker run -p 8010:80 vue/vue-3d-loader
 ```
 
-### Coming soon
+### Features
 
 - [x] Supports Vue3
+- [x] On-demand rendering (pauses when the page/container is not visible)
+- [x] Lazy-loaded model loaders (three addons are code-split)
+- [x] Depends on `three >= 0.160` as a peer dependency
 
 ### Bugs
 

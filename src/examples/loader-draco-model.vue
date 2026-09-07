@@ -1,18 +1,11 @@
 <template>
   <div class="draco-demo" v-if="props.lang === 'zh'">
-    使用此功能需要下载<a
-      href="https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z"
-      >draco解码器</a
-    >，并解压放到本地项目assets目录中，draco路径应为：“assets/draco/gltf/”
+    Draco 解码器默认从 Google 公共 CDN 加载（wasm），无需手动下载；
+    可通过 <code>dracoDir</code> 属性指定自托管解码器路径
   </div>
   <div class="draco-demo" v-if="props.lang != 'zh'">
-    Use this feature, you need to download the
-    <a
-      href="https://github.com/king2088/vue-3d-loader/blob/master/public/assets/draco.7z"
-    >
-      Draco decoder</a
-    >, and unzip it to the assets directory of the local project. Draco
-    directory is: 'assets/Draco/GLTF/'
+    The Draco decoder is loaded from Google's public CDN (wasm) by default.
+    Use the <code>dracoDir</code> prop to point to a self-hosted decoder path.
   </div>
   <vue3dLoader
     filePath="/models/gltf/LittlestTokyo.glb"
