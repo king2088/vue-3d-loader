@@ -241,6 +241,10 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
     renderLoopRunning: boolean;
     needsRender: boolean;
     resizeRaf: number;
+    destroyed: boolean;
+    lastMoveEvent: MouseEvent | null;
+    moveRafId: number;
+    lastModelLoadKey: string;
     _lookAtTarget: Vector3;
     _clearColor: Color;
     size: import("vue").Ref<{
@@ -269,6 +273,7 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
     renderFrame: () => void;
     resetScene: () => void;
     destroyScene: () => void;
+    stopMixers: () => void;
     disposeObject3D: (obj: Object3D) => void;
     init: () => void;
     setContainerElementStyle: (el: any) => void;

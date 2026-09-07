@@ -236,6 +236,10 @@ declare const _default: {
         renderLoopRunning: boolean;
         needsRender: boolean;
         resizeRaf: number;
+        destroyed: boolean;
+        lastMoveEvent: MouseEvent | null;
+        moveRafId: number;
+        lastModelLoadKey: string;
         _lookAtTarget: Three.Vector3;
         _clearColor: Three.Color;
         size: import("vue").Ref<{
@@ -264,6 +268,7 @@ declare const _default: {
         renderFrame: () => void;
         resetScene: () => void;
         destroyScene: () => void;
+        stopMixers: () => void;
         disposeObject3D: (obj: Three.Object3D) => void;
         init: () => void;
         setContainerElementStyle: (el: any) => void;
