@@ -24,6 +24,7 @@
       :scale="{ x: 0.1, y: 0.1, z: 0.1 }"
       :verticalCtrl="verticalCtrl"
       :horizontalCtrl="horizontalCtrl"
+      :cameraPosition="positon"
     />
   </div>
 </template>
@@ -63,6 +64,14 @@ function refersh3d() {
     refersh.value = false;
   });
 }
+
+const positon = ref();
+positon.value = {
+  x: 10,
+  y: 0,
+  z: 0,
+};
+
 </script>
 <style scoped>
 .controls {
