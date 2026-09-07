@@ -62,8 +62,8 @@ import minMaxDistance from "./min-max-distance.vue";
 import pointLightFollowCamera from "./point-light-follow-camera.vue";
 import cloneSameObj from './clone-same-obj.vue'
 import { ref } from "vue";
-const menu = ref();
-const lang = ref();
+const menu = ref<{ id: number; name_CN: string; name_EN: string }[]>([]);
+const lang = ref("en");
 menu.value = [
   { id: 1, name_CN: "加载一个模型", name_EN: "Load a model" },
   { id: 2, name_CN: "加载多个模型", name_EN: "Load multiple models" },
