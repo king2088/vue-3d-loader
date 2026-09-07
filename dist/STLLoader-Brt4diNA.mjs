@@ -1,4 +1,4 @@
-import { L as z, W as I, B as H, g as P, S as _, ah as G, V as W, u as N } from "./index-DfV5CEle.mjs";
+import { L as z, W as I, B as H, g as P, S as _, ah as G, V as W, u as N } from "./index-kllg3US8.mjs";
 class O extends z {
   /**
    * Constructs a new STL loader.

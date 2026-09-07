@@ -242,6 +242,7 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
     needsRender: boolean;
     resizeRaf: number;
     destroyed: boolean;
+    animationActive: boolean;
     lastMoveEvent: MouseEvent | null;
     moveRafId: number;
     lastModelLoadKey: string;

@@ -237,6 +237,7 @@ declare const _default: {
         needsRender: boolean;
         resizeRaf: number;
         destroyed: boolean;
+        animationActive: boolean;
         lastMoveEvent: MouseEvent | null;
         moveRafId: number;
         lastModelLoadKey: string;
