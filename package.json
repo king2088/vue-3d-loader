@@ -5,6 +5,18 @@
   "main": "dist/vue-3d-loader.cjs.js",
   "module": "dist/vue-3d-loader.esm.js",
   "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/vue-3d-loader.esm.js",
+      "require": "./dist/vue-3d-loader.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && vite build -c vite.config.global.ts && npm run build:types",
@@ -13,19 +25,22 @@
     "build:docker": "vue-tsc --noEmit && vite build --mode docker",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "@types/three": "^0.185.1",
-    "three": "^0.185.1",
-    "vue": "^3.5.17"
+  "dependencies": {},
+  "peerDependencies": {
+    "three": ">=0.160.0",
+    "vue": ">=3.4.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/compiler-sfc": "^3.5.17",
     "fast-glob": "^3.3.3",
+    "three": "^0.185.1",
     "ts-morph": "^25.0.1",
     "typescript": "^5.8.3",
     "vite": "^7.0.4",
+    "vue": "^3.5.17",
     "vue-tsc": "^3.0.5"
   },
   "repository": {
