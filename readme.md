@@ -470,11 +470,11 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   outputEncoding
   </td>
   <td>string</td>
-  <td>linear</td>
+  <td>sRGB</td>
   <td>linear or sRGB</td>
   <td>
 
-  linear is LinearSRGBColorSpace, sRGB is SRGBColorSpace (sRGB can restore material color better).
+  sRGB is SRGBColorSpace (default; restores material colors best). linear is LinearSRGBColorSpace.
   Backed by `WebGLRenderer.outputColorSpace` (three r152+); the prop is kept for compatibility.
   </td>
 </tr>

@@ -435,12 +435,12 @@ import { vue3dLoader } from "vue-3d-loader"; // 注意 vue3dLoader 写在 {...} 
   outputEncoding
   </td>
   <td>string</td>
-  <td>linear</td>
+  <td>sRGB</td>
   <td>liner 或 sRGB</td>
   <td>
 
-  linear 是 LinearEncoding 线性编码, sRGB 即 sRGBEncoding rgb模式编码（sRGBEncoding能更好的还原材质颜色）。
-  渲染器的输出编码 [WebGLRenderer OutputEncoding](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputEncoding)
+  sRGB 为默认值，即 SRGBColorSpace，能更好的还原材质颜色；linear 即 LinearSRGBColorSpace 线性编码。
+  渲染器的输出颜色空间 [WebGLRenderer outputColorSpace](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.outputColorSpace)（three r152+）
   </td>
 </tr>
 <tr>

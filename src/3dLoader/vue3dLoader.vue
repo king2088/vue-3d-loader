@@ -133,7 +133,7 @@ const props = withDefaults(defineProps<Props>(), {
   },
   crossOrigin: "anonymous",
   outputEncoding: () => {
-    return "linear";
+    return "sRGB";
   },
   webGLRendererOptions: () => {
     return {};
