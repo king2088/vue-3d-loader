@@ -1,24 +1,49 @@
-import { Box3, Vector3, Mesh, MeshPhongMaterial, MeshStandardMaterial,MeshBasicMaterial, Object3D, ObjectLoader } from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader";
-import { LoadingManager } from "three/src/loaders/LoadingManager";
-import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import {
+  Box3,
+  Vector3,
+  Mesh,
+  MeshPhongMaterial,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  Object3D,
+  ObjectLoader,
+  LoadingManager,
+  type Loader,
+} from "three";
+
+interface LoaderCallbacks {
+  loader: Loader;
+  getObject?: (...args: any[]) => Object3D;
+}
 
 const box: Box3 = new Box3();
 const manager: LoadingManager = new LoadingManager();
-manager.addHandler(/\.dds$/i, new DDSLoader());
-manager.addHandler(/\.tga$/i, new TGALoader());
+// Cache resolved loader so repeated loads of the same extension don't re-download the chunk
+const loaderCache = new Map<string, Promise<LoaderCallbacks>>();
 
-interface loaderObj {
-  loader: any;
-  getObject?: any;
+let textureHandlersReady = false;
+
+async function ensureTextureHandlers() {
+  if (textureHandlersReady) return;
+  const [{ DDSLoader }, { TGALoader }] = await Promise.all([
+    import("three/examples/jsm/loaders/DDSLoader.js"),
+    import("three/examples/jsm/loaders/TGALoader.js"),
+  ]);
+  manager.addHandler(/\.dds$/i, new DDSLoader());
+  manager.addHandler(/\.tga$/i, new TGALoader());
+  textureHandlersReady = true;
+}
+
+async function withCache(
+  key: string,
+  factory: () => Promise<LoaderCallbacks>
+): Promise<LoaderCallbacks> {
+  let cached = loaderCache.get(key);
+  if (!cached) {
+    cached = factory();
+    loaderCache.set(key, cached);
+  }
+  return cached;
 }
 
 // get box size
@@ -37,50 +62,65 @@ function getExtension(str: string) {
   const pathSplit = str.split(".");
   if (pathSplit.length <= 1) {
     return "";
-  } else {
-    let extension: any = pathSplit.pop();
-    extension = extension.toLowerCase();
-    return extension;
   }
+  return pathSplit.pop()!.toLowerCase();
 }
 
-// auto select model loader
-function getLoader(filePath: string, fileType: string, isDraco: boolean, plyMaterial: string, dracoDir?: string) {
-  let fileExtension: string
-  if (fileType) {
-    // Custom file extension
-    fileExtension = fileType
-  } else {
-    // Get file extension
-    fileExtension = getExtension(filePath);
-  }
+/**
+ * Auto select model loader. Each loader is dynamically imported (code-split),
+ * so the main bundle does not need to ship every loader implementation.
+ */
+function getLoader(
+  filePath: string,
+  fileType: string,
+  isDraco: boolean,
+  plyMaterial: string,
+  dracoDir?: string
+): Promise<LoaderCallbacks> {
+  let fileExtension = fileType || getExtension(filePath);
   // gltf type has two formats, .gltf and .glb, so make fileExtension glb to gltf
   if (fileExtension === "glb") {
     fileExtension = "gltf";
   }
-  let obj: loaderObj = {
-    loader: null,
-    getObject: null
-  } // obj {loader, getObject}
+
+  const cacheKey = fileExtension === "gltf" ? `gltf:${isDraco}` : fileExtension;
+  return withCache(cacheKey, () => createLoader(fileExtension, isDraco, plyMaterial, dracoDir));
+}
+
+async function createLoader(
+  fileExtension: string,
+  isDraco: boolean,
+  plyMaterial: string,
+  dracoDir?: string
+): Promise<LoaderCallbacks> {
+  await ensureTextureHandlers();
+
   switch (fileExtension) {
-    case "dae":
-      obj = {
+    case "dae": {
+      const { ColladaLoader } = await import("three/examples/jsm/loaders/ColladaLoader.js");
+      return {
         loader: new ColladaLoader(manager),
-        getObject: (collada: any) => {
-          return collada.scene;
-        },
+        getObject: (collada: any) => collada.scene,
       };
-      break;
-    case "fbx":
-      obj = {
-        loader: new FBXLoader(manager),
-      };
-      break;
-    case "gltf":
-      obj = {
-        loader: new GLTFLoader(manager),
+    }
+    case "fbx": {
+      const { FBXLoader } = await import("three/examples/jsm/loaders/FBXLoader.js");
+      return { loader: new FBXLoader(manager) };
+    }
+    case "gltf": {
+      const gltfModule = await import("three/examples/jsm/loaders/GLTFLoader.js");
+      const loader = new gltfModule.GLTFLoader(manager);
+      if (isDraco) {
+        const { DRACOLoader } = await import("three/examples/jsm/loaders/DRACOLoader.js");
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath(dracoDir || "assets/draco/gltf/");
+        dracoLoader.setDecoderConfig({ type: "js" });
+        loader.setDRACOLoader(dracoLoader);
+      }
+      return {
+        loader,
         getObject: (gltf: any) => {
-          const object = gltf.scene
+          const object = gltf.scene;
           // resolve gltf animations lose
           if (gltf.animations) {
             object.animations = gltf.animations;
@@ -88,53 +128,45 @@ function getLoader(filePath: string, fileType: string, isDraco: boolean, plyMate
           return object;
         },
       };
-      enableDraco(isDraco, obj, dracoDir)
-      break;
-    case "obj":
-      obj = {
-        loader: new OBJLoader(manager),
-      };
-      break;
-    case "ply":
-      obj = {
+    }
+    case "obj": {
+      const { OBJLoader } = await import("three/examples/jsm/loaders/OBJLoader.js");
+      return { loader: new OBJLoader(manager) };
+    }
+    case "ply": {
+      const { PLYLoader } = await import("three/examples/jsm/loaders/PLYLoader.js");
+      return {
         loader: new PLYLoader(manager),
-        getObject: (geometry: any) => { // geometry
+        getObject: (geometry: any) => {
           geometry.computeVertexNormals();
           // Set ply model material
-          return new Mesh(geometry, plyMaterial === 'MeshStandardMaterial' ? new MeshStandardMaterial() : new MeshBasicMaterial({ vertexColors: true }));
+          return new Mesh(
+            geometry,
+            plyMaterial === "MeshStandardMaterial"
+              ? new MeshStandardMaterial()
+              : new MeshBasicMaterial({ vertexColors: true })
+          );
         },
       };
-      break;
-    case "stl":
-      obj = {
+    }
+    case "stl": {
+      const { STLLoader } = await import("three/examples/jsm/loaders/STLLoader.js");
+      return {
         loader: new STLLoader(manager),
-        getObject: (geometry: any) => { // geometry
-          return new Mesh(geometry, new MeshPhongMaterial())
-        },
+        getObject: (geometry: any) => new Mesh(geometry, new MeshPhongMaterial()),
       };
-      break;
-    case "json":
-      obj = {
-        loader: new ObjectLoader(manager),
-      };
-      break;
+    }
+    case "json": {
+      return { loader: new ObjectLoader(manager) };
+    }
+    default:
+      throw new Error(`Unsupported model file type: "${fileExtension || "unknown"}"`);
   }
-  return obj;
 }
 
-function getMTLLoader() {
-  const mtlLoader = new MTLLoader(manager);
-  return mtlLoader;
-}
-
-function enableDraco(isDraco: boolean, obj: loaderObj, dir?: string) {
-  // draco loader
-  if (isDraco) {
-    const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath(dir || "assets/draco/gltf/");
-    dracoLoader.setDecoderConfig({ type: "js" });
-    obj.loader.setDRACOLoader(dracoLoader);
-  }
+async function getMTLLoader() {
+  const { MTLLoader } = await import("three/examples/jsm/loaders/MTLLoader.js");
+  return new MTLLoader(manager);
 }
 
 export {
