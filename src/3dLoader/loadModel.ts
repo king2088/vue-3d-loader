@@ -58,9 +58,13 @@ function getExtension(str: string) {
   return pathSplit.pop()!.toLowerCase();
 }
 
-// Default Draco decoder: wasm decoder hosted on Google's public CDN.
-// Override with the `dracoDir` prop for self-hosted decoders.
-const DEFAULT_DRACO_DECODER_PATH = "https://www.gstatic.com/draco/v1/decoders/";
+// Default Draco decoder path: self-hosted. Download draco.7z from the three.js
+// repo (https://github.com/mrdoob/three.js/tree/dev/examples/jsm/libs/draco) and
+// unzip it into <your site>/assets/draco/gltf/. This keeps decoding fully offline
+// and works anywhere (www.gstatic.com is unreachable in mainland China).
+// For a CDN instead, pass `dracoDir`, e.g. the jsdelivr mirror:
+//   https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/libs/draco/
+const DEFAULT_DRACO_DECODER_PATH = "assets/draco/gltf/";
 
 /**
  * Auto select model loader. Each loader module is dynamically imported
@@ -120,7 +124,8 @@ async function createFactory(
         if (isDraco && DRACOLoader) {
           const dracoLoader = new DRACOLoader();
           dracoLoader.setDecoderPath(dracoDir || DEFAULT_DRACO_DECODER_PATH);
-          dracoLoader.preload();
+          // the decoder wasm is fetched lazily on the first draco decode,
+          // so a missing/offline decoder dir only errors when actually needed
           loader.setDRACOLoader(dracoLoader);
         }
         return {

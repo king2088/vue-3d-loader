@@ -580,7 +580,7 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   <td>-</td>
   <td>
 
-  Load the Gltf Draco model, you need to enable Draco decryption. The Draco wasm decoder is loaded from Google's public CDN (<code>https://www.gstatic.com/draco/v1/decoders/</code>) by default — no manual download required. If you want to change the decoder directory, use <i>dracoDir</i> parameter. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
+  Load the Gltf Draco model, you need to enable Draco decryption. The Draco wasm decoder defaults to the self-hosted path <code>assets/draco/gltf/</code> — unzip <code>draco.7z</code> from the three.js repo there so decoding works fully offline (Google's <code>gstatic.com</code> CDN is unreachable in mainland China). To use a CDN instead, pass <i>dracoDir</i>. [About draco and threeJS](https://threejs.org/docs/index.html?q=draco#examples/en/loaders/DRACOLoader)
   </td>
 </tr>
 <tr>
@@ -588,10 +588,10 @@ Use tags in your components`<vue3dLoader></vue3dLoader>`
   dracoDir
   </td>
   <td>string</td>
-  <td>https://www.gstatic.com/draco/v1/decoders/</td>
+  <td>assets/draco/gltf/</td>
   <td>-</td>
   <td>
-  Draco wasm decoder directory (Google CDN by default). Set it to a self-hosted path for offline use.
+  Draco wasm decoder directory. Self-hosted by default; pass any CDN URL to override, e.g. <code>https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/libs/draco/</code>.
   </td>
 </tr>
 <tr>
@@ -963,7 +963,7 @@ function change(event: any, type: string) {
 
 #### 8. Loader draco model
 
-The Draco wasm decoder is fetched from Google's public CDN by default. Use `dracoDir` to point to a self-hosted decoder.
+The Draco wasm decoder defaults to the self-hosted path <code>assets/draco/gltf/</code> (unzip <code>draco.7z</code> from the three.js repo there) so no external CDN is required — Google's CDN is unreachable in mainland China. Use `dracoDir` to point to a CDN mirror if you prefer.
 
 ```vue
 <template>
