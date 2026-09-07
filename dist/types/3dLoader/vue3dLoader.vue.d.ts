@@ -242,6 +242,7 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
     lastModelLoadKey: string;
     _lookAtTarget: Vector3;
     _clearColor: Color;
+    _sizeVec: Vector3;
     size: import("vue").Ref<{
         width: any;
         height: any;
@@ -279,6 +280,7 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
     updateModel: () => void;
     updateRenderer: () => void;
     updateCamera: (isResize?: boolean) => void;
+    autoFit: () => void;
     updateLights: () => void;
     updateControls: () => void;
     loadModelSelect: () => void;

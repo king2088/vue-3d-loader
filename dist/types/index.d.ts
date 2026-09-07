@@ -237,6 +237,7 @@ declare const _default: {
         lastModelLoadKey: string;
         _lookAtTarget: Three.Vector3;
         _clearColor: Three.Color;
+        _sizeVec: Three.Vector3;
         size: import("vue").Ref<{
             width: any;
             height: any;
@@ -274,6 +275,7 @@ declare const _default: {
         updateModel: () => void;
         updateRenderer: () => void;
         updateCamera: (isResize?: boolean) => void;
+        autoFit: () => void;
         updateLights: () => void;
         updateControls: () => void;
         loadModelSelect: () => void;
