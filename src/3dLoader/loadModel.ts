@@ -16,10 +16,14 @@ interface LoaderCallbacks {
   getObject?: (...args: any[]) => Object3D;
 }
 
+type LoaderFactory = (manager: LoadingManager) => LoaderCallbacks;
+
 const box: Box3 = new Box3();
 const manager: LoadingManager = new LoadingManager();
-// Cache resolved loader so repeated loads of the same extension don't re-download the chunk
-const loaderCache = new Map<string, Promise<LoaderCallbacks>>();
+// Cache dynamic-import factories (which loader *module* to use), NOT loader
+// instances. Each load() call gets a fresh Loader instance so concurrent or
+// multi-instance loads never step on each other's callbacks.
+const factoryCache = new Map<string, Promise<LoaderFactory>>();
 
 let textureHandlersReady = false;
 
@@ -32,18 +36,6 @@ async function ensureTextureHandlers() {
   manager.addHandler(/\.dds$/i, new DDSLoader());
   manager.addHandler(/\.tga$/i, new TGALoader());
   textureHandlersReady = true;
-}
-
-async function withCache(
-  key: string,
-  factory: () => Promise<LoaderCallbacks>
-): Promise<LoaderCallbacks> {
-  let cached = loaderCache.get(key);
-  if (!cached) {
-    cached = factory();
-    loaderCache.set(key, cached);
-  }
-  return cached;
 }
 
 // get box size
@@ -66,11 +58,16 @@ function getExtension(str: string) {
   return pathSplit.pop()!.toLowerCase();
 }
 
+// Default Draco decoder: wasm decoder hosted on Google's public CDN.
+// Override with the `dracoDir` prop for self-hosted decoders.
+const DEFAULT_DRACO_DECODER_PATH = "https://www.gstatic.com/draco/v1/decoders/";
+
 /**
- * Auto select model loader. Each loader is dynamically imported (code-split),
- * so the main bundle does not need to ship every loader implementation.
+ * Auto select model loader. Each loader module is dynamically imported
+ * (code-split) and its import promise is cached, while a brand new Loader
+ * instance is created for every load call.
  */
-function getLoader(
+async function getLoader(
   filePath: string,
   fileType: string,
   isDraco: boolean,
@@ -83,59 +80,69 @@ function getLoader(
     fileExtension = "gltf";
   }
 
+  await ensureTextureHandlers();
+
   const cacheKey = fileExtension === "gltf" ? `gltf:${isDraco}` : fileExtension;
-  return withCache(cacheKey, () => createLoader(fileExtension, isDraco, plyMaterial, dracoDir));
+  let factory = factoryCache.get(cacheKey);
+  if (!factory) {
+    factory = createFactory(fileExtension, isDraco, plyMaterial, dracoDir);
+    factoryCache.set(cacheKey, factory);
+  }
+  // fresh Loader instance per call — safe for concurrent/multi-instance loads
+  return (await factory)(manager);
 }
 
-async function createLoader(
+async function createFactory(
   fileExtension: string,
   isDraco: boolean,
   plyMaterial: string,
   dracoDir?: string
-): Promise<LoaderCallbacks> {
-  await ensureTextureHandlers();
-
+): Promise<LoaderFactory> {
   switch (fileExtension) {
     case "dae": {
       const { ColladaLoader } = await import("three/examples/jsm/loaders/ColladaLoader.js");
-      return {
+      return (manager) => ({
         loader: new ColladaLoader(manager),
         getObject: (collada: any) => collada.scene,
-      };
+      });
     }
     case "fbx": {
       const { FBXLoader } = await import("three/examples/jsm/loaders/FBXLoader.js");
-      return { loader: new FBXLoader(manager) };
+      return (manager) => ({ loader: new FBXLoader(manager) });
     }
     case "gltf": {
       const gltfModule = await import("three/examples/jsm/loaders/GLTFLoader.js");
-      const loader = new gltfModule.GLTFLoader(manager);
-      if (isDraco) {
-        const { DRACOLoader } = await import("three/examples/jsm/loaders/DRACOLoader.js");
-        const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath(dracoDir || "assets/draco/gltf/");
-        dracoLoader.setDecoderConfig({ type: "js" });
-        loader.setDRACOLoader(dracoLoader);
-      }
-      return {
-        loader,
-        getObject: (gltf: any) => {
-          const object = gltf.scene;
-          // resolve gltf animations lose
-          if (gltf.animations) {
-            object.animations = gltf.animations;
-          }
-          return object;
-        },
+      const { DRACOLoader } = isDraco
+        ? await import("three/examples/jsm/loaders/DRACOLoader.js")
+        : { DRACOLoader: null as unknown as new () => import("three/examples/jsm/loaders/DRACOLoader.js").DRACOLoader };
+      return (manager) => {
+        const loader = new gltfModule.GLTFLoader(manager);
+        if (isDraco && DRACOLoader) {
+          const dracoLoader = new DRACOLoader();
+          dracoLoader.setDecoderPath(dracoDir || DEFAULT_DRACO_DECODER_PATH);
+          dracoLoader.preload();
+          loader.setDRACOLoader(dracoLoader);
+        }
+        return {
+          loader,
+          getObject: (gltf: any) => {
+            const object = gltf.scene;
+            // resolve gltf animations lose
+            if (gltf.animations) {
+              object.animations = gltf.animations;
+            }
+            return object;
+          },
+        };
       };
     }
     case "obj": {
       const { OBJLoader } = await import("three/examples/jsm/loaders/OBJLoader.js");
-      return { loader: new OBJLoader(manager) };
+      return (manager) => ({ loader: new OBJLoader(manager) });
     }
     case "ply": {
       const { PLYLoader } = await import("three/examples/jsm/loaders/PLYLoader.js");
-      return {
+      return (manager) => ({
         loader: new PLYLoader(manager),
         getObject: (geometry: any) => {
           geometry.computeVertexNormals();
@@ -147,17 +154,17 @@ async function createLoader(
               : new MeshBasicMaterial({ vertexColors: true })
           );
         },
-      };
+      });
     }
     case "stl": {
       const { STLLoader } = await import("three/examples/jsm/loaders/STLLoader.js");
-      return {
+      return (manager) => ({
         loader: new STLLoader(manager),
         getObject: (geometry: any) => new Mesh(geometry, new MeshPhongMaterial()),
-      };
+      });
     }
     case "json": {
-      return { loader: new ObjectLoader(manager) };
+      return (manager) => ({ loader: new ObjectLoader(manager) });
     }
     default:
       throw new Error(`Unsupported model file type: "${fileExtension || "unknown"}"`);
