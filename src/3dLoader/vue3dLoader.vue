@@ -182,6 +182,12 @@ let isInViewport = true;
 let renderLoopRunning = false;
 let needsRender = false;
 let resizeRaf: number = 0;
+let destroyed = false;
+// mousemove raycast throttle: coalesce to one pick per animation frame
+let lastMoveEvent: MouseEvent | null = null;
+let moveRafId = 0;
+// guards deep watch on filePath/fileType/mtlPath against in-place mutations
+let lastModelLoadKey = "";
 
 // reuse temporary objects to reduce GC pressure
 const _lookAtTarget = new Vector3();
@@ -250,11 +256,21 @@ watch(
     () => props.backgroundColor,
   ],
   (valueArray) => {
-    if (valueArray[0] || valueArray[1]) {
-      resetScene();
-    }
-    if (valueArray[2]) {
-      loadModelSelect();
+    // deep-watch fires on in-place mutations too; skip reload when the
+    // source key is unchanged (e.g. reusing the same array reference)
+    const sourceKey = JSON.stringify([
+      props.filePath,
+      props.fileType,
+      props.mtlPath,
+    ]);
+    if (sourceKey !== lastModelLoadKey) {
+      lastModelLoadKey = sourceKey;
+      if (valueArray[0] || valueArray[1]) {
+        resetScene();
+      }
+      if (valueArray[2]) {
+        loadModelSelect();
+      }
     }
     if (valueArray[3]) {
       clearScene();
@@ -403,11 +419,12 @@ function animate() {
     keepRunning = true;
   }
 
-  if (controls) {
+  // controls.update() is only needed for damping smoothing / auto-rotate;
+  // without damping OrbitControls applies pointer deltas directly in its own
+  // event handlers, so calling it every frame would be wasted work
+  if (controls && (controls.enableDamping || controls.autoRotate)) {
     controls.update();
-    if (controls.enableDamping || controls.autoRotate) {
-      keepRunning = true;
-    }
+    keepRunning = true;
   }
 
   if (needsRender) {
@@ -443,6 +460,12 @@ function resetScene() {
 
 function destroyScene() {
   pauseRenderLoop();
+  destroyed = true;
+  if (moveRafId) {
+    cancelAnimationFrame(moveRafId);
+    moveRafId = 0;
+    lastMoveEvent = null;
+  }
   if (renderer) {
     renderer.dispose();
   }
@@ -450,12 +473,13 @@ function destroyScene() {
     controls.dispose();
     controls = null as any;
   }
-  const el = containerElement.value as any;
-  el.removeEventListener("mousedown", onMouseDown, false);
-  el.removeEventListener("mousemove", onMouseMove, false);
-  el.removeEventListener("mouseup", onMouseUp, false);
-  el.removeEventListener("click", onClick, false);
-  el.removeEventListener("dblclick", onDblclick, false);
+  stopMixers();
+  const el = containerElement.value as HTMLElement | null;
+  el?.removeEventListener("mousedown", onMouseDown, false);
+  el?.removeEventListener("mousemove", onMouseMove, false);
+  el?.removeEventListener("mouseup", onMouseUp, false);
+  el?.removeEventListener("click", onClick, false);
+  el?.removeEventListener("dblclick", onDblclick, false);
   if (resizeRaf) {
     cancelAnimationFrame(resizeRaf);
     resizeRaf = 0;
@@ -467,13 +491,28 @@ function destroyScene() {
     scene.traverse((child) => disposeObject3D(child));
     scene.clear();
   }
+  // stats panel has no dispose() API; drop its DOM node
+  if (stats) {
+    if (stats.dom && stats.dom.parentNode) {
+      stats.dom.parentNode.removeChild(stats.dom);
+    }
+    stats = null;
+  }
   object = null;
-  mixers = null as any;
-  stats = null;
   loader = null;
   textureLoader = null;
   objectPositionHasSet.value = false;
   loaderIndex.value = 0;
+}
+
+function stopMixers() {
+  if (mixers) {
+    const list = Array.isArray(mixers) ? mixers : [mixers];
+    list.forEach((m) => {
+      if (m) m.stopAllAction();
+    });
+  }
+  mixers = null as any;
 }
 
 function disposeObject3D(obj: Object3D) {
@@ -498,6 +537,7 @@ function disposeObject3D(obj: Object3D) {
 }
 
 function init() {
+  destroyed = false;
   const {
     filePath,
     outputEncoding,
@@ -617,9 +657,18 @@ function onMouseDown(event: MouseEvent) {
 }
 
 function onMouseMove(event: MouseEvent) {
-  const intersected = pick(event.clientX, event.clientY);
-  emit("mousemove", event, intersected);
-  invalidate();
+  // coalesce raycast+emit to at most one per animation frame
+  lastMoveEvent = event;
+  if (moveRafId) return;
+  moveRafId = requestAnimationFrame(() => {
+    moveRafId = 0;
+    const ev = lastMoveEvent;
+    lastMoveEvent = null;
+    if (!ev) return;
+    const intersected = pick(ev.clientX, ev.clientY);
+    emit("mousemove", ev, intersected);
+    invalidate();
+  });
 }
 
 function onMouseUp(event: MouseEvent) {
@@ -839,7 +888,7 @@ async function load(fileIndex?: number) {
     dracoDir,
     plyMaterial
   } = props;
-  if (!filePath) return;
+  if (!filePath || destroyed) return;
   const index = fileIndex ?? loaderIndex.value;
   // if multiple files
   const filePathString: string = !isMultipleModels.value
@@ -905,6 +954,7 @@ function loadFilePath(filePath: string, getObject: any, index: number) {
   loader.load(
     filePath,
     (...args: any) => {
+      if (destroyed) return;
       const obj = getObject(...args);
       object = obj;
       addObject(object, filePath);
@@ -1022,12 +1072,12 @@ function addTexture(object: Object3D, texture: any) {
 }
 
 function clearScene() {
+  stopMixers();
   if (scene) {
     scene.traverse((child) => disposeObject3D(child));
     scene.clear();
     allLights = [];
     object = null;
-    mixers = null as any;
   }
   invalidate();
 }
