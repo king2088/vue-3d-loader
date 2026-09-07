@@ -34021,8 +34021,8 @@ let Ad = !1;
 async function IS() {
   if (Ad) return;
   const [{ DDSLoader: s }, { TGALoader: t }] = await Promise.all([
-    import("./DDSLoader-Ca_wnp2q.mjs"),
-    import("./TGALoader-DoOp8V_Q.mjs")
+    import("./DDSLoader-BsqSQMSm.mjs"),
+    import("./TGALoader-D1myPLWV.mjs")
   ]);
   Fo.addHandler(/\.dds$/i, new s()), Fo.addHandler(/\.tga$/i, new t()), Ad = !0;
 }
@@ -34063,18 +34063,18 @@ async function OS(s, t, e, n, i) {
 async function BS(s, t, e, n) {
   switch (s) {
     case "dae": {
-      const { ColladaLoader: i } = await import("./ColladaLoader-BOtOPEQP.mjs");
+      const { ColladaLoader: i } = await import("./ColladaLoader-CM-45Zp2.mjs");
       return (r) => ({
         loader: new i(r),
         getObject: (a) => a.scene
       });
     }
     case "fbx": {
-      const { FBXLoader: i } = await import("./FBXLoader-De80jK3y.mjs");
+      const { FBXLoader: i } = await import("./FBXLoader-DceOWE1K.mjs");
       return (r) => ({ loader: new i(r) });
     }
     case "gltf": {
-      const i = await import("./GLTFLoader-JHEDaucX.mjs"), { DRACOLoader: r } = t ? await import("./DRACOLoader-CFGh0aMe.mjs") : { DRACOLoader: null };
+      const i = await import("./GLTFLoader-DIHS2TlU.mjs"), { DRACOLoader: r } = t ? await import("./DRACOLoader-C25X61OY.mjs") : { DRACOLoader: null };
       return (a) => {
         const o = new i.GLTFLoader(a);
         if (t && r) {
@@ -34091,11 +34091,11 @@ async function BS(s, t, e, n) {
       };
     }
     case "obj": {
-      const { OBJLoader: i } = await import("./OBJLoader-Bbb-D304.mjs");
+      const { OBJLoader: i } = await import("./OBJLoader-BH3Ve4Jw.mjs");
       return (r) => ({ loader: new i(r) });
     }
     case "ply": {
-      const { PLYLoader: i } = await import("./PLYLoader-DwB5rrnt.mjs");
+      const { PLYLoader: i } = await import("./PLYLoader-CEN4meob.mjs");
       return (r) => ({
         loader: new i(r),
         getObject: (a) => (a.computeVertexNormals(), new Ce(
@@ -34105,7 +34105,7 @@ async function BS(s, t, e, n) {
       });
     }
     case "stl": {
-      const { STLLoader: i } = await import("./STLLoader-COymSrIC.mjs");
+      const { STLLoader: i } = await import("./STLLoader-_xEuXJ2I.mjs");
       return (r) => ({
         loader: new i(r),
         getObject: (a) => new Ce(a, new gh())
@@ -34121,7 +34121,7 @@ async function BS(s, t, e, n) {
   }
 }
 async function zS() {
-  const { MTLLoader: s } = await import("./MTLLoader-D1zZqLOt.mjs");
+  const { MTLLoader: s } = await import("./MTLLoader-CVHAI6nd.mjs");
   return new s(Fo);
 }
 const kS = /* @__PURE__ */ Pp({
@@ -34157,7 +34157,7 @@ const kS = /* @__PURE__ */ Pp({
     controlsOptions: {},
     crossOrigin: { default: "anonymous" },
     requestHeader: {},
-    outputEncoding: { default: () => "linear" },
+    outputEncoding: { default: () => "sRGB" },
     webGLRendererOptions: { default: () => ({}) },
     mtlPath: { default: "" },
     showFps: { type: Boolean, default: !1 },
@@ -34722,7 +34722,7 @@ const kS = /* @__PURE__ */ Pp({
   for (const [n, i] of t)
     e[n] = i;
   return e;
-}, zc = /* @__PURE__ */ VS(kS, [["__scopeId", "data-v-bd3ba45f"]]), GS = (s) => {
+}, zc = /* @__PURE__ */ VS(kS, [["__scopeId", "data-v-b01246af"]]), GS = (s) => {
   s.component(zc.name ?? "vue3dLoader", zc);
 }, XS = { install: GS, vue3dLoader: zc };
 export {
