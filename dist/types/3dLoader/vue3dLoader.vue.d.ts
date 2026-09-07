@@ -1,5 +1,5 @@
-import { Object3D, Vector2, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, AnimationMixer, Clock, Light, AxesHelper, GridHelper } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Object3D, Vector2, Vector3, Color, Scene, Raycaster, WebGLRenderer, PerspectiveCamera, AnimationMixer, Clock, Light, AxesHelper, GridHelper } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 export interface coordinates {
     x: number;
     y: number;
@@ -9,9 +9,7 @@ export interface controlsValue {
     min: number;
     max: number;
 }
-declare type plyMaterial = 'MeshBasicMaterial' | 'MeshStandardMaterial';
-declare type encode = "linear" | "sRGB";
-declare const _default: import("vue").DefineComponent<{
+declare const _default: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
         required: true;
@@ -46,8 +44,8 @@ declare const _default: import("vue").DefineComponent<{
         default: () => ({
             type: string;
             color: number;
+            intensity: number;
             position?: undefined;
-            intensity?: undefined;
         } | {
             type: string;
             position: {
@@ -214,77 +212,64 @@ declare const _default: import("vue").DefineComponent<{
         type: BooleanConstructor;
         required: false;
     };
-}, {
-    props: {
-        filePath: string | string[];
-        fileType?: string | string[] | undefined;
-        width?: number | undefined;
-        height?: number | undefined;
-        position?: coordinates | coordinates[] | undefined;
-        rotation?: coordinates | coordinates[] | undefined;
-        scale?: coordinates | coordinates[] | undefined;
-        lights: object[];
-        cameraPosition: coordinates;
-        cameraRotation?: coordinates | undefined;
-        cameraUp?: coordinates | undefined;
-        cameraLookAt?: coordinates | undefined;
-        backgroundColor: number | string;
-        backgroundAlpha: number;
-        controlsOptions?: object | undefined;
-        crossOrigin: string;
-        requestHeader?: object | undefined;
-        outputEncoding: encode;
-        webGLRendererOptions: object;
-        mtlPath: string | string[];
-        showFps: boolean;
-        textureImage: string | string[];
-        clearScene: boolean;
-        parallelLoad: boolean;
-        labels: object[];
-        autoPlay: boolean;
-        enableDraco: boolean;
-        dracoDir?: string | undefined;
-        intersectRecursive: boolean;
-        enableDamping?: boolean | undefined;
-        dampingFactor?: number | undefined;
-        verticalCtrl: boolean | controlsValue;
-        horizontalCtrl: boolean | controlsValue;
-        plyMaterial: plyMaterial;
-        enableAxesHelper: boolean;
-        axesHelperSize: number;
-        enableGridHelper: boolean;
-        minDistance: number;
-        maxDistance: number;
-        pointLightFollowCamera?: boolean | undefined;
+    enableShadowMap: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
     };
+}>, {
+    props: any;
     object: any;
     raycaster: Raycaster;
     mouse: Vector2;
     camera: PerspectiveCamera;
     clock: Clock;
-    scene: Scene;
+    scene: Scene<import("three").Object3DEventMap>;
     renderer: WebGLRenderer;
-    controls: OrbitControls;
+    controls: OrbitControls<import("three").Camera>;
     allLights: Light[];
     loader: any;
-    requestAnimationId: number;
+    animationId: number;
     stats: any;
-    mixers: AnimationMixer | AnimationMixer[];
+    mixers: AnimationMixer<import("three").AnimationMixerEventMap> | AnimationMixer<import("three").AnimationMixerEventMap>[];
     textureLoader: any;
     axesHelper: AxesHelper;
     gridHelper: GridHelper;
+    resizeObserver: ResizeObserver | null;
+    intersectionObserver: IntersectionObserver | null;
+    isInViewport: boolean;
+    renderLoopRunning: boolean;
+    needsRender: boolean;
+    resizeRaf: number;
+    _lookAtTarget: Vector3;
+    _clearColor: Color;
     size: import("vue").Ref<{
-        width: number;
-        height: number;
+        width: any;
+        height: any;
+    }, {
+        width: any;
+        height: any;
+    } | {
+        width: any;
+        height: any;
     }>;
-    loaderIndex: import("vue").Ref<number>;
-    objectPositionHasSet: import("vue").Ref<boolean>;
-    isMultipleModels: import("vue").Ref<boolean>;
-    containerElement: import("vue").Ref<null>;
-    canvasElement: import("vue").Ref<null>;
+    loaderIndex: import("vue").Ref<number, number>;
+    objectPositionHasSet: import("vue").Ref<boolean, boolean>;
+    isMultipleModels: import("vue").Ref<boolean, boolean>;
+    containerElement: import("vue").Ref<null, null>;
+    canvasElement: import("vue").Ref<null, null>;
     emit: (event: "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", ...args: any[]) => void;
+    invalidate: () => void;
+    ensureRenderLoop: () => void;
+    pauseRenderLoop: () => void;
+    isVisible: () => boolean;
+    onDocumentVisibility: () => void;
+    observeVisibility: () => void;
+    animate: () => void;
+    renderFrame: () => void;
     resetScene: () => void;
     destroyScene: () => void;
+    disposeObject3D: (obj: Object3D) => void;
     init: () => void;
     setContainerElementStyle: (el: any) => void;
     enableMousemoveEvent: (enable: boolean) => void;
@@ -294,7 +279,7 @@ declare const _default: import("vue").DefineComponent<{
     onMouseUp: (event: MouseEvent) => void;
     onClick: (event: MouseEvent) => void;
     onDblclick: (event: MouseEvent) => void;
-    pick: (x: number, y: number) => import("three").Intersection<Object3D<import("three").Event>> | null;
+    pick: (x: number, y: number) => import("three").Intersection<Object3D<import("three").Object3DEventMap>> | null;
     update: () => void;
     updateModel: () => void;
     updateRenderer: () => void;
@@ -302,14 +287,11 @@ declare const _default: import("vue").DefineComponent<{
     updateLights: () => void;
     updateControls: () => void;
     loadModelSelect: () => void;
-    load: (fileIndex?: number) => void;
+    load: (fileIndex?: number) => Promise<void>;
     loadFilePath: (filePath: string, getObject: any, index: number) => void;
-    loadMtl: (filePath: string, getObject: any, index: number) => void;
+    loadMtl: (filePath: string, getObject: any, index: number) => Promise<void>;
     getObject: (object: any) => any;
     addObject: (obj: Object3D, filePath: string) => void;
-    animate: () => void;
-    render: () => void;
-    updateStats: () => void;
     onProcess: (xhr: ProgressEvent) => void;
     addTexture: (object: Object3D, texture: any) => void;
     clearScene: () => void;
@@ -324,8 +306,8 @@ declare const _default: import("vue").DefineComponent<{
     playMultipleModels: (obj: Object3D) => void;
     setVerticalHorizontalControls: () => void;
     setAxesAndGridHelper: () => void;
-    setLightFollowCamera: () => void;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+    takePointLightFollowCamera: () => void;
+}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error")[], "mousedown" | "mousemove" | "mouseup" | "click" | "dblclick" | "load" | "process" | "error", import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{
     filePath: {
         type: (StringConstructor | ArrayConstructor)[];
         required: true;
@@ -360,8 +342,8 @@ declare const _default: import("vue").DefineComponent<{
         default: () => ({
             type: string;
             color: number;
+            intensity: number;
             position?: undefined;
-            intensity?: undefined;
         } | {
             type: string;
             position: {
@@ -528,7 +510,12 @@ declare const _default: import("vue").DefineComponent<{
         type: BooleanConstructor;
         required: false;
     };
-}>> & {
+    enableShadowMap: {
+        type: BooleanConstructor;
+        required: false;
+        default: boolean;
+    };
+}>> & Readonly<{
     onMousedown?: ((...args: any[]) => any) | undefined;
     onMousemove?: ((...args: any[]) => any) | undefined;
     onMouseup?: ((...args: any[]) => any) | undefined;
@@ -537,7 +524,7 @@ declare const _default: import("vue").DefineComponent<{
     onLoad?: ((...args: any[]) => any) | undefined;
     onProcess?: ((...args: any[]) => any) | undefined;
     onError?: ((...args: any[]) => any) | undefined;
-}, {
+}>, {
     lights: unknown[];
     cameraPosition: Record<string, any>;
     backgroundColor: string | number;
@@ -564,5 +551,6 @@ declare const _default: import("vue").DefineComponent<{
     minDistance: number;
     maxDistance: number;
     pointLightFollowCamera: boolean;
-}>;
+    enableShadowMap: boolean;
+}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export default _default;
