@@ -1,11 +1,9 @@
 <template>
   <div class="draco-demo" v-if="props.lang === 'zh'">
-    Draco 解码器（wasm）默认从项目内自托管路径 <code>assets/draco/gltf/</code> 加载；
-    可通过 <code>dracoDir</code> 属性覆盖，例如指向 jsdelivr 等 CDN 镜像
+    可通过 <code>:enableDraco="true"</code> 属性开启Draco 解码器。
   </div>
   <div class="draco-demo" v-if="props.lang != 'zh'">
-    The Draco decoder (wasm) defaults to the self-hosted <code>assets/draco/gltf/</code>
-    path. Override it with the <code>dracoDir</code> prop (e.g. a jsdelivr CDN mirror).
+    <code>:enableDraco="true"</code> enable Draco decoder.
   </div>
   <vue3dLoader
     filePath="/models/gltf/LittlestTokyo.glb"

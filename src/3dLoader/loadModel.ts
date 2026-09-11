@@ -100,6 +100,16 @@ function setTextureColorSpace(object: Object3D) {
 //   https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/libs/draco/
 const DEFAULT_DRACO_DECODER_PATH = "assets/draco/gltf/";
 
+// DRACOLoader concatenates decoderPath with the file name directly,
+// so a missing trailing slash would produce a broken URL.
+function normalizeDracoDir(dir?: string): string {
+  const path = (dir || "").trim();
+  if (!path) {
+    return DEFAULT_DRACO_DECODER_PATH;
+  }
+  return path.endsWith("/") ? path : `${path}/`;
+}
+
 /**
  * Auto select model loader. Each loader module is dynamically imported
  * (code-split) and its import promise is cached, while a brand new Loader
@@ -120,7 +130,10 @@ async function getLoader(
 
   await ensureTextureHandlers();
 
-  const cacheKey = fileExtension === "gltf" ? `gltf:${isDraco}` : fileExtension;
+  const cacheKey =
+    fileExtension === "gltf"
+      ? `gltf:${isDraco}:${isDraco ? normalizeDracoDir(dracoDir) : ""}`
+      : fileExtension;
   let factory = factoryCache.get(cacheKey);
   if (!factory) {
     factory = createFactory(fileExtension, isDraco, plyMaterial, dracoDir);
@@ -157,7 +170,7 @@ async function createFactory(
         const loader = new gltfModule.GLTFLoader(manager);
         if (isDraco && DRACOLoader) {
           const dracoLoader = new DRACOLoader();
-          dracoLoader.setDecoderPath(dracoDir || DEFAULT_DRACO_DECODER_PATH);
+          dracoLoader.setDecoderPath(normalizeDracoDir(dracoDir));
           // the decoder wasm is fetched lazily on the first draco decode,
           // so a missing/offline decoder dir only errors when actually needed
           loader.setDRACOLoader(dracoLoader);
