@@ -1,1 +1,1 @@
-"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const e=require("./index-btSTEy9A.js");exports.Three=e.three_module;exports.default=e.index;exports.vue3dLoader=e.vue3dLoader;
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const e=require("./index-D05DzIPu.js");exports.Three=e.three_module;exports.default=e.index;exports.vue3dLoader=e.vue3dLoader;

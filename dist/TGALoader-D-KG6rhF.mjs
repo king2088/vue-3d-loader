@@ -1,4 +1,4 @@
-import { Z as q, _ as J } from "./index-ChGdgC32.mjs";
+import { Z as q, _ as J } from "./index-NF-TEt8V.mjs";
 class W extends q {
   /**
    * Constructs a new TGA loader.
